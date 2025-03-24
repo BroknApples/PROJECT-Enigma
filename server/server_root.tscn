@@ -1,0 +1,60 @@
+[gd_scene load_steps=3 format=3 uid="uid://be42se8hdchfr"]
+
+[ext_resource type="Script" path="res://server/server_root.gd" id="1_ajlef"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_b52kk"]
+
+[node name="ServerRoot" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ajlef")
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_b52kk")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.5
+offset_top = -199.0
+offset_right = 300.5
+offset_bottom = 199.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="PortNumber LineEdit" type="LineEdit" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+tooltip_text = "Set the port number for this server to run on"
+theme_override_font_sizes/font_size = 30
+placeholder_text = "Port Number: Default = 52567"
+alignment = 1
+
+[node name="MaxClients LineEdit" type="LineEdit" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+tooltip_text = "Set the maximum number of clients allowed for this server"
+theme_override_font_sizes/font_size = 30
+placeholder_text = "Max Clients: Default = 12"
+alignment = 1
+
+[node name="Play Button" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 30
+text = "Start"
+
+[connection signal="text_changed" from="VBoxContainer/PortNumber LineEdit" to="." method="_on_port_number_line_edit_text_changed"]
+[connection signal="text_changed" from="VBoxContainer/MaxClients LineEdit" to="." method="_on_max_clients_line_edit_text_changed"]
+[connection signal="pressed" from="VBoxContainer/Play Button" to="." method="_on_play_button_pressed"]

@@ -11,10 +11,32 @@ config_version=5
 [application]
 
 config/name="PROJECT Engima"
+run/main_scene="res://client/client_root.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+Settings="*res://client/globals/settings/settings.tscn"
+
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+window/vsync/vsync_mode=0
 
 [editor]
 
 version_control/plugin_name="GitPlugin"
 version_control/autoload_on_startup=true
+
+[editor_plugins]
+
+enabled=PackedStringArray()
+
+[physics]
+
+3d/main_scene="res://client/client_root.tscn"
+3d/vsync/vsync_mode=0
