@@ -1,3 +1,0 @@
-C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/build/CMakeFiles/godot-cpp.dir
-C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/build/CMakeFiles/edit_cache.dir
-C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/build/CMakeFiles/rebuild_cache.dir
