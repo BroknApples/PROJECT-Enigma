@@ -1,0 +1,3 @@
+[submodule "gdextension"]
+	path = gdextension
+	url = https://github.com/godotengine/godot-cpp-template.git

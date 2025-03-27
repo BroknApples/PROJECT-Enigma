@@ -1,0 +1,258 @@
+{
+	"globsDependent" : 
+	[
+		{
+			"expression" : "C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/*.h**",
+			"paths" : 
+			[
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/classes/editor_plugin_registration.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/classes/ref.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/classes/wrapped.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/core/binder_common.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/core/builtin_ptrcall.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/core/class_db.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/core/defs.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/core/engine_ptrcall.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/core/error_macros.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/core/math.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/core/memory.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/core/method_bind.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/core/method_ptrcall.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/core/mutex_lock.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/core/object.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/core/object_id.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/core/print_string.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/core/property_info.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/core/type_info.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/godot.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/templates/cowdata.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/templates/hash_map.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/templates/hash_set.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/templates/hashfuncs.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/templates/list.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/templates/local_vector.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/templates/pair.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/templates/rb_map.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/templates/rb_set.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/templates/rid_owner.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/templates/safe_refcount.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/templates/search_array.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/templates/self_list.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/templates/sort_array.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/templates/spin_lock.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/templates/thread_work_pool.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/templates/vector.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/templates/vmap.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/templates/vset.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/variant/aabb.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/variant/array_helpers.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/variant/basis.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/variant/callable_custom.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/variant/callable_method_pointer.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/variant/char_string.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/variant/char_utils.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/variant/color.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/variant/color_names.inc.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/variant/plane.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/variant/projection.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/variant/quaternion.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/variant/rect2.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/variant/rect2i.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/variant/transform2d.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/variant/transform3d.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/variant/typed_array.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/variant/variant.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/variant/vector2.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/variant/vector2i.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/variant/vector3.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/variant/vector3i.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/variant/vector4.hpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/include/godot_cpp/variant/vector4i.hpp"
+			],
+			"recurse" : true
+		},
+		{
+			"expression" : "C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/src/*.c**",
+			"paths" : 
+			[
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/src/classes/editor_plugin_registration.cpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/src/classes/low_level.cpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/src/classes/wrapped.cpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/src/core/class_db.cpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/src/core/error_macros.cpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/src/core/memory.cpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/src/core/method_bind.cpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/src/core/object.cpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/src/core/print_string.cpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/src/godot.cpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/src/variant/aabb.cpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/src/variant/basis.cpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/src/variant/callable_custom.cpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/src/variant/callable_method_pointer.cpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/src/variant/char_string.cpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/src/variant/color.cpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/src/variant/packed_arrays.cpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/src/variant/plane.cpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/src/variant/projection.cpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/src/variant/quaternion.cpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/src/variant/rect2.cpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/src/variant/rect2i.cpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/src/variant/transform2d.cpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/src/variant/transform3d.cpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/src/variant/variant.cpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/src/variant/vector2.cpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/src/variant/vector2i.cpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/src/variant/vector3.cpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/src/variant/vector3i.cpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/src/variant/vector4.cpp",
+				"C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp/src/variant/vector4i.cpp"
+			],
+			"recurse" : true
+		}
+	],
+	"inputs" : 
+	[
+		{
+			"path" : "CMakeLists.txt"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/build/CMakeFiles/3.30.3/CMakeSystem.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-3.30/Modules/CMakeSystemSpecificInitialize.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-3.30/Modules/Platform/Windows-Initialize.cmake"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/build/CMakeFiles/3.30.3/CMakeCXXCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-3.30/Modules/CMakeSystemSpecificInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-3.30/Modules/CMakeGenericSystem.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-3.30/Modules/CMakeInitializeConfigs.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-3.30/Modules/Platform/Windows.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-3.30/Modules/Platform/WindowsPaths.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-3.30/Modules/CMakeCXXInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-3.30/Modules/CMakeLanguageInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-3.30/Modules/Compiler/GNU-CXX.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-3.30/Modules/Compiler/GNU.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-3.30/Modules/Compiler/CMakeCommonCompilerMacros.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-3.30/Modules/Platform/Windows-GNU-CXX.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-3.30/Modules/Platform/Windows-GNU.cmake"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/build/CMakeFiles/3.30.3/CMakeRCCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-3.30/Modules/CMakeRCInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-3.30/Modules/Platform/Windows-windres.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-3.30/Modules/Platform/Windows-GNU-CXX-ABI.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-3.30/Modules/CMakeCommonLanguageInclude.cmake"
+		},
+		{
+			"path" : "cmake/godotcpp.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-3.30/Modules/FindPython3.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-3.30/Modules/FindPython/Support.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-3.30/Modules/FindPackageHandleStandardArgs.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-3.30/Modules/FindPackageMessage.cmake"
+		},
+		{
+			"path" : "cmake/common_compiler_flags.cmake"
+		}
+	],
+	"kind" : "cmakeFiles",
+	"paths" : 
+	{
+		"build" : "C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/build",
+		"source" : "C:/_MyFiles/Godot_v4.3-stable_win64.exe/Projects/project-engima/gdextension/godot-cpp"
+	},
+	"version" : 
+	{
+		"major" : 1,
+		"minor" : 1
+	}
+}
