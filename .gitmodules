@@ -1,3 +1,6 @@
 [submodule "gdextension"]
 	path = gdextension
 	url = https://github.com/godotengine/godot-cpp-template.git
+[submodule "addons/godot-notebook-plugin"]
+	path = addons/godot-notebook-plugin
+	url = https://github.com/BroknApples/godot-notebook-plugin.git
