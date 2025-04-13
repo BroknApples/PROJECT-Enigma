@@ -2,9 +2,9 @@
 
 **Prefixes:**
 
-Server. = Bug on the server
-Client. = Bug on the client
-Shared. = Bug on the server and the client
+Server. = Bug on the server <br>
+Client. = Bug on the client <br>
+Shared. = Bug on the server and the client <br>
 
 ## Server
 
