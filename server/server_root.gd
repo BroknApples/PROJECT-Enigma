@@ -18,15 +18,19 @@ extends Node
 #                        * Variables *                         #
 # ************************************************************ #
 
+signal player_connected(peer_id, player_info) # When a player loads up the game in multiplayer mode
+signal player_disconnected(peer_id) # When a player exits multiplayer mode
+signal server_disconnected # When the server crashes
+
 @onready var port_number_field = $"VBoxContainer/PortNumber LineEdit"
 @onready var max_clients_field = $"VBoxContainer/MaxClients LineEdit"
 @onready var play_button = $"VBoxContainer/Play Button"
 
 @export var VERSION := "alpha v1.0.0"
-var multiplayer_peer := ENetMultiplayerPeer.new()
+var e_net := ENetMultiplayerPeer.new()
 
 const PORT_HARD_CAP := 65535 ## Maximum possible port value
-var port_number := 52567 # Default port
+var port_number := 27015 # Default Port Number -- Steam Multiplayer Port
 const CLIENT_HARD_CAP := 100 ## Maximum number of clients no matter what is set by the user
 var max_clients := 12 # Default maximum client count
 
@@ -72,7 +76,7 @@ func _on_max_clients_line_edit_text_changed(new_text: String) -> void:
 
 ## Start server
 func _on_play_button_pressed() -> void:
-	multiplayer_peer.create_server(port_number, max_clients)
+	e_net.create_server(port_number, max_clients)
 
 # ************************************************************ #
 #                     * Godot Functions *                      #
