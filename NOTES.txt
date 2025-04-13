@@ -38,3 +38,51 @@
 # ************************************************************ #
 
 # -- end HEADER COMMENTS -- #
+
+
+
+
+Style Guidelines:
+	General:
+		Always use the HEADER COMMENTS above, no matter what
+	
+	Private vs Public members/functions:
+		Private:
+			Precede name with an underscore e.g.:
+				_funcName
+				_var_name
+				_CONST_NAME
+		Public:
+			The exact same as normal naming
+	
+	Variables:
+		var:
+			snake_case
+			Use shorthand explicit type declaration ':=' when possible
+		const:
+			TITLE_CASE
+			Always use explicit type declaration and not the shorthand ':=', use ': int' or ': Dictionary'
+		@export:
+			snake_case
+			Always precede with 'EXP' e.g.:
+				EXP_some_export_variable
+				EXP_health
+		signal:
+			snake_case
+			Always precede with 'SIG_' e.g.:
+				SIG_this_is_a_signal
+				SIG_add_one
+	
+	Functions:
+		camelCase()
+		NOTE: Signal functions are considered private, so precede with '_'
+	
+	Classes:
+		PascalCase
+	
+	Folders:
+		snake-case with a - instead of an _
+	
+	Files:
+		snake_case
+	

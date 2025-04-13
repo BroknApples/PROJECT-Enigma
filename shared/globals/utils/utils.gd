@@ -1,10 +1,12 @@
-extends Control
+extends Node
 
 # ************************************************************ #
 #                       * File Purpose *                       #
 # ************************************************************ #
 ## 
-## Defines the data for player profiles
+## 
+## 
+## 
 ## 
 
 # ************************************************************ #
@@ -15,14 +17,8 @@ extends Control
 #                        * Variables *                         #
 # ************************************************************ #
 
-var profile_id: int
-
 # ************************************************************ #
 #                     * Signal Functions *                     #
-# ************************************************************ #
-
-# ************************************************************ #
-#                     * Godot Functions *                      #
 # ************************************************************ #
 
 # ************************************************************ #
@@ -30,8 +26,27 @@ var profile_id: int
 # ************************************************************ #
 
 # ************************************************************ #
+#                     * Godot Functions *                      #
+# ************************************************************ #
+
+# ************************************************************ #
 #                     * Public Functions *                     #
 # ************************************************************ #
+
+## Get the current runtime of the program in milliseconds
+func getRuntime() -> int:
+	return Time.get_ticks_msec()
+
+## Get the current runtime of the program in string format
+func getRuntimeString() -> String:
+	# TODO: Format in an HH:MM:SS:MS way
+	return str(getRuntime())
+
+## Run a callable the next frame to ensure object safety
+## @param callable: Function to be deferred
+func deferCallable(callable: Callable) -> void:
+	await get_tree().process_frame
+	callable.call()
 
 # ************************************************************ #
 #                    * Unit Test Functions *                   #
