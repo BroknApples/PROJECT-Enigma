@@ -18,108 +18,87 @@ extends Node
 #                        * Variables *                         #
 # ************************************************************ #
 
-signal SIG_player_connected(peer_id, player_info) # When a player loads up the game in multiplayer mode
-signal SIG_player_disconnected(peer_id) # When a player exits multiplayer mode
-signal SIG_server_disconnected # When the server crashes
-
-@onready var port_number_field := $"VBoxContainer/PortNumber LineEdit"
-@onready var max_clients_field := $"VBoxContainer/MaxClients LineEdit"
-@onready var play_button := $"VBoxContainer/Play Button"
+@onready var play_button := $"Play Button"
 
 const VERSION: String = "alpha v1.0.0" ## Current game version of the server
-const PORT_HARD_CAP: int = 65535 ## Maximum possible port value
-const CLIENT_HARD_CAP: int = 100 ## Maximum number of clients no matter what is set by the user
+const MAXIMUM_PORT_NUMBER: int = 65535 ## Maximum possible port value
+const MAXIMUM_MAX_CLIENTS: int = 32 ## Maximum number of clients no matter what is set by the user
 
-var e_net := ENetMultiplayerPeer.new()
-var port_number := 27015 # Default Port Number -- Steam Multiplayer Port
-var max_clients := 12 # Default maximum client count
-var profile_id_counter := 0 # Ids for profiles, will read from a file for the max and increase as players are added
+const PORT_NUMBER: int = 54562 # Server Port
+const MAX_CLIENTS: int = 12 # Maximum client count
+
+var multiplayer_peer: ENetMultiplayerPeer
+var connected_profiles := {} # { PeerID : ProfileID } { int : int } | TODO: { int : Profile }
 
 # ************************************************************ #
 #                     * Signal Functions *                     #
 # ************************************************************ #
 
-## Set new port number
-func _on_port_number_line_edit_text_changed(new_text: String) -> void:
-	var formatted_text = _stringWithOnlyDigits(new_text)
-	var int_text := formatted_text.to_int()
-	
-	if (formatted_text != new_text):
-		port_number_field.text = formatted_text
-		Logger.logToTerminal("Entered invalid character in port number field.", Logger.Category.ERROR)
-	elif (int_text > PORT_HARD_CAP || int_text < 0):
-		Logger.logToTerminal("Could not set port number out of range(0, " + str(PORT_HARD_CAP) + ")", Logger.Category.ERROR)
-		play_button.disabled = true
-	else:
-		port_number = int_text
-		Logger.logToTerminal("Set port number to: " + str(port_number), Logger.Category.RUNTIME)
-		play_button.disabled = false
-		# TODO: Fix bug 'Server.1'
-
-## Set new maximum client count
-func _on_max_clients_line_edit_text_changed(new_text: String) -> void:
-	var formatted_text := _stringWithOnlyDigits(new_text)
-	var int_text := formatted_text.to_int()
-	
-	if (formatted_text != new_text):
-		max_clients_field.text = formatted_text
-		Logger.logToTerminal("Entered invalid character in max clients field.", Logger.Category.ERROR)
-	elif (int_text > CLIENT_HARD_CAP || int_text < 0):
-		Logger.logToTerminal("Could not set max clients out of range(0, " + str(CLIENT_HARD_CAP) + ")", Logger.Category.RUNTIME)
-		play_button.disabled = true
-	else:
-		max_clients = int_text
-		Logger.logToTerminal("Set maximum clients: " + str(max_clients), Logger.Category.RUNTIME)
-		play_button.disabled = false
-		# TODO: Fix bug 'Server.1'
-
-## Start server
+## Start server button pressed
 func _on_play_button_pressed() -> void:
-	# Create server
-	e_net.create_server(port_number, max_clients)
-	var id = multiplayer.get_unique_id()
-	set_multiplayer_authority(id)
+	# Cannot start server multiple times so disable button
+	play_button.disabled = true
 	
-	# Error creating server
-	if (!is_multiplayer_authority()):
-		Logger.logMsg("Could not establish Multiplayer Authority.", Logger.Category.ERROR)
-		return # Early exit due to error
-	
-	Logger.logMsg("Server Started.", Logger.Category.RUNTIME)
+	# Start server
+	_startServer()
 
 # ************************************************************ #
 #                     * Godot Functions *                      #
 # ************************************************************ #
 
+## Exit requested
+func _notification(what: int) -> void:
+	if (what == NOTIFICATION_WM_CLOSE_REQUEST):
+		Utils.exitGame()
+
 func _ready() -> void:
-	play_button.disabled = true
+	# Ensure signals are connected
+	play_button.pressed.connect(Callable(self, "_on_play_button_pressed"))
 
 # ************************************************************ #
 #                    * Private Functions *                     #
 # ************************************************************ #
 
-
-
-func _stringWithOnlyDigits(str: String) -> String:
-	var length = str.length()
-	if length == 0: return "" # Empty text
+## Start game server
+func _startServer() -> void:
+	# Ensure Developer did not put an invalid port number of maximum clients
+	if (PORT_NUMBER > MAXIMUM_PORT_NUMBER):
+		Logger.logMsg("Port number out of range (0-" + str(MAXIMUM_PORT_NUMBER) + ").", Logger.Category.ERROR)
+		return
+	if (MAX_CLIENTS > MAXIMUM_MAX_CLIENTS):
+		Logger.logMsg("Maximum Clients out of range (0-" + str(MAXIMUM_MAX_CLIENTS) + ").", Logger.Category.ERROR)
+		return
 	
-	# Stop user from inputting anything other than numbers
-	for i in range(length):
-		if (str[i].to_int() == 0 && str[i] != '0'):
-			return str.substr(0, i) + str.substr(i + 1, length)
+	# Create server
+	multiplayer_peer = ENetMultiplayerPeer.new()
+	var result = multiplayer_peer.create_server(PORT_NUMBER, MAX_CLIENTS)
 	
-	return str
+	# Error creating server
+	if (result != OK):
+		Logger.logMsg("Could not start server.", Logger.Category.ERROR)
+		return # Early exit due to error
+	
+	multiplayer.multiplayer_peer = multiplayer_peer
+	self.set_multiplayer_authority(Utils.SERVER_RPC_ID)
+	multiplayer.peer_connected.connect(Callable(self, "onPeerConnected"))
+	multiplayer.peer_disconnected.connect(Callable(self, "onPeerDisconnected"))
+	Logger.logMsg("Server started.", Logger.Category.RUNTIME)
 
 # ************************************************************ #
 #                     * Public Functions *                     #
 # ************************************************************ #
 
-func addNewlyConnectedProfile(profile_id: int) -> void:
-	pass
+@rpc("any_peer", "call_local", "reliable")
+func recieveProfileId(profile_id: int) -> void:
+	var peer_id := multiplayer.get_remote_sender_id()
+	connected_profiles[peer_id] = profile_id
+	Logger.logMsg("Received profile ID from peer %d: %s" % [peer_id, profile_id], Logger.Category.RUNTIME)
+	print("Received profile ID from peer %d: %s" % [peer_id, profile_id])
 
-func addPreviouslyConnectedProfile(profile_id: int) -> void:
-	pass
+	# Confirm server recieved connection to client
+	rpc_id(peer_id, "confirmProfileReceived", profile_id)
+
+@rpc("authority", "call_local", "reliable") func confirmProfileRecieved(recieved_id: int) -> void: pass
 
 # ************************************************************ #
 #                    * Unit Test Functions *                   #

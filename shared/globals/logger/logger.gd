@@ -25,6 +25,12 @@ enum Category {
 
 const LOG_FILE_PATH: String = "user://logs/log.txt"
 
+## Queued data to be printed to the terminal
+var terminal_buffer: Array[String] = []
+
+## Queued data to be printed to the log file
+var file_buffer: Array[String] = []
+
 # ************************************************************ #
 #                     * Signal Functions *                     #
 # ************************************************************ #
@@ -46,44 +52,94 @@ func _getCategoryHeader(category: Category) -> String:
 		_: # Default
 			return "[LOGGER]"
 
+## Get a message in the proper format
+## @param msg: String to format
+## @param category: Category to preface with
+func _getFormattedMsg(msg: String, category: Category) -> String:
+	const CATEGORY_HEADER_WHITESPACE: int = 11 # Whitespace areound category
+	
+	var formatted_msg := Utils.TimePoint.new().getTimeString(true)
+	var category_str := _getCategoryHeader(category)
+	formatted_msg += category_str
+	formatted_msg += " ".repeat(CATEGORY_HEADER_WHITESPACE - category_str.length())
+	formatted_msg += msg
+	
+	return formatted_msg
+
+## Write log message ONLY in the terminal
+## @param msg: Message to print
+func _logToTerminal(msg: String) -> void:
+	print(msg)
+
+## Write log message ONLY in the log file
+## @param msg: Message to print
+func _logToFile(msg: String) -> void:
+	# TODO: Implement
+	pass
+
 # ************************************************************ #
 #                     * Godot Functions *                      #
 # ************************************************************ #
+
+func _ready() -> void:
+	# Flush buffers every 5 seconds
+	EventScheduler.push(Callable(self, "flushBuffers"), EventScheduler.TimeSlice.FIVE_SECONDS)
 
 # ************************************************************ #
 #                     * Public Functions *                     #
 # ************************************************************ #
 
-## Log some data to the terminal AND the log file
+## Adds msg to terminal AND file log queue
+## @param msg: Message to print
+## @param category: Category to print it in
 func logMsg(msg: String, category: Category) -> void:
 	logToTerminal(msg, category)
 	logToFile(msg, category)
 
-## Write log message ONLY in the terminal
-func logToTerminal(msg: String, category: Category) -> void:
-	# Print to terminal with format:
-	# <timestamp> <category> <message>
-	# TODO: Get current runtime as well
-	var formatted_msg := _getCategoryHeader(category) + " " + msg
-	print(formatted_msg)
-
-## Write log message ONLY in the log file
+## Adds msg to terminal log queue
 ## @param msg: Message to print
 ## @param category: Category to print it in
-## @param timestamp_whitespace: How much whitespace in the the timestamp section of the message
+func logToTerminal(msg: String, category: Category) -> void:
+	# Print to terminal with format:
+	# <<timestamp>:> <category> <message>
+	var formatted_msg = _getFormattedMsg(msg, category)
+	terminal_buffer.push_back(formatted_msg)
+
+## Adds msg to file log queue
+## @param msg: Message to print
+## @param category: Category to print it in
 # TODO: Eventually make it so it writes in the specific category in the log file every 10 seconds.
 # going to have to use a _process function with the utils.gd EventScheduler variable
-func logToFile(msg: String, category: Category, timestamp_whitespace: int = 5) -> void:
+func logToFile(msg: String, category: Category) -> void:
 	# Print to file with format:
-	# <category>
-	# <timestamp> <some whitespace> | <message>
-	# ...
-	# ...
-	# <category>
-	
-	# TODO: Implement
-	print("logging to file.")
-	
+	# <<timestamp>:> <category> <message>
+	var formatted_msg = _getFormattedMsg(msg, category)
+	file_buffer.push_back(formatted_msg)
+
+## NOTE: Typically only called by the EventScheduler
+## Flushes both the terminal and file buffer
+func flushBuffers() -> void:
+	flushTerminalBuffer()
+	flushFileBuffer()
+
+## NOTE: Typically only called by the EventScheduler
+## Print everything in the terminal buffer
+func flushTerminalBuffer() -> void:
+	var terminal_str := ""
+	while !terminal_buffer.is_empty():
+		terminal_str += terminal_buffer.pop_front()
+		terminal_str += '\n'
+	_logToTerminal(terminal_str)
+
+## NOTE: Typically only called by the EventScheduler
+## Write everything in the file buffer
+func flushFileBuffer() -> void:
+	var file_str := ""
+	while !file_buffer.is_empty():
+		file_str += file_buffer.pop_front()
+		file_str += '\n'
+	_logToFile(file_str)
+
 # ************************************************************ #
 #                    * Unit Test Functions *                   #
 # ************************************************************ #
