@@ -40,33 +40,33 @@ class TimeSlice:
 ## Holds the events that will be called at any given time slice
 ## { int : Array[object/class] }
 var scheduler := {
-	TimeSlice.ONE_HUNDRED_MILLISECONDS: 		[],
+	TimeSlice.ONE_HUNDRED_MILLISECONDS: 	[],
 	TimeSlice.FIVE_HUNDRED_MILLISECONDS: 	[],
 	TimeSlice.ONE_SECOND: 					[],
-	TimeSlice.FIVE_SECONDS: 					[],
+	TimeSlice.FIVE_SECONDS: 				[],
 	TimeSlice.TEN_SECONDS: 					[],
 	TimeSlice.THIRTY_SECONDS: 				[],
 	TimeSlice.ONE_MINUTE: 					[], 
-	TimeSlice.FIVE_MINUTES: 					[],
+	TimeSlice.FIVE_MINUTES: 				[],
 	TimeSlice.TEN_MINUTES: 					[],
 	TimeSlice.THIRTY_MINUTES: 				[],
-	TimeSlice.ONE_HOUR: 						[]
+	TimeSlice.ONE_HOUR: 					[]
 }
 
 ## Time until the next processing event for each time slice
 ## { int : float }
 var time_until_execution := {
-	TimeSlice.ONE_HUNDRED_MILLISECONDS: 		TimeSlice.ONE_HUNDRED_MILLISECONDS,
+	TimeSlice.ONE_HUNDRED_MILLISECONDS: 	TimeSlice.ONE_HUNDRED_MILLISECONDS,
 	TimeSlice.FIVE_HUNDRED_MILLISECONDS: 	TimeSlice.FIVE_HUNDRED_MILLISECONDS,
 	TimeSlice.ONE_SECOND: 					TimeSlice.ONE_SECOND,
-	TimeSlice.FIVE_SECONDS: 					TimeSlice.FIVE_SECONDS,
+	TimeSlice.FIVE_SECONDS: 				TimeSlice.FIVE_SECONDS,
 	TimeSlice.TEN_SECONDS: 					TimeSlice.TEN_SECONDS,
 	TimeSlice.THIRTY_SECONDS: 				TimeSlice.THIRTY_SECONDS,
 	TimeSlice.ONE_MINUTE: 					TimeSlice.ONE_MINUTE, 
-	TimeSlice.FIVE_MINUTES: 					TimeSlice.FIVE_MINUTES,
+	TimeSlice.FIVE_MINUTES: 				TimeSlice.FIVE_MINUTES,
 	TimeSlice.TEN_MINUTES: 					TimeSlice.TEN_MINUTES,
 	TimeSlice.THIRTY_MINUTES: 				TimeSlice.THIRTY_MINUTES,
-	TimeSlice.ONE_HOUR: 						TimeSlice.ONE_HOUR
+	TimeSlice.ONE_HOUR: 					TimeSlice.ONE_HOUR
 }
 
 # ************************************************************ #
@@ -83,6 +83,13 @@ var time_until_execution := {
 func _getMetadataKey(callable: Callable) -> String:
 	var key := "callable_" + str(callable.get_object().get_instance_id()) + "_" + callable.get_method()
 	return key
+
+## Set metadata for an event
+## @param callable: Callable function to get string of
+## @param time_slice: Time slice to run event in
+## @param recurring: Callable function to get string of
+func _setEventMetadata(callable: Callable, time_slice: float, recurring: bool) -> void:
+	self.set_meta(_getMetadataKey(callable), [time_slice, recurring])
 
 # ************************************************************ #
 #                     * Godot Functions *                      #
@@ -104,11 +111,17 @@ func _process(delta: float) -> void:
 		if (time_until_execution[time_key] > 0.0): continue
 		
 		# Process events
+		var remove_key := false
 		for callable in scheduler[time_key]:
 			# Invalid callable
 			if (callable == null || !callable.is_valid()):
 				Logger.logMsg("Attempted to call a 'Callable' that is not valid", Logger.Category.RUNTIME)
 				continue
+			
+			# If the callable is a one-time event, remove the key when done
+			# Remember metadata format: { CallableString : [TimeSlice, IsRecurringEvent] }
+			if (!self.get_meta(_getMetadataKey(callable))[1]):
+				remove_key = true
 			
 			# Call function next frame to ensure object safety
 			#
@@ -118,11 +131,16 @@ func _process(delta: float) -> void:
 			# singleDefer or blockDefer
 			Utils.deferCallable(callable)
 		
-		# Reset time until next processing
-		# NOTE: Uses ' = time_key' instead of ' += time_key'  to ensure 
-		# consistency using a more technically time accurate formula
-		# would add some micro-stutters to execution
-		time_until_execution[time_key] = time_key
+		if (remove_key):
+			# Remove Time slice for one-time events
+			scheduler.erase(time_key)
+			time_until_execution.erase(time_key)
+		else:
+			# Reset time until next processing
+			# NOTE: Uses ' = time_key' instead of ' += time_key'  to ensure 
+			# consistency using a more technically time accurate formula
+			# would add some micro-stutters to execution
+			time_until_execution[time_key] = time_key
 
 # ************************************************************ #
 #                     * Public Functions *                     #
@@ -131,12 +149,25 @@ func _process(delta: float) -> void:
 # TODO: MAY CHANGE CALLABLE TO A VARIANT VARIABLE THAT WILL ALWAYS BE THE CLASS THAT CAN CALL SOME FUNCTION
 # IT MAY BE NAMED: processTimeSliceEvents
 
-## Add item to event scheduler
+## Add item to event scheduler to run until it is removed from the scheduler
 ## @param callable: Function to call
-## @param time_slice: Which time slice to add it in
-func push(callable: Callable, time_slice: int) -> void:
+## @param time_slice: Which time slice to add it in | NOTE: Time Slice MUST be a predefined slice
+func pushRecurringEvent(callable: Callable, time_slice: int) -> void:
+	# User inputted invalid time slice
+	if (time_slice not in time_until_execution):
+		Logger.logMsg("Cannot set reccurring event. Please use a valid Time Slice.", Logger.Category.ERROR)
+		return
+	
 	scheduler[time_slice].push_back(callable)
-	self.set_meta(_getMetadataKey(callable), time_slice)
+	_setEventMetadata(callable, time_slice, true)
+
+## Add item to event scheduler to run ONE time
+## @param callable: Function to call
+## @param time_slice: When to run event (in milliseconds) | NOTE: Time Slice can be ANY number of time
+func pushOneTimeEvent(callable: Callable, time_slice: int) -> void:
+	scheduler[time_slice].push_back(callable)
+	time_until_execution[time_slice].push_back(time_slice)
+	_setEventMetadata(callable, time_slice, false)
 
 ## Remove item from event scheduler
 ## @param callable: Callable function to remove

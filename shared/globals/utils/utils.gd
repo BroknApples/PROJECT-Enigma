@@ -14,6 +14,11 @@ extends Node
 # ************************************************************ #
 
 ## The TimePoint Class defines a a given point in the runtime of the game
+## 
+## Usage:
+## var time_point = TimePoint.new()       # -> Gets the current time when creating new object
+## time_point.setToCurrentRuntime()       # -> Sets an existing TimePoint variable to the current runtime
+## var runtime_ms = Utils.TimePoint.now() # -> Gets the current runtime of the entire program in milliseconds
 class TimePoint:
 	const _MILLISECONDS_PER_HOUR: int = 3_600_000
 	const _MILLISECONDS_PER_MINUTE: int = 60_000
@@ -24,6 +29,7 @@ class TimePoint:
 	var _seconds: int
 	var _milliseconds: int
 	
+	## Initialize new object with current time
 	func _init() -> void:
 		_format(Utils.TimePoint.now())
 	
@@ -32,14 +38,13 @@ class TimePoint:
 		# Idea is to repeatedly remove 1 hour until milliseconds is less
 		# than an hours, then do the same for minutes, and seconds
 		# then just assingn the leftover to milliseconds
-		
-		while(milliseconds > _MILLISECONDS_PER_HOUR):
+		while(milliseconds >= _MILLISECONDS_PER_HOUR):
 			milliseconds -= _MILLISECONDS_PER_HOUR
 			_hours += 1
-		while(milliseconds > _MILLISECONDS_PER_MINUTE):
+		while(milliseconds >= _MILLISECONDS_PER_MINUTE):
 			milliseconds -= _MILLISECONDS_PER_MINUTE
 			_minutes += 1
-		while(milliseconds > _MILLISECONDS_PER_SECOND):
+		while(milliseconds >= _MILLISECONDS_PER_SECOND):
 			milliseconds -= _MILLISECONDS_PER_SECOND
 			_seconds += 1
 		_milliseconds = milliseconds
@@ -47,6 +52,10 @@ class TimePoint:
 	## Get current time in milliseconds
 	static func now() -> int:
 		return Time.get_ticks_msec()
+	
+	## Set the current TimePoint object to the current runtime
+	func setToCurrentRuntime() -> void:
+		_format(Utils.TimePoint.now())
 	
 	## Get array of integers that defines the current time
 	## Formatted: [Hours, Minutes, Seconds, Milliseconds]
@@ -93,8 +102,6 @@ class Pair:
 #                        * Variables *                         #
 # ************************************************************ #
 
-const SERVER_RPC_ID: int = 1 # Server @rpc ID should always be 1
-
 # ************************************************************ #
 #                     * Signal Functions *                     #
 # ************************************************************ #
@@ -107,6 +114,11 @@ const SERVER_RPC_ID: int = 1 # Server @rpc ID should always be 1
 #                     * Godot Functions *                      #
 # ************************************************************ #
 
+## Exit requested
+func _notification(what: int) -> void:
+	if (what == NOTIFICATION_WM_CLOSE_REQUEST):
+		Utils.exitGame()
+
 # ************************************************************ #
 #                     * Public Functions *                     #
 # ************************************************************ #
@@ -114,7 +126,7 @@ const SERVER_RPC_ID: int = 1 # Server @rpc ID should always be 1
 ## Exit game, flush logger first
 func exitGame() -> void:
 	Logger.flushBuffers()
-	get_tree().exit()
+	get_tree().quit()
 
 func secondsToMilliseconds(seconds: float) -> float:
 	return seconds * 1000.0

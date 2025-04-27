@@ -1,17 +1,17 @@
 [gd_scene load_steps=3 format=3 uid="uid://be42se8hdchfr"]
 
-[ext_resource type="Script" path="res://server/server_root.gd" id="1_ajlef"]
+[ext_resource type="Script" path="res://server/game_root.gd" id="1_q0l7x"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_b52kk"]
 
-[node name="ServerRoot" type="Control"]
+[node name="GameRoot" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_ajlef")
+script = ExtResource("1_q0l7x")
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
 

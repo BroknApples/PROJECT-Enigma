@@ -20,13 +20,6 @@ extends Node
 
 @onready var play_button := $"Play Button"
 
-const VERSION: String = "alpha v1.0.0" ## Current game version of the server
-const MAXIMUM_PORT_NUMBER: int = 65535 ## Maximum possible port value
-const MAXIMUM_MAX_CLIENTS: int = 32 ## Maximum number of clients no matter what is set by the user
-
-const PORT_NUMBER: int = 54562 # Server Port
-const MAX_CLIENTS: int = 12 # Maximum client count
-
 var multiplayer_peer: ENetMultiplayerPeer
 var connected_profiles := {} # { PeerID : ProfileID } { int : int } | TODO: { int : Profile }
 
@@ -46,12 +39,13 @@ func _on_play_button_pressed() -> void:
 #                     * Godot Functions *                      #
 # ************************************************************ #
 
-## Exit requested
-func _notification(what: int) -> void:
-	if (what == NOTIFICATION_WM_CLOSE_REQUEST):
-		Utils.exitGame()
-
 func _ready() -> void:
+	# TESTING
+	Settings.setWindowSize(Vector2i(1760, 990))
+	Logger.logMsg("Resized Window: " + str(Settings.getWindowSize()), Logger.Category.DEBUG)
+	Settings.window.position += Vector2i(80, 60)
+	# TESTING
+	
 	# Ensure signals are connected
 	play_button.pressed.connect(Callable(self, "_on_play_button_pressed"))
 
@@ -61,17 +55,17 @@ func _ready() -> void:
 
 ## Start game server
 func _startServer() -> void:
-	# Ensure Developer did not put an invalid port number of maximum clients
-	if (PORT_NUMBER > MAXIMUM_PORT_NUMBER):
-		Logger.logMsg("Port number out of range (0-" + str(MAXIMUM_PORT_NUMBER) + ").", Logger.Category.ERROR)
+	# Ensure Developer did not input an invalid port number or maximum clients variable
+	if (GameData.SERVER_PORT_NUMBER > GameData.SERVER_MAXIMUM_PORT_NUMBER):
+		Logger.logMsg("Port number out of range (0-" + str(GameData.SERVER_MAXIMUM_PORT_NUMBER) + ").", Logger.Category.ERROR)
 		return
-	if (MAX_CLIENTS > MAXIMUM_MAX_CLIENTS):
-		Logger.logMsg("Maximum Clients out of range (0-" + str(MAXIMUM_MAX_CLIENTS) + ").", Logger.Category.ERROR)
+	if (GameData.SERVER_MAX_CLIENTS > GameData.SERVER_MAXIMUM_MAX_CLIENTS):
+		Logger.logMsg("Maximum Clients out of range (0-" + str(GameData.SERVER_MAXIMUM_MAX_CLIENTS) + ").", Logger.Category.ERROR)
 		return
 	
 	# Create server
 	multiplayer_peer = ENetMultiplayerPeer.new()
-	var result = multiplayer_peer.create_server(PORT_NUMBER, MAX_CLIENTS)
+	var result = multiplayer_peer.create_server(GameData.SERVER_PORT_NUMBER, GameData.SERVER_MAX_CLIENTS)
 	
 	# Error creating server
 	if (result != OK):
@@ -96,9 +90,10 @@ func recieveProfileId(profile_id: int) -> void:
 	print("Received profile ID from peer %d: %s" % [peer_id, profile_id])
 
 	# Confirm server recieved connection to client
-	rpc_id(peer_id, "confirmProfileReceived", profile_id)
+	confirmProfileRecieved.rpc_id(peer_id, profile_id)
 
-@rpc("authority", "call_local", "reliable") func confirmProfileRecieved(recieved_id: int) -> void: pass
+@rpc("authority", "call_local", "reliable")
+func confirmProfileRecieved(recieved_id: int) -> void: pass
 
 # ************************************************************ #
 #                    * Unit Test Functions *                   #
