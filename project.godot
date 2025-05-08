@@ -17,12 +17,21 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+<<<<<<< HEAD
 Utils="*res://src/globals/utils/utils.gd"
 EventScheduler="*res://src/globals/event-scheduler/event_scheduler.gd"
 Logger="*res://src/globals/logger/logger.gd"
 AssetManager="*res://src/globals/asset-manager/asset_manager.gd"
 Settings="*res://src/globals/settings/settings.tscn"
 ProfileData="*res://src/globals/profile-data/profile_data.gd"
+=======
+Utils="*res://shared/globals/utils/utils.gd"
+GameData="*res://shared/globals/game-data/game_data.gd"
+EventScheduler="*res://shared/globals/event-scheduler/event_scheduler.gd"
+Logger="*res://shared/globals/logger/logger.gd"
+Settings="*res://client/globals/settings/settings.tscn"
+ProfileData="*res://shared/globals/profile-data/profile_data.gd"
+>>>>>>> 7fe8d9772c1024ad32ab2d02b0a58214eda3892e
 
 [display]
 

@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://dd0k0f2v01fgq"]
+
+[ext_resource type="Script" path="res://shared/characters/character_type.gd" id="1_iq4vv"]
+
+[node name="CharacterType" type="Node3D"]
+script = ExtResource("1_iq4vv")
+
+[node name="CharacterBody3D" type="CharacterBody3D" parent="."]
+
+[node name="Camera3D" type="Camera3D" parent="CharacterBody3D"]
+
+[node name="Colliders" type="Node3D" parent="CharacterBody3D"]

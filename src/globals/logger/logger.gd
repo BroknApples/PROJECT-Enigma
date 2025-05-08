@@ -83,7 +83,7 @@ func _logToFile(msg: String) -> void:
 
 func _ready() -> void:
 	# Flush buffers every 5 seconds
-	EventScheduler.push(Callable(self, "flushBuffers"), EventScheduler.TimeSlice.FIVE_SECONDS)
+	EventScheduler.pushRecurringEvent(Callable(self, "flushBuffers"), EventScheduler.TimeSlice.FIVE_SECONDS)
 
 # ************************************************************ #
 #                     * Public Functions *                     #
