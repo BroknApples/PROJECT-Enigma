@@ -60,19 +60,19 @@ class TimePoint:
 		const STRING_WIDTH: int = 15 # How wide will the string be at a minimum
 		
 		# Get string
-		var str: String
-		if (decorations): str += "<"
-		str += str(_hours) + ":"
-		str += str(_minutes).pad_zeros(2) + ":"
-		str += str(_seconds).pad_zeros(2) + ":"
-		str += str(_milliseconds).pad_zeros(3)
-		if (decorations): str += ">"
+		var string := ""
+		if (decorations): string += "<"
+		string += str(_hours) + ":"
+		string += str(_minutes).pad_zeros(2) + ":"
+		string += str(_seconds).pad_zeros(2) + ":"
+		string += str(_milliseconds).pad_zeros(3)
+		if (decorations): string += ">"
 		
 		# Fill with air
-		if (decorations): str += " ".repeat(2) # Fill with two more air chars if decorations are on
-		str += " ".repeat(STRING_WIDTH - str.length()) # Fill with air
+		if (decorations): string += " ".repeat(2) # Fill with two more air chars if decorations are on
+		string += " ".repeat(STRING_WIDTH - string.length()) # Fill with air
 		
-		return str
+		return string
 	
 	func getHours() -> int: return _hours
 	func getMinutes() -> int: return _minutes

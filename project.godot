@@ -11,17 +11,18 @@ config_version=5
 [application]
 
 config/name="PROJECT Engima"
-run/main_scene="res://shared/developer_scene.tscn"
+run/main_scene="res://src/game_root.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
-Utils="*res://shared/globals/utils/utils.gd"
-EventScheduler="*res://shared/globals/event-scheduler/event_scheduler.gd"
-Logger="*res://shared/globals/logger/logger.gd"
-Settings="*res://client/globals/settings/settings.tscn"
-ProfileData="*res://shared/globals/profile-data/profile_data.gd"
+Utils="*res://src/globals/utils/utils.gd"
+EventScheduler="*res://src/globals/event-scheduler/event_scheduler.gd"
+Logger="*res://src/globals/logger/logger.gd"
+AssetManager="*res://src/globals/asset-manager/asset_manager.gd"
+Settings="*res://src/globals/settings/settings.tscn"
+ProfileData="*res://src/globals/profile-data/profile_data.gd"
 
 [display]
 

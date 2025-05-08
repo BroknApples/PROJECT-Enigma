@@ -1,12 +1,14 @@
-# -- beg HEADER COMMENTS -- #
+extends Control
 
 # ************************************************************ #
 #                       * File Purpose *                       #
 # ************************************************************ #
 ## 
+## GameRoot
 ## 
-## 
-## 
+## Entry point of the game, load assets and stuff
+## TODO: Possibly check version to confirm you have updated to
+## the latest release
 ## 
 
 # ************************************************************ #
@@ -16,6 +18,8 @@
 # ************************************************************ #
 #                        * Variables *                         #
 # ************************************************************ #
+
+const LOBBY_SCENE_PATH: String = "res://src/lobby_scene/lobby.tscn"
 
 # ************************************************************ #
 #                     * Signal Functions *                     #
@@ -29,60 +33,19 @@
 #                     * Godot Functions *                      #
 # ************************************************************ #
 
+## Call a deferred function that loads the game up
+func _ready() -> void:
+	call_deferred("loadGame")
+
 # ************************************************************ #
 #                     * Public Functions *                     #
 # ************************************************************ #
 
+## Load the game up. Loads assets then finally swaps scene to the lobby
+func loadGame() -> void:
+	AssetManager.loadAssets()
+	get_tree().change_scene_to_file(LOBBY_SCENE_PATH)
+
 # ************************************************************ #
 #                    * Unit Test Functions *                   #
 # ************************************************************ #
-
-# -- end HEADER COMMENTS -- #
-
-
-
-
-Style Guidelines:
-	General:
-		Always use the HEADER COMMENTS above, no matter what
-	
-	Private vs Public members/functions:
-		Private:
-			Precede name with an underscore e.g.:
-				_funcName
-				_var_name
-				_CONST_NAME
-		Public:
-			The exact same as normal naming
-	
-	Variables:
-		var:
-			snake_case
-			Use shorthand explicit type declaration ':=' when possible
-		const:
-			TITLE_CASE
-			Always use explicit type declaration and not the shorthand ':=', use ': int' or ': Dictionary'
-		@export:
-			snake_case
-			Always precede with 'EXP_' e.g.:
-				EXP_some_export_variable
-				EXP_health
-		signal:
-			snake_case
-			Always precede with 'SIG_' e.g.:
-				SIG_this_is_a_signal
-				SIG_add_one
-	
-	Functions:
-		camelCase()
-		NOTE: Signal functions are considered private, so precede with '_'
-	
-	Classes:
-		PascalCase
-	
-	Folders:
-		snake-case with a - instead of an _
-	
-	Files:
-		snake_case
-	

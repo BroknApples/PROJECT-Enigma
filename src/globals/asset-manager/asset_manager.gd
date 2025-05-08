@@ -1,21 +1,38 @@
-# -- beg HEADER COMMENTS -- #
+extends Node
 
 # ************************************************************ #
 #                       * File Purpose *                       #
 # ************************************************************ #
 ## 
+## AssetManager
 ## 
-## 
-## 
+## Defines all important or very large assets 
+## used within the game
 ## 
 
 # ************************************************************ #
 #                     * Enums & Classes *                      #
 # ************************************************************ #
 
+## Defines all assets as StringName types
+class AssetNames:
+	# const someVar: StringName = &"some_name"
+	pass
+
 # ************************************************************ #
 #                        * Variables *                         #
 # ************************************************************ #
+
+signal SIG_loaded_asset(asset_name: StringName, index: int)
+
+## List of all assets
+var assets: Dictionary = {
+	# List assets here
+	# { &"AssetName" : &"AssetPath" }
+}
+
+## How many assets are the in total to load
+var total_assets = assets.size()
 
 # ************************************************************ #
 #                     * Signal Functions *                     #
@@ -29,6 +46,36 @@
 #                     * Godot Functions *                      #
 # ************************************************************ #
 
+## Loads important and large assets into the AssetManager singleton
+func loadAssets() -> void:
+	Logger.logMsg("Loading Assets...", Logger.Category.RUNTIME)
+	
+	# Used to signal percetages of the loading
+	var i = 0
+	var size := assets.size()
+	for key in assets.keys():
+		# Get path and load instance if its a scene
+		var path: StringName = assets[key]
+		assets[key] = load(path).instantiate()
+		
+		i += 1
+		SIG_loaded_asset.emit(key, i)
+	
+	Logger.logMsg("Assets Fully Loaded.", Logger.Category.RUNTIME)
+
+## Get a loaded asset
+## @param asset_name: StringName of the asset
+func getAsset(asset_name: StringName) -> Variant:
+	var asset = assets.get(asset_name)
+	
+	## Asset hasn't yet been loaded if it's 
+	## still a StringName type
+	if (asset is StringName):
+		return null
+	
+	## Even if asset is null, it'll still return the proper value null
+	return asset
+
 # ************************************************************ #
 #                     * Public Functions *                     #
 # ************************************************************ #
@@ -36,53 +83,3 @@
 # ************************************************************ #
 #                    * Unit Test Functions *                   #
 # ************************************************************ #
-
-# -- end HEADER COMMENTS -- #
-
-
-
-
-Style Guidelines:
-	General:
-		Always use the HEADER COMMENTS above, no matter what
-	
-	Private vs Public members/functions:
-		Private:
-			Precede name with an underscore e.g.:
-				_funcName
-				_var_name
-				_CONST_NAME
-		Public:
-			The exact same as normal naming
-	
-	Variables:
-		var:
-			snake_case
-			Use shorthand explicit type declaration ':=' when possible
-		const:
-			TITLE_CASE
-			Always use explicit type declaration and not the shorthand ':=', use ': int' or ': Dictionary'
-		@export:
-			snake_case
-			Always precede with 'EXP_' e.g.:
-				EXP_some_export_variable
-				EXP_health
-		signal:
-			snake_case
-			Always precede with 'SIG_' e.g.:
-				SIG_this_is_a_signal
-				SIG_add_one
-	
-	Functions:
-		camelCase()
-		NOTE: Signal functions are considered private, so precede with '_'
-	
-	Classes:
-		PascalCase
-	
-	Folders:
-		snake-case with a - instead of an _
-	
-	Files:
-		snake_case
-	
