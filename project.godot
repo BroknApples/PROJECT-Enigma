@@ -10,47 +10,26 @@ config_version=5
 
 [application]
 
-config/name="PROJECT Engima"
+config/name="Project Enigma"
 run/main_scene="res://src/game_root.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://icon.svg"
+run/size/viewport_height=1080
+run/size/viewport_width=1920
 
 [autoload]
 
-<<<<<<< HEAD
-Utils="*res://src/globals/utils/utils.gd"
-EventScheduler="*res://src/globals/event-scheduler/event_scheduler.gd"
-Logger="*res://src/globals/logger/logger.gd"
-AssetManager="*res://src/globals/asset-manager/asset_manager.gd"
+LaunchOptions="*res://src/globals/launch-options/launch_options.tscn"
+Clock="*res://src/globals/clock/clock.tscn"
+Utils="*res://src/globals/utils/utils.tscn"
+Logger="*res://src/globals/logger/logger.tscn"
+EventScheduler="*res://src/globals/event-scheduler/event_scheduler.tscn"
 Settings="*res://src/globals/settings/settings.tscn"
-ProfileData="*res://src/globals/profile-data/profile_data.gd"
-=======
-Utils="*res://shared/globals/utils/utils.gd"
-GameData="*res://shared/globals/game-data/game_data.gd"
-EventScheduler="*res://shared/globals/event-scheduler/event_scheduler.gd"
-Logger="*res://shared/globals/logger/logger.gd"
-Settings="*res://client/globals/settings/settings.tscn"
-ProfileData="*res://shared/globals/profile-data/profile_data.gd"
->>>>>>> 7fe8d9772c1024ad32ab2d02b0a58214eda3892e
+P2PNetworking="*res://src/globals/networking/p2p_networking.tscn"
+AssetManager="*res://src/globals/assset-manager/asset_manager.tscn"
+UserProfile="*res://src/globals/user-profile/user-profile.tscn"
 
 [display]
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
-window/stretch/mode="canvas_items"
-window/stretch/aspect="expand"
-window/vsync/vsync_mode=0
-
-[editor]
-
-version_control/plugin_name="GitPlugin"
-version_control/autoload_on_startup=true
-
-[editor_plugins]
-
-enabled=PackedStringArray("res://addons/godot-notebook-plugin/plugin.cfg")
-
-[physics]
-
-3d/main_scene="res://client/client_root.tscn"
-3d/vsync/vsync_mode=0

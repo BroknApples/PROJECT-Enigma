@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bf416tn4l1vwb"]
+
+[ext_resource type="Script" path="res://src/globals/launch-options/launch_options.gd" id="1_5f1kl"]
+
+[node name="LaunchOptions" type="Node"]
+script = ExtResource("1_5f1kl")

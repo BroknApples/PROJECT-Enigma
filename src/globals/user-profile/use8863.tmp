@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://b3pl1f5o0frdf"]
+
+[ext_resource type="Script" path="res://src/globals/user-profile/user-profile.gd" id="1_5drou"]
+
+[node name="UserData" type="Node"]
+script = ExtResource("1_5drou")

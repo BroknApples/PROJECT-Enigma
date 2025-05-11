@@ -4,7 +4,7 @@ extends Node
 #                       * File Purpose *                       #
 # ************************************************************ #
 ## 
-## Logger
+## Logger Singleton
 ## 
 ## Log data in a nice format to the terminal, file, or both
 ## 
@@ -17,13 +17,18 @@ enum Category {
 	ERROR,
 	DEBUG,
 	RUNTIME,
+	NETWORK,
 }
 
 # ************************************************************ #
 #                        * Variables *                         #
 # ************************************************************ #
 
-const LOG_FILE_PATH: String = "user://logs/log.txt"
+const RELEASE_LOG_FILE_PATH: StringName = &"user://logs"  ## Log file's folder used in release builds
+const DEVELOPMENT_LOG_FILE_PATH: StringName = &"res://test-logs" ## Log file's folder used in development builds
+const LOG_FILE_BASENAME: StringName = &"log" ## Basename of the log file
+const LOG_FILE_EXTENSION: StringName = &".txt" ## File extension of the log file
+var log_file_path: String = "" ## Actual path used in the program
 
 ## Queued data to be printed to the terminal
 var terminal_buffer: Array[String] = []
@@ -49,6 +54,8 @@ func _getCategoryHeader(category: Category) -> String:
 			return "[DEBUG]"
 		Category.RUNTIME:
 			return "[RUNTIME]"
+		Category.NETWORK:
+			return "[NETWORK]"
 		_: # Default
 			return "[LOGGER]"
 
@@ -58,7 +65,7 @@ func _getCategoryHeader(category: Category) -> String:
 func _getFormattedMsg(msg: String, category: Category) -> String:
 	const CATEGORY_HEADER_WHITESPACE: int = 11 # Whitespace areound category
 	
-	var formatted_msg := Utils.TimePoint.new().getTimeString(true)
+	var formatted_msg := Clock.TimePoint.new().getTimeString(true)
 	var category_str := _getCategoryHeader(category)
 	formatted_msg += category_str
 	formatted_msg += " ".repeat(CATEGORY_HEADER_WHITESPACE - category_str.length())
@@ -74,15 +81,34 @@ func _logToTerminal(msg: String) -> void:
 ## Write log message ONLY in the log file
 ## @param msg: Message to print
 func _logToFile(msg: String) -> void:
-	# TODO: Implement
-	pass
+	Utils.writeToFile(log_file_path, msg, true)
 
 # ************************************************************ #
 #                     * Godot Functions *                      #
 # ************************************************************ #
 
 func _ready() -> void:
-	# Flush buffers every 5 seconds
+	# Get log file path from cmd line arguments
+	if (LaunchOptions.getKey(LaunchOptions.Keys.BUILD_TYPE) == LaunchOptions.BuildTypes.RELEASE):
+		# Release build, so use real log file path
+		log_file_path = RELEASE_LOG_FILE_PATH + "/" + LOG_FILE_BASENAME + LaunchOptions.getKey(LaunchOptions.Keys.INSTANCE_NUMBER)
+		
+		# If the log file folder doesn't exist, create it
+		if (!DirAccess.dir_exists_absolute(RELEASE_LOG_FILE_PATH)):
+			DirAccess.make_dir_recursive_absolute(RELEASE_LOG_FILE_PATH)
+	elif (LaunchOptions.getKey(LaunchOptions.Keys.BUILD_TYPE) == LaunchOptions.BuildTypes.DEVELOPMENT):
+		# Development build, so use in-codebase log file path
+		log_file_path = DEVELOPMENT_LOG_FILE_PATH + "/" + LOG_FILE_BASENAME + LaunchOptions.getKey(LaunchOptions.Keys.INSTANCE_NUMBER)
+		
+		# If the log file folder doesn't exist, create it
+		if (!DirAccess.dir_exists_absolute(DEVELOPMENT_LOG_FILE_PATH)):
+			DirAccess.make_dir_recursive_absolute(DEVELOPMENT_LOG_FILE_PATH)
+	log_file_path += LOG_FILE_EXTENSION
+	
+	# Rest log files before logging
+	clearLogFiles()
+	
+	# Flush both buffers every 5 seconds
 	EventScheduler.pushRecurringEvent(Callable(self, "flushBuffers"), EventScheduler.TimeSlice.FIVE_SECONDS)
 
 # ************************************************************ #
@@ -129,7 +155,15 @@ func flushTerminalBuffer() -> void:
 	while !terminal_buffer.is_empty():
 		terminal_str += terminal_buffer.pop_front()
 		terminal_str += '\n'
-	_logToTerminal(terminal_str)
+		
+	# Remove last char because stdout adds a newline, so the
+	# last character would make it print two newlines
+	var str_len = terminal_str.length()
+	terminal_str = terminal_str.substr(0, str_len - 1)
+	
+	# Only print when a string exists
+	if (str_len > 0):
+		_logToTerminal(terminal_str)
 
 ## NOTE: Typically only called by the EventScheduler
 ## Write everything in the file buffer
@@ -138,7 +172,16 @@ func flushFileBuffer() -> void:
 	while !file_buffer.is_empty():
 		file_str += file_buffer.pop_front()
 		file_str += '\n'
-	_logToFile(file_str)
+	
+	var str_len = file_str.length()
+	
+	# Only print when a string exists
+	if (str_len > 0):
+		_logToFile(file_str)
+
+## Reset the log file by overwriting it with an empty string
+func clearLogFiles() -> void:
+	Utils.writeToFile(log_file_path, "")
 
 # ************************************************************ #
 #                    * Unit Test Functions *                   #

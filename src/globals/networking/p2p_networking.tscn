@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cfjffl1yu6lg4"]
+
+[ext_resource type="Script" path="res://src/globals/networking/p2p_networking.gd" id="1_gd17j"]
+
+[node name="P2PNetworking" type="Node"]
+script = ExtResource("1_gd17j")

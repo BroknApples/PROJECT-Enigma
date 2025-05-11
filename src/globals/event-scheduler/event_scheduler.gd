@@ -26,16 +26,16 @@ extends Node
 # Scheduler Timings -- always in ms
 class TimeSlice:
 	const ONE_HUNDRED_MILLISECONDS: int		= 100
-	const FIVE_HUNDRED_MILLISECONDS: int		= 500
-	const ONE_SECOND: int 					= 1000
-	const FIVE_SECONDS: int 					= 5000
-	const TEN_SECONDS: int 					= 10000
-	const THIRTY_SECONDS: int 				= 30000
-	const ONE_MINUTE: int 					= 60000
-	const FIVE_MINUTES: int 					= 300000
-	const TEN_MINUTES: int 					= 600000
-	const THIRTY_MINUTES: int 				= 1800000
-	const ONE_HOUR: int 						= 3600000
+	const FIVE_HUNDRED_MILLISECONDS: int	= 500
+	const ONE_SECOND: int 					= 1_000
+	const FIVE_SECONDS: int 				= 5_000
+	const TEN_SECONDS: int 					= 10_000
+	const THIRTY_SECONDS: int 				= 30_000
+	const ONE_MINUTE: int 					= 60_000
+	const FIVE_MINUTES: int 				= 300_000
+	const TEN_MINUTES: int 					= 600_000
+	const THIRTY_MINUTES: int 				= 1_800_000
+	const ONE_HOUR: int 					= 3_600_000
 
 ## Holds the events that will be called at any given time slice
 ## { int : Array[object/class] }
@@ -103,7 +103,7 @@ func _process(delta: float) -> void:
 	
 	# Set new time until process event for each time slice
 	for time_key in time_until_execution.keys():
-		time_until_execution[time_key] -= Utils.secondsToMilliseconds(delta)
+		time_until_execution[time_key] -= Clock.secondsToMilliseconds(delta)
 	
 	# Check if any events should occur at this time
 	for time_key in time_until_execution.keys():
@@ -165,8 +165,11 @@ func pushRecurringEvent(callable: Callable, time_slice: int) -> void:
 ## @param callable: Function to call
 ## @param time_slice: When to run event (in milliseconds) | NOTE: Time Slice can be ANY number of time
 func pushOneTimeEvent(callable: Callable, time_slice: int) -> void:
+	if (!scheduler.has(time_slice)):
+		scheduler[time_slice] = []
 	scheduler[time_slice].push_back(callable)
-	time_until_execution[time_slice].push_back(time_slice)
+	if (!time_until_execution.has(time_slice)):
+		time_until_execution[time_slice] = time_slice
 	_setEventMetadata(callable, time_slice, false)
 
 ## Remove item from event scheduler

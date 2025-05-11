@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://b7wf3rgobqs8r"]
+
+[ext_resource type="Script" path="res://src/globals/event-scheduler/event_scheduler.gd" id="1_eovmn"]
+
+[node name="EventScheduler" type="Node"]
+script = ExtResource("1_eovmn")

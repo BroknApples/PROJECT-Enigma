@@ -4,11 +4,9 @@ extends Control
 #                       * File Purpose *                       #
 # ************************************************************ #
 ## 
-## GameRoot
+## Lobby
 ## 
-## Entry point of the game, load assets and stuff
-## TODO: Possibly check version to confirm you have updated to
-## the latest release
+## Implements functions the lobby menu needs to function
 ## 
 
 # ************************************************************ #
@@ -19,11 +17,28 @@ extends Control
 #                        * Variables *                         #
 # ************************************************************ #
 
-const LOBBY_SCENE_PATH: String = "res://src/lobby-scene/lobby.tscn"
-
 # ************************************************************ #
 #                     * Signal Functions *                     #
 # ************************************************************ #
+
+## Open gui for hosting a game
+func _on_host_button_pressed() -> void:
+	P2PNetworking.becomeHost()
+	P2PNetworking.openServerToPeers()
+	await Utils.sleep(6.0)
+	P2PNetworking.stopBroadcastingToPeers()
+
+## Open gui for joining a game
+func _on_join_button_pressed() -> void:
+	P2PNetworking.listenForLANHosts()
+	await Utils.sleep(5.0)
+	
+	# TESTING: Attempt to connect to the first address found
+	P2PNetworking.connectToHost(P2PNetworking.getKnownHosts()[0])
+	await Utils.sleep(1.4)
+	await P2PNetworking.validateConnection()
+		# Invalid connection, so quit or something
+		
 
 # ************************************************************ #
 #                    * Private Functions *                     #
@@ -38,24 +53,12 @@ func _notification(what: int) -> void:
 	if (what == NOTIFICATION_WM_CLOSE_REQUEST):
 		Utils.exitGame()
 
-## Call a deferred function that loads the game up
 func _ready() -> void:
-	# TESTING
-	Settings.setWindowSize(Vector2i(1280, 720))
-	# TESTING
-	
-	call_deferred("loadGame")
+	pass
 
 # ************************************************************ #
 #                     * Public Functions *                     #
 # ************************************************************ #
-
-## Load the game up. Loads assets then finally swaps scene to the lobby
-func loadGame() -> void:
-	# TODO: Need to add another thread that will show the loading percent for assets
-	AssetManager.loadAssets()
-	
-	get_tree().change_scene_to_file(LOBBY_SCENE_PATH)
 
 # ************************************************************ #
 #                    * Unit Test Functions *                   #

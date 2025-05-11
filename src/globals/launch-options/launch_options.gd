@@ -4,35 +4,31 @@ extends Node
 #                       * File Purpose *                       #
 # ************************************************************ #
 ## 
-## AssetManager
+## CommandLineArguments Singleton
 ## 
-## Defines all important or very large assets 
-## used within the game
+## Gets the command line arguments passed to a game instance
 ## 
 
 # ************************************************************ #
 #                     * Enums & Classes *                      #
 # ************************************************************ #
 
-## Defines all assets as StringName types
-class AssetNames:
-	# const someVar: StringName = &"some_name"
-	pass
+## All keys of valid command line arguments
+class Keys:
+	const PERMISSON_LEVEL: StringName = &"PermissionLevel"
+	const INSTANCE_NUMBER: StringName = &"InstanceNumber"
+	const BUILD_TYPE: StringName = &"BuildType"
+
+## Specifies possible build types
+class BuildTypes:
+	const RELEASE = "Release"
+	const DEVELOPMENT = "Development"
 
 # ************************************************************ #
 #                        * Variables *                         #
 # ************************************************************ #
 
-signal SIG_loaded_asset(asset_name: StringName, index: int)
-
-## List of all assets
-var assets: Dictionary = {
-	# List assets here
-	# { &"AssetName" : &"AssetPath" }
-}
-
-## How many assets are the in total to load
-var total_assets = assets.size()
+var command_line_args: Dictionary
 
 # ************************************************************ #
 #                     * Signal Functions *                     #
@@ -42,44 +38,34 @@ var total_assets = assets.size()
 #                    * Private Functions *                     #
 # ************************************************************ #
 
+## Parse command line args into a dictionary
+func _parseCommandLineArgs() -> void:
+	for argument in OS.get_cmdline_args():
+		# Parse valid command-line arguments into a dictionary
+		if argument.find("=") > -1:
+			var key_value = argument.split("=")
+			command_line_args[key_value[0].lstrip("--")] = key_value[1]
+			
 # ************************************************************ #
 #                     * Godot Functions *                      #
 # ************************************************************ #
 
-## Loads important and large assets into the AssetManager singleton
-func loadAssets() -> void:
-	Logger.logMsg("Loading Assets...", Logger.Category.RUNTIME)
+## Parse command line args on startup
+func _ready() -> void:
+	_parseCommandLineArgs()
 	
-	# Used to signal percetages of the loading
-	var i = 0
-	var size := assets.size()
-	for key in assets.keys():
-		# Get path and load instance if its a scene
-		var path: StringName = assets[key]
-		assets[key] = load(path).instantiate()
-		
-		i += 1
-		SIG_loaded_asset.emit(key, i)
-	
-	Logger.logMsg("Assets Fully Loaded.", Logger.Category.RUNTIME)
-
-## Get a loaded asset
-## @param asset_name: StringName of the asset
-func getAsset(asset_name: StringName) -> Variant:
-	var asset = assets.get(asset_name)
-	
-	## Asset hasn't yet been loaded if it's 
-	## still a StringName type
-	if (asset is StringName):
-		return null
-	
-	## Even if asset is null, it'll still return the proper value null
-	return asset
-
 # ************************************************************ #
 #                     * Public Functions *                     #
 # ************************************************************ #
 
+## Get all of the command line args passed to the game
+func getCommandLineArguments() -> Dictionary:
+	return command_line_args
+
+## Get a specific command line argument given a key
+func getKey(string: String) -> String:
+	return command_line_args.get(string, "")
+	
 # ************************************************************ #
 #                    * Unit Test Functions *                   #
 # ************************************************************ #

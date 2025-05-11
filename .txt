@@ -1,0 +1,7 @@
+<0:00:00:725>  [RUNTIME]  Loading Assets...
+<0:00:00:725>  [RUNTIME]  Assets Fully Loaded.
+<0:00:01:538>  [NETWORK]  Setting up server session.
+<0:00:01:539>  [NETWORK]  Stopped listening for hosts.
+<0:00:01:539>  [NETWORK]  Opening server session to peers.
+<0:00:01:539>  [NETWORK]  Broadcasting peer discovery packet [0].
+<0:00:03:532>  [NETWORK]  Broadcasting peer discovery packet [1].

@@ -4,33 +4,35 @@ extends Node
 #                       * File Purpose *                       #
 # ************************************************************ #
 ## 
-## GameData
+## AssetManager Singleton
 ## 
-## Defines Data that every game instance will have, will be used
-## on both the server and clients
-##
-## Holds server IP Addresses, Game Build Version, etc.
+## Defines all important or very large assets 
+## used within the game
 ## 
 
 # ************************************************************ #
 #                     * Enums & Classes *                      #
 # ************************************************************ #
 
+## Defines all assets as StringName types
+class AssetNames:
+	# const someVar: StringName = &"some_name"
+	pass
+
 # ************************************************************ #
 #                        * Variables *                         #
 # ************************************************************ #
 
-# Overall Game Data
-const GAME_VERSION: String = "pre-alpha v1.0.0"
+signal SIG_loaded_asset(asset_name: StringName, index: int)
 
-# Server Data
-const SERVER_MAXIMUM_PORT_NUMBER: int = 65535 ## Maximum possible port value
-const SERVER_MAXIMUM_MAX_CLIENTS: int = 32 ## Maximum number of clients no matter what is set by the user
+## List of all assets
+var assets: Dictionary = {
+	# List assets here
+	# { &"AssetName" : &"AssetPath" }
+}
 
-const SERVER_IP_ADDRESS: String = "127.0.0.1" ## Ip address of the server
-const SERVER_PORT_NUMBER: int = 35693 ## Port number the server listens on
-const SERVER_MAX_CLIENTS: int = 12 ## How many players can connect
-const SERVER_RPC_ID: int = 1 ## Server @rpc ID should always be 1
+## How many assets are the in total to load
+var total_assets := assets.size()
 
 # ************************************************************ #
 #                     * Signal Functions *                     #
@@ -43,6 +45,35 @@ const SERVER_RPC_ID: int = 1 ## Server @rpc ID should always be 1
 # ************************************************************ #
 #                     * Godot Functions *                      #
 # ************************************************************ #
+
+## Loads important and large assets into the AssetManager singleton
+func loadAssets() -> void:
+	Logger.logMsg("Loading Assets...", Logger.Category.RUNTIME)
+	
+	# Used to signal percetages of the loading
+	var i := 0
+	for key in assets.keys():
+		# Get path and load instance if its a scene
+		var path: StringName = assets[key]
+		assets[key] = load(path).instantiate()
+		
+		i += 1
+		SIG_loaded_asset.emit(key, i)
+	
+	Logger.logMsg("Assets Fully Loaded.", Logger.Category.RUNTIME)
+
+## Get a loaded asset
+## @param asset_name: StringName of the asset
+func getAsset(asset_name: StringName) -> Variant:
+	var asset = assets.get(asset_name)
+	
+	## Asset hasn't yet been loaded if it's 
+	## still a StringName type
+	if (asset is StringName):
+		return null
+	
+	## Even if asset is null, it'll still return the proper value null
+	return asset
 
 # ************************************************************ #
 #                     * Public Functions *                     #

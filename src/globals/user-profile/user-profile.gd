@@ -4,9 +4,9 @@ extends Node
 #                       * File Purpose *                       #
 # ************************************************************ #
 ## 
+## UserData Singleton
 ## 
-## 
-## 
+## Defines data specific to the logged-in user
 ## 
 
 # ************************************************************ #

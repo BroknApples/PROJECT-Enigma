@@ -4,7 +4,7 @@ extends Node
 #                       * File Purpose *                       #
 # ************************************************************ #
 ## 
-## Utils
+## Utils Singleton
 ## 
 ## Utility functions that help reduce reused code
 ## 
@@ -13,88 +13,13 @@ extends Node
 #                     * Enums & Classes *                      #
 # ************************************************************ #
 
-## The TimePoint Class defines a a given point in the runtime of the game
-## 
-## Usage:
-## var time_point = TimePoint.new()       # -> Gets the current time when creating new object
-## time_point.setToCurrentRuntime()       # -> Sets an existing TimePoint variable to the current runtime
-## var runtime_ms = Utils.TimePoint.now() # -> Gets the current runtime of the entire program in milliseconds
-class TimePoint:
-	const _MILLISECONDS_PER_HOUR: int = 3_600_000
-	const _MILLISECONDS_PER_MINUTE: int = 60_000
-	const _MILLISECONDS_PER_SECOND: int = 1_000
-	
-	var _hours: int
-	var _minutes: int
-	var _seconds: int
-	var _milliseconds: int
-	
-	## Initialize new object with current time
-	func _init() -> void:
-		_format(Utils.TimePoint.now())
-	
-	## Format milliseconds to a correct TimePoint
-	func _format(milliseconds: int) -> void:
-		# Idea is to repeatedly remove 1 hour until milliseconds is less
-		# than an hours, then do the same for minutes, and seconds
-		# then just assingn the leftover to milliseconds
-		while(milliseconds >= _MILLISECONDS_PER_HOUR):
-			milliseconds -= _MILLISECONDS_PER_HOUR
-			_hours += 1
-		while(milliseconds >= _MILLISECONDS_PER_MINUTE):
-			milliseconds -= _MILLISECONDS_PER_MINUTE
-			_minutes += 1
-		while(milliseconds >= _MILLISECONDS_PER_SECOND):
-			milliseconds -= _MILLISECONDS_PER_SECOND
-			_seconds += 1
-		_milliseconds = milliseconds
-	
-	## Get current time in milliseconds
-	static func now() -> int:
-		return Time.get_ticks_msec()
-	
-	## Set the current TimePoint object to the current runtime
-	func setToCurrentRuntime() -> void:
-		_format(Utils.TimePoint.now())
-	
-	## Get array of integers that defines the current time
-	## Formatted: [Hours, Minutes, Seconds, Milliseconds]
-	func getTimeArray() -> Array[int]:
-		return [_hours, _minutes, _seconds, _milliseconds]
-		
-	## Get the current runtime of the program in string format
-	## Formated: HH:MM:SS:MS
-	## @param decorations: Include chevrons around string? Default = No
-	func getTimeString(decorations: bool = false) -> String:
-		const STRING_WIDTH: int = 15 # How wide will the string be at a minimum
-		
-		# Get string
-		var string := ""
-		if (decorations): string += "<"
-		string += str(_hours) + ":"
-		string += str(_minutes).pad_zeros(2) + ":"
-		string += str(_seconds).pad_zeros(2) + ":"
-		string += str(_milliseconds).pad_zeros(3)
-		if (decorations): string += ">"
-		
-		# Fill with air
-		if (decorations): string += " ".repeat(2) # Fill with two more air chars if decorations are on
-		string += " ".repeat(STRING_WIDTH - string.length()) # Fill with air
-		
-		return string
-	
-	func getHours() -> int: return _hours
-	func getMinutes() -> int: return _minutes
-	func getSeconds() -> int: return _seconds
-	func getMilliseconds() -> int: return _milliseconds
-
 ## Pair type similar to C++ Counterpart
 # TODO: Look into somehow predefining the the type of each
 class Pair:
-	var first
-	var second
+	var first: Variant
+	var second: Variant
 	
-	func _init(init_first, init_second) -> void:
+	func _init(init_first: Variant, init_second: Variant) -> void:
 		first = init_first
 		second = init_second
 
@@ -114,10 +39,14 @@ class Pair:
 #                     * Godot Functions *                      #
 # ************************************************************ #
 
-## Exit requested
-func _notification(what: int) -> void:
-	if (what == NOTIFICATION_WM_CLOSE_REQUEST):
-		Utils.exitGame()
+# NOTE:  TEMPLATE
+
+### Exit requested
+#func _notification(what: int) -> void:
+	#if (what == NOTIFICATION_WM_CLOSE_REQUEST):
+		#Utils.exitGame()
+
+# NOTE: TEMPLATE
 
 # ************************************************************ #
 #                     * Public Functions *                     #
@@ -128,8 +57,10 @@ func exitGame() -> void:
 	Logger.flushBuffers()
 	get_tree().quit()
 
-func secondsToMilliseconds(seconds: float) -> float:
-	return seconds * 1000.0
+## Sleep some amount of time in seconds
+## @param seconds: Seconds to sleep for
+func sleep(seconds: float) -> void:
+	await get_tree().create_timer(seconds).timeout
 
 ## Run a callable the next frame to ensure object safety
 ## @param callable: Function to be deferred
@@ -138,23 +69,30 @@ func deferCallable(callable: Callable) -> void:
 	callable.call()
 
 ## Remove any non-digit characters from a string
-## @param str: String to check
-func stripNonDigits(str: String) -> String:
-	var length = str.length()
+## @param string: String to strip non-digits from
+func stripNonDigits(string: String) -> String:
+	var length = string.length()
 	if length == 0: return "" # Empty text
 	
 	# Stop user from inputting anything other than numbers
 	for i in range(length):
-		if (str[i].to_int() == 0 && str[i] != '0'):
-			return str.substr(0, i) + str.substr(i + 1, length)
+		if (string[i].to_int() == 0 && string[i] != '0'):
+			return string.substr(0, i) + string.substr(i + 1, length)
 	
-	return str
+	return string
 
-## Write a string to a file, always write in chunks of 4096 chars to be safe
+## Write a string to a file; always write in chunks of 4096 chars to be safe
 ## @param file_path: Path to the file
-## @param str: String to write
-func writeToFile(file_path: String, str: String) -> void:
-	var file := FileAccess.open(file_path, FileAccess.WRITE)
+## @param string: String to write
+## @param appending: Should the string be appended to the end of the file?
+func writeToFile(file_path: String, string: String, appending: bool = false) -> void:
+	var file: FileAccess
+	if (appending):
+		file = FileAccess.open(file_path, FileAccess.READ_WRITE)
+		file.seek_end()
+	else:
+		file = FileAccess.open(file_path, FileAccess.WRITE)
+	
 	
 	# Error opening file
 	if (!file):
@@ -164,9 +102,9 @@ func writeToFile(file_path: String, str: String) -> void:
 	# Write in chunks of 4096 chars
 	const CHUNK_SIZE: int = 4096
 	var i := 0
-	while i < str.length():
-		var end = min(i + CHUNK_SIZE, str.length())
-		file.store_string(str.substr(i, end - i))
+	while i < string.length():
+		var end = min(i + CHUNK_SIZE, string.length())
+		file.store_string(string.substr(i, end - i))
 		i += CHUNK_SIZE
 	
 	file.close()
