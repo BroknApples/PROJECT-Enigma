@@ -4,31 +4,21 @@ extends Node
 #                       * File Purpose *                       #
 # ************************************************************ #
 ## 
-## CommandLineArguments Singleton
+## WorldLoader Singleton
 ## 
-## Gets the command line arguments passed to a game instance
-## 
+## Loads worlds into the game.
+##
+## NOTE: All methods will be "static". No actual data besides
+## constants may exist inside this file
+##
 
 # ************************************************************ #
 #                     * Enums & Classes *                      #
 # ************************************************************ #
 
-## All keys of valid command line arguments
-class Keys:
-	const PERMISSON_LEVEL: StringName = &"PermissionLevel"
-	const INSTANCE_NUMBER: StringName = &"InstanceNumber"
-	const BUILD_TYPE: StringName = &"BuildType"
-
-## Specifies possible build types
-class BuildTypes:
-	const RELEASE = "Release"
-	const DEVELOPMENT = "Development"
-
 # ************************************************************ #
 #                        * Variables *                         #
 # ************************************************************ #
-
-var _command_line_args: Dictionary
 
 # ************************************************************ #
 #                     * Signal Functions *                     #
@@ -38,34 +28,19 @@ var _command_line_args: Dictionary
 #                    * Private Functions *                     #
 # ************************************************************ #
 
-## Parse command line args into a dictionary
-func _parseCommandLineArgs() -> void:
-	for argument in OS.get_cmdline_args():
-		# Parse valid command-line arguments into a dictionary
-		if argument.find("=") > -1:
-			var key_value = argument.split("=")
-			_command_line_args[key_value[0].lstrip("--")] = key_value[1]
-			
 # ************************************************************ #
 #                     * Godot Functions *                      #
 # ************************************************************ #
 
-## Parse command line args on startup
-func _ready() -> void:
-	_parseCommandLineArgs()
-	
 # ************************************************************ #
 #                     * Public Functions *                     #
 # ************************************************************ #
 
-## Get all of the command line args passed to the game
-func getCommandLineArguments() -> Dictionary:
-	return _command_line_args
+## DirectoryPath is the path to the directory that contains all assets for that world
+## map_size: Size of the map; (20, 20) = 400 map chunks total
+func loadWorld(directory_path: String, map_size: Vector2i) -> PackedScene:
+	return null
 
-## Get a specific command line argument given a key
-func getKey(string: String) -> String:
-	return _command_line_args.get(string, "")
-	
 # ************************************************************ #
 #                    * Unit Test Functions *                   #
 # ************************************************************ #

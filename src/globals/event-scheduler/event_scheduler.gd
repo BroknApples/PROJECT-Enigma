@@ -19,11 +19,7 @@ extends Node
 #                     * Enums & Classes *                      #
 # ************************************************************ #
 
-# ************************************************************ #
-#                        * Variables *                         #
-# ************************************************************ #
-
-# Scheduler Timings -- always in ms
+## Scheduler Timings -- always in ms
 class TimeSlice:
 	const ONE_HUNDRED_MILLISECONDS: int		= 100
 	const FIVE_HUNDRED_MILLISECONDS: int	= 500
@@ -37,9 +33,13 @@ class TimeSlice:
 	const THIRTY_MINUTES: int 				= 1_800_000
 	const ONE_HOUR: int 					= 3_600_000
 
+# ************************************************************ #
+#                        * Variables *                         #
+# ************************************************************ #
+
 ## Holds the events that will be called at any given time slice
 ## { int : Array[object/class] }
-var scheduler := {
+var _scheduler := {
 	TimeSlice.ONE_HUNDRED_MILLISECONDS: 	[],
 	TimeSlice.FIVE_HUNDRED_MILLISECONDS: 	[],
 	TimeSlice.ONE_SECOND: 					[],
@@ -55,7 +55,7 @@ var scheduler := {
 
 ## Time until the next processing event for each time slice
 ## { int : float }
-var time_until_execution := {
+var _time_until_execution := {
 	TimeSlice.ONE_HUNDRED_MILLISECONDS: 	TimeSlice.ONE_HUNDRED_MILLISECONDS,
 	TimeSlice.FIVE_HUNDRED_MILLISECONDS: 	TimeSlice.FIVE_HUNDRED_MILLISECONDS,
 	TimeSlice.ONE_SECOND: 					TimeSlice.ONE_SECOND,
@@ -102,17 +102,17 @@ func _process(delta: float) -> void:
 	# and final event to be checked. Therefore I have chosen to not combine them, change with caution.
 	
 	# Set new time until process event for each time slice
-	for time_key in time_until_execution.keys():
-		time_until_execution[time_key] -= Clock.secondsToMilliseconds(delta)
+	for time_key in _time_until_execution.keys():
+		_time_until_execution[time_key] -= Clock.secondsToMilliseconds(delta)
 	
 	# Check if any events should occur at this time
-	for time_key in time_until_execution.keys():
+	for time_key in _time_until_execution.keys():
 		# Time not yet arrived
-		if (time_until_execution[time_key] > 0.0): continue
+		if (_time_until_execution[time_key] > 0.0): continue
 		
 		# Process events
 		var remove_key := false
-		for callable in scheduler[time_key]:
+		for callable in _scheduler[time_key]:
 			# Invalid callable
 			if (callable == null || !callable.is_valid()):
 				Logger.logMsg("Attempted to call a 'Callable' that is not valid", Logger.Category.RUNTIME)
@@ -133,14 +133,14 @@ func _process(delta: float) -> void:
 		
 		if (remove_key):
 			# Remove Time slice for one-time events
-			scheduler.erase(time_key)
-			time_until_execution.erase(time_key)
+			_scheduler.erase(time_key)
+			_time_until_execution.erase(time_key)
 		else:
 			# Reset time until next processing
 			# NOTE: Uses ' = time_key' instead of ' += time_key'  to ensure 
 			# consistency using a more technically time accurate formula
 			# would add some micro-stutters to execution
-			time_until_execution[time_key] = time_key
+			_time_until_execution[time_key] = time_key
 
 # ************************************************************ #
 #                     * Public Functions *                     #
@@ -154,22 +154,22 @@ func _process(delta: float) -> void:
 ## @param time_slice: Which time slice to add it in | NOTE: Time Slice MUST be a predefined slice
 func pushRecurringEvent(callable: Callable, time_slice: int) -> void:
 	# User inputted invalid time slice
-	if (time_slice not in time_until_execution):
+	if (time_slice not in _time_until_execution):
 		Logger.logMsg("Cannot set reccurring event. Please use a valid Time Slice.", Logger.Category.ERROR)
 		return
 	
-	scheduler[time_slice].push_back(callable)
+	_scheduler[time_slice].push_back(callable)
 	_setEventMetadata(callable, time_slice, true)
 
 ## Add item to event scheduler to run ONE time
 ## @param callable: Function to call
 ## @param time_slice: When to run event (in milliseconds) | NOTE: Time Slice can be ANY number of time
 func pushOneTimeEvent(callable: Callable, time_slice: int) -> void:
-	if (!scheduler.has(time_slice)):
-		scheduler[time_slice] = []
-	scheduler[time_slice].push_back(callable)
-	if (!time_until_execution.has(time_slice)):
-		time_until_execution[time_slice] = time_slice
+	if (!_scheduler.has(time_slice)):
+		_scheduler[time_slice] = []
+	_scheduler[time_slice].push_back(callable)
+	if (!_time_until_execution.has(time_slice)):
+		_time_until_execution[time_slice] = time_slice
 	_setEventMetadata(callable, time_slice, false)
 
 ## Remove item from event scheduler
@@ -181,7 +181,7 @@ func erase(callable: Callable) -> void:
 		return
 	
 	var time_slice = self.get_meta(callable_str)
-	scheduler[time_slice].erase(callable)
+	_scheduler[time_slice].erase(callable)
 
 ## Check if a callable exists in the event scheduler
 ## @param callable: Callable function to check

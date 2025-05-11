@@ -28,6 +28,7 @@ Settings="*res://src/globals/settings/settings.tscn"
 P2PNetworking="*res://src/globals/networking/p2p_networking.tscn"
 AssetManager="*res://src/globals/assset-manager/asset_manager.tscn"
 UserProfile="*res://src/globals/user-profile/user-profile.tscn"
+WorldLoader="*res://src/globals/world_loader/world_loader.tscn"
 
 [display]
 

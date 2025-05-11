@@ -67,6 +67,9 @@ class TimePoint:
 	## Get current time in milliseconds
 	## @returns int: Current program runtime in milliseconds
 	static func now() -> int:
+		# TODO: Cache time points, so that it does not have to do 1000 loops
+		# and statements just for ONE single time point to calculated.
+		# This may REALLY hurt performance once enough things start needing TimePoints.
 		return Time.get_ticks_msec()
 	
 	## Add some time to the a TimePoint
@@ -74,7 +77,7 @@ class TimePoint:
 	## @param seconds: Seconds to add
 	## @param minutes: Minutes to add
 	## @param hours: Hours to add
-	func addTime(milliseconds: int, seconds: int, minutes: int, hours: int) -> void:
+	func addTime(milliseconds: int, seconds: int = 0, minutes: int = 0, hours: int = 0) -> void:
 		# Add additional time
 		_milliseconds += milliseconds
 		_seconds += seconds
@@ -152,6 +155,9 @@ class TimePoint:
 #                     * Public Functions *                     #
 # ************************************************************ #
 
+## Given seconds, return that value in milliseconds
+## @param seconds: Seconds to convert to milliseconds
+## @returns: float: Value in milliseconds
 func secondsToMilliseconds(seconds: float) -> float:
 	return seconds * 1000.0
 

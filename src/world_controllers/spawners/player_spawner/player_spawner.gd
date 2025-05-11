@@ -4,28 +4,20 @@ extends Node3D
 #                       * File Purpose *                       #
 # ************************************************************ #
 ## 
-## CharacterType
+## PlayerSpawner
 ## 
-## CharacterType is the parent of both Player AND Enemy types
-##
-## Defines essential methods and variables that ALL child-types
-## will use, including: collision, abilities.
-##
-## NOTE: Unusable without adding CollisionShapes3D or CollisionPolygon3d
-## in the Colliders node
+## This object can spawn players that attach themselves to it
+## as metadata. If a player has multiple spawners, then it will
+## randomly choose one
 ## 
 
 # ************************************************************ #
 #                     * Enums & Classes *                      #
 # ************************************************************ #
 
-
-
 # ************************************************************ #
 #                        * Variables *                         #
 # ************************************************************ #
-
-var _player_controlled := false
 
 # ************************************************************ #
 #                     * Signal Functions *                     #

@@ -19,8 +19,6 @@ extends Control
 #                        * Variables *                         #
 # ************************************************************ #
 
-const LOBBY_SCENE_PATH: String = "res://src/lobby-scene/lobby.tscn"
-
 # ************************************************************ #
 #                     * Signal Functions *                     #
 # ************************************************************ #
@@ -53,9 +51,13 @@ func _ready() -> void:
 ## Load the game up. Loads assets then finally swaps scene to the lobby
 func loadGame() -> void:
 	# TODO: Need to add another thread that will show the loading percent for assets
-	AssetManager.loadAssets()
+	AssetManager.loadAssetGroup(AssetManager.AssetGroups.STARTUP)
+	var lobby_scene = AssetManager.getAsset(AssetManager.Assets.LobbyScene[0])
+	if (lobby_scene == null):
+		Logger.logMsg("Error loading scene: 'LobbyScene'", Logger.Category.ERROR)
 	
-	get_tree().change_scene_to_file(LOBBY_SCENE_PATH)
+	# After loading everything, change the scene to the lobby scene
+	self.add_child(lobby_scene.instantiate())
 
 # ************************************************************ #
 #                    * Unit Test Functions *                   #

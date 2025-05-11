@@ -48,11 +48,6 @@ func _on_join_button_pressed() -> void:
 #                     * Godot Functions *                      #
 # ************************************************************ #
 
-## Exit requested
-func _notification(what: int) -> void:
-	if (what == NOTIFICATION_WM_CLOSE_REQUEST):
-		Utils.exitGame()
-
 func _ready() -> void:
 	pass
 
