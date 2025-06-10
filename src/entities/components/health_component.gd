@@ -1,12 +1,13 @@
-extends Control
+extends Node3D
+class_name HealthComponent
 
 # ************************************************************ #
 #                       * File Purpose *                       #
 # ************************************************************ #
 ## 
-## Lobby
+## HealthComponent
 ## 
-## Implements functions the lobby menu needs to function
+## Defines a component that stores hp
 ## 
 
 # ************************************************************ #
@@ -17,41 +18,29 @@ extends Control
 #                        * Variables *                         #
 # ************************************************************ #
 
-var _selected_world: PackedScene
+signal SIG_no_health
+
+## Maximum health
+@export var max_health: float:
+	set(value):
+		# Value must be above 0
+		if (value < 0.0):
+			max_health = 0.0
+		else:
+			max_health = value
+
+## Current Health
+@export var current_health: float:
+	set(value):
+		# Value must be above 0
+		if (value < 0.0):
+			max_health = 0.0
+		else:
+			max_health = value
 
 # ************************************************************ #
 #                     * Signal Functions *                     #
 # ************************************************************ #
-
-## Open gui for hosting a game
-func _on_host_button_pressed() -> void:
-	# TESTING
-	P2PNetworking.becomeHost()
-	P2PNetworking.openServerToPeers()
-	await Utils.sleep(0.0)
-	P2PNetworking.stopBroadcastingToPeers()
-	
-	startGame.rpc("res://src/testing/test_world/test_world.tscn")
-	# TESTING
-
-## Open gui for joining a game
-func _on_join_button_pressed() -> void:
-	# TESTING: Attempt to connect to the first address found
-	P2PNetworking.listenForLANHosts()
-	await Utils.sleep(3.0)
-	
-	if (P2PNetworking.getKnownHosts().size() > 0):
-		P2PNetworking.connectToHost(P2PNetworking.getKnownHosts()[0])
-	await Utils.sleep(1.0)
-	
-	# Invalid connection, so quit the lobby or something
-	if (!await P2PNetworking.validateConnection()):
-		pass
-	
-	# will immediately start game for testing
-	
-	
-	# TESTING
 
 # ************************************************************ #
 #                    * Private Functions *                     #
@@ -61,22 +50,24 @@ func _on_join_button_pressed() -> void:
 #                     * Godot Functions *                      #
 # ************************************************************ #
 
-func _ready() -> void:
-	pass
-
 # ************************************************************ #
 #                     * Public Functions *                     #
 # ************************************************************ #
 
-@rpc ("authority", "reliable", "call_local")
-func startGame(world_file_path: String) -> void:
-	# TESTING
-	_selected_world = load(world_file_path)
-	
-	var instance = _selected_world.instantiate()
-	Utils.GAME_ROOT.add_child(instance)
-	
-	self.queue_free()
+## Get the maximum health of the health component
+## @returns float: Maximum health of health component
+func getMaximumHealth() -> float:
+	return max_health
+
+## Get the current health of the health component
+## @returns float: Current health of health component
+func getCurrentHealth() -> float:
+	return current_health
+
+func takeDamage(damage: float) -> void:
+	current_health -= damage
+	if (current_health <= 0.0):
+		SIG_no_health.emit()
 
 # ************************************************************ #
 #                    * Unit Test Functions *                   #

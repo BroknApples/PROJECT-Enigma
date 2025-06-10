@@ -1,4 +1,4 @@
-extends Control
+extends Node
 
 # ************************************************************ #
 #                       * File Purpose *                       #
@@ -38,6 +38,9 @@ func _notification(what: int) -> void:
 
 ## Call a deferred function that loads the game up
 func _ready() -> void:
+	# Set the game root to this node
+	Utils.GAME_ROOT = self
+	
 	# TESTING
 	Settings.setWindowSize(Vector2i(1280, 720))
 	# TESTING

@@ -27,6 +27,8 @@ class Pair:
 #                        * Variables *                         #
 # ************************************************************ #
 
+var GAME_ROOT: Node ## Not the root of the scene tree, but the root of the main game nodes
+
 # ************************************************************ #
 #                     * Signal Functions *                     #
 # ************************************************************ #
@@ -108,6 +110,37 @@ func writeToFile(file_path: String, string: String, appending: bool = false) -> 
 		i += CHUNK_SIZE
 	
 	file.close()
+
+## Given a normal acceleration value, get an approximated acceleration strength value used in
+## Utils.exponentialAcceleration()
+## @param acceleration: Normal acceleration
+## @param maximum_speed: Maximum speed
+## @returns float: Acceleration strength value
+func accelerationToAccelerationStrength(acceleration: float, maximum_speed: float) -> float:
+	if (maximum_speed <= 0.0):
+		# Divide by 0 error
+		return 0.0
+	
+	var ratio = acceleration / maximum_speed
+	if (ratio >= 1.0):
+		return INF  # Instant acceleration
+	elif (ratio <= 0.0):
+		return 0.0  # No acceleration
+	else:
+		return -log(1.0 - ratio)
+
+## Accelerate strongly at first, then slowly decrease acceleration over time,
+## NOTE: ChatGPT my goat for this formula (I at least thought of the idea though)
+## @param current_speed: Current velocity
+## @param target_speed: Maximum velocity
+## @param acceleration_strength: Heuristic that determines the speed at which the target speed is met
+## @param delta: Time since last frame (in seconds)
+## returns: float: Accelerated movement speed
+func exponentialAcceleration(current_speed: float, target_speed: float, acceleration_strength: float, delta: float) -> float:
+	# The acceleration_strength value must be positive
+	if (acceleration_strength < 0.0): return current_speed
+	
+	return lerp(current_speed, target_speed, 1.0 - exp(-acceleration_strength * delta))
 
 # ************************************************************ #
 #                    * Unit Test Functions *                   #

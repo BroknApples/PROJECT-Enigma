@@ -77,19 +77,12 @@ var _time_until_execution := {
 #                    * Private Functions *                     #
 # ************************************************************ #
 
-## Get a valid metadata key given a callable
-## cannot use the str(callable) form since it contains '::'
-## @param callable: Callable function to get string of
-func _getMetadataKey(callable: Callable) -> String:
-	var key := "callable_" + str(callable.get_object().get_instance_id()) + "_" + callable.get_method()
-	return key
-
 ## Set metadata for an event
 ## @param callable: Callable function to get string of
 ## @param time_slice: Time slice to run event in
 ## @param recurring: Callable function to get string of
 func _setEventMetadata(callable: Callable, time_slice: float, recurring: bool) -> void:
-	self.set_meta(_getMetadataKey(callable), [time_slice, recurring])
+	self.set_meta(Metadata.createMetadataKeyFromCallable(callable), [time_slice, recurring])
 
 # ************************************************************ #
 #                     * Godot Functions *                      #
@@ -120,7 +113,7 @@ func _process(delta: float) -> void:
 			
 			# If the callable is a one-time event, remove the key when done
 			# Remember metadata format: { CallableString : [TimeSlice, IsRecurringEvent] }
-			if (!self.get_meta(_getMetadataKey(callable))[1]):
+			if (!self.get_meta(Metadata.createMetadataKeyFromCallable(callable))[1]):
 				remove_key = true
 			
 			# Call function next frame to ensure object safety
@@ -175,7 +168,7 @@ func pushOneTimeEvent(callable: Callable, time_slice: int) -> void:
 ## Remove item from event scheduler
 ## @param callable: Callable function to remove
 func erase(callable: Callable) -> void:
-	var callable_str := _getMetadataKey(callable)
+	var callable_str := Metadata.createMetadataKeyFromCallable(callable)
 	if (!self.has_meta(callable_str)):
 		Logger.logMsg("Callable [" + callable_str + "] does not exist in scheduler", Logger.Category.ERROR)
 		return
@@ -186,7 +179,7 @@ func erase(callable: Callable) -> void:
 ## Check if a callable exists in the event scheduler
 ## @param callable: Callable function to check
 func exists(callable: Callable) -> bool:
-	var callable_str := _getMetadataKey(callable)
+	var callable_str := Metadata.createMetadataKeyFromCallable(callable)
 	if (self.has_meta(callable_str)):
 		return true
 	else:

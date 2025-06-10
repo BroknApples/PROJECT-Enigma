@@ -19,7 +19,7 @@ extends Node
 ## Array index 1 = path
 class Assets:
 	const LobbyScene: Array[StringName] = [&"LobbyScene", &"res://src/menus/lobby/lobby.tscn"]
-	const WorldData: Array[StringName] = [&"WorldData", &"res://src/world_controllers/world_data.tscn"]
+	const WorldData: Array[StringName] = [&"WorldData", &"res://src/world_controllers/world_data/world_data.tscn"]
 
 ## Defines groups of assets that determine when this asset should be loaded
 class AssetGroups:

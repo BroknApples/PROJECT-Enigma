@@ -17,14 +17,17 @@ extends Control
 #                        * Variables *                         #
 # ************************************************************ #
 
-# Window Size
+## Window Size
 @onready var viewport := get_viewport()
 @onready var window := viewport.get_window()
 
-# Used instead of window.size to avoid unnecessary function calls
-# when attempting to get the size of the window
+## Used instead of window.size to avoid unnecessary function calls
+## when attempting to get the size of the window
 var _window_size := Vector2i(1920, 1080)
 
+## Camera sensitivity
+var camera_sensitivity_horizontal: float = 0.15
+var camera_sensitivity_vertical: float = 0.15
 
 # ************************************************************ #
 #                     * Signal Functions *                     #

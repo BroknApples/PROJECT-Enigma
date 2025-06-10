@@ -19,8 +19,6 @@ extends Node3D
 
 @onready var world_data := $WorldData ## Premade class that defines where all the objects exist in the world
 
-const baseplate: PackedScene = preload("res://src/testing/test_world/terrain/baseplate.tscn")
-
 # ************************************************************ #
 #                     * Signal Functions *                     #
 # ************************************************************ #
@@ -34,7 +32,13 @@ const baseplate: PackedScene = preload("res://src/testing/test_world/terrain/bas
 # ************************************************************ #
 
 func _ready() -> void:
-	world_data.addTerrain(baseplate)
+	call_deferred("setCamera")
+
+# TESTING
+func setCamera():
+	$WorldData/Entities/Players/PlayerCharacterType.getCameraPivot().setToCurrentCamera()
+	$WorldData/Entities/Players/PlayerCharacterType.getCameraPivot().setToFirstPerson()
+# TESTING
 
 # ************************************************************ #
 #                     * Public Functions *                     #

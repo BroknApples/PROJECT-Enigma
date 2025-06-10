@@ -1,0 +1,10 @@
+[gd_scene load_steps=4 format=3 uid="uid://x3uenbuwx0pv"]
+
+[ext_resource type="PackedScene" uid="uid://c3eqsrwplxe2h" path="res://src/entities/character-type/character_type.tscn" id="1_r088r"]
+[ext_resource type="Script" path="res://src/entities/player-character-type/player_character_type.gd" id="2_nj1df"]
+[ext_resource type="PackedScene" uid="uid://bu85kyv4vvjmh" path="res://src/ui/player/hud/hud.tscn" id="3_ss1sw"]
+
+[node name="PlayerCharacterType" instance=ExtResource("1_r088r")]
+script = ExtResource("2_nj1df")
+
+[node name="Hud" parent="CanvasLayer" index="0" instance=ExtResource("3_ss1sw")]

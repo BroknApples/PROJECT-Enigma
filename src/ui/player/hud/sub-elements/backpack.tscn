@@ -1,0 +1,35 @@
+[gd_scene load_steps=3 format=3 uid="uid://daq2d26txikij"]
+
+[ext_resource type="PackedScene" uid="uid://bdofxm2mylx2j" path="res://src/ui/player/hud/sub-elements/keybind_icon.tscn" id="1_5dipi"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_cccvq"]
+
+[node name="Backpack" type="HBoxContainer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -70.5
+offset_top = -50.0
+offset_right = 70.5
+offset_bottom = 50.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 9
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_bottom = 6
+
+[node name="KeybindIcon" parent="MarginContainer" instance=ExtResource("1_5dipi")]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+
+[node name="TextureRect" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+texture = SubResource("PlaceholderTexture2D_cccvq")

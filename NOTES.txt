@@ -64,9 +64,6 @@ Style Guidelines:
 			Always use explicit type declaration and not the shorthand ':=', use ': int' or ': Dictionary'
 		@export:
 			snake_case
-			Always precede with 'EXP_' e.g.:
-				EXP_some_export_variable
-				EXP_health
 		signal:
 			snake_case
 			Always precede with 'SIG_' e.g.:

@@ -1,0 +1,49 @@
+[gd_scene load_steps=3 format=3 uid="uid://d3amlhjlloycg"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_3vlak"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_5gwua"]
+
+[node name="Resources" type="VBoxContainer"]
+custom_minimum_size = Vector2(500, 0)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -42.0
+offset_right = 250.0
+offset_bottom = 42.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 8
+theme_override_constants/separation = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+text = "ResourceValue1"
+
+[node name="TextureRect" type="TextureRect" parent="HBoxContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture = SubResource("PlaceholderTexture2D_3vlak")
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="HBoxContainer2"]
+layout_mode = 2
+text = "ResourceValue2"
+
+[node name="TextureRect" type="TextureRect" parent="HBoxContainer2"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture = SubResource("PlaceholderTexture2D_5gwua")
