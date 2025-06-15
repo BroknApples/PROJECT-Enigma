@@ -27,10 +27,18 @@ extends Node
 # ************************************************************ #
 
 # METADATA TAGS
-const HITBOX_COMPONENT: StringName = &"Hitbox" ## Hitbox node
-const CHARACTER_TYPE: StringName = &"Hitbox" ## CharacterType Node
-const PLAYER_TYPE: StringName = &"Player" ## PlayerCharacterType Node
-const ENEMY_TYPE: StringName = &"Enemy" ## Enemy CharacterType Node
+
+# COMPONENTS
+const HITBOX_COMPONENT: StringName = &"Hitbox_Component"
+const HEALTH_COMPONENT: StringName = &"Health_Component"
+const DEFENSE_COMPONENT: StringName = &"Defense_Component"
+const ABILITY_COMPONENT: StringName = &"Ability_Component"
+const DAMAGE_COMPONENT: StringName = &"Damage_Component"
+
+# TYPES
+const CHARACTER_TYPE: StringName = &"Character_Type"
+const PLAYER_TYPE: StringName = &"Player_Type"
+const ENEMY_TYPE: StringName = &"Enemy_Type"
 
 # ************************************************************ #
 #                     * Signal Functions *                     #

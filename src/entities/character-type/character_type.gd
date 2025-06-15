@@ -47,6 +47,7 @@ signal SIG_crouch
 # Components
 @onready var _hitbox_component := $HitboxComponent ## Hitbox Component
 @onready var _health_component := $HealthComponent ## Health Component
+@onready var _defense_component := $DefenseComponent ## Defense Component
 
 # Random Nodes
 @onready var _camera_pivot := $Head/PlayerCamera ## Scene instance of the player camera with it's child nodes. NOTE: THIS IS NOT THE ACTUAL Camera3D NODE
@@ -68,7 +69,7 @@ signal SIG_crouch
 @export var _run_max_movement_speed: float = 47.5 ## How fast does the character move when running
 @export var _run_initial_acceleration_speed: float = 4.69 ## While running, how much does the character's movement speed increase by each second (until the maximum speed is reached)
 
-@export var _jump_velocity: float = 4.5 ## How fast does the character rise up during jumps
+@export var _jump_velocity: float = 5.0 ## How fast does the character rise up during jumps
 @export var _air_deceleration_speed: float = 0.178 ## How fast does the character decelerate when in the air
 
 ## Which object controls gravity for this character.

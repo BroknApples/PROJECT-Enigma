@@ -24,6 +24,9 @@ class_name PlayerCharacterType
 
 @onready var _hud := $CanvasLayer/Hud ## Heads up display of the player
 
+const _INITIAL_BASE_MAX_HP: float = 100 ## Initial base max hp of the player
+const _INITIAL_BASE_DEFENSE: float = 0 ## Initial base defense of the player
+
 var _total_air_jump_count := 1 ## How many jumps are possible when in the air
 var _air_jump_count := _total_air_jump_count ## How many jumps are still possible when in the air
 
@@ -104,6 +107,10 @@ func _ready() -> void:
 	
 	# Set metadata
 	self.set_meta(Metadata.PLAYER_TYPE, true)
+	
+	# Set initial stats
+	_health_component.setBaseMaximumHealth(_INITIAL_BASE_MAX_HP)
+	_defense_component.setBaseDefense(_INITIAL_BASE_DEFENSE)
 	
 	# Call important functions in the base class
 	super._ready()

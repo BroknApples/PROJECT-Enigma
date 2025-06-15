@@ -29,6 +29,8 @@ class Pair:
 
 var GAME_ROOT: Node ## Not the root of the scene tree, but the root of the main game nodes
 
+var RNG := RandomNumberGenerator.new() ## Simple random number generator
+
 # ************************************************************ #
 #                     * Signal Functions *                     #
 # ************************************************************ #

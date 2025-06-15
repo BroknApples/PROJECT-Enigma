@@ -1,0 +1,24 @@
+[gd_scene load_steps=6 format=3 uid="uid://c6wkvlg1aps0k"]
+
+[ext_resource type="Script" path="res://src/entities/projectiles/projectile.gd" id="1_k42gj"]
+[ext_resource type="PackedScene" uid="uid://b2jn3cl33sn6t" path="res://src/components/hitbox_component/hitbox_component.tscn" id="2_6edqo"]
+[ext_resource type="PackedScene" uid="uid://bjx8u6yus3ql1" path="res://src/components/health_component/health_component.tscn" id="3_1r30u"]
+[ext_resource type="PackedScene" uid="uid://cxpnenc42u84r" path="res://src/components/damage_component/damage_component.tscn" id="4_ipkv6"]
+[ext_resource type="PackedScene" uid="uid://t3000f2tsxew" path="res://src/components/defense_component/defense_component.tscn" id="5_0o1ux"]
+
+[node name="Projectile" type="RigidBody3D"]
+script = ExtResource("1_k42gj")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+
+[node name="HitboxComponent" parent="." node_paths=PackedStringArray("_health_component", "_damage_component") instance=ExtResource("2_6edqo")]
+_health_component = NodePath("../HealthComponent")
+_damage_component = NodePath("../DamageComponent")
+
+[node name="HealthComponent" parent="." node_paths=PackedStringArray("_defense_component") instance=ExtResource("3_1r30u")]
+_defense_component = NodePath("../DefenseComponent")
+
+[node name="DamageComponent" parent="." instance=ExtResource("4_ipkv6")]
+metadata/Damage_Component = true
+
+[node name="DefenseComponent" parent="." instance=ExtResource("5_0o1ux")]
