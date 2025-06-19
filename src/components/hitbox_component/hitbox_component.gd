@@ -25,7 +25,7 @@ class_name HitboxComponent
 #                        * Variables *                         #
 # ************************************************************ #
 
-signal SIG_take_damage_override(value: float) ## NOTE: Connect this to a function to override the 'takeDamage()' function
+signal SIG_take_damage_override(damage_data: DamageData) ## NOTE: Connect this to a function to override the 'takeDamage()' function
 
 @export var _hitbox_shape: Shape3D: ## Actual hitbox shape data
 	set(value):
@@ -53,11 +53,11 @@ var _damageable: bool ## Is this hitbox currently damageable? (Can this hitbox t
 
 ## The actual damage logic for hitboxes
 ## @param damage: Damage value to be taken
-func _takeDamageInternal(damage: float) -> void:
+func _takeDamageInternal(damage_data: DamageData) -> void:
 	# Health component has not been initialized || The hitbox is not currently damageable
 	if (!self.hasHealthComponent() || !_damageable): return
 	
-	_health_component.takeDamage(damage)
+	_health_component.takeDamage(damage_data)
 
 # ************************************************************ #
 #                     * Godot Functions *                      #
@@ -77,15 +77,15 @@ func _ready() -> void:
 
 ## Take damage on the health component object
 ## @param damage: Damage to take
-func takeDamage(damage: float) -> void:
+func takeDamage(damage_data: DamageData) -> void:
 	# NOTE: Call '_takeDamageInternal()' if you wish to reuse the
 	# damage logic AND override the function to say, add a chat box
 	# or say a voice line
 	if (SIG_take_damage_override.get_connections().size() > 0):
-		SIG_take_damage_override.emit(damage)
+		SIG_take_damage_override.emit(damage_data)
 		return
 	
-	_takeDamageInternal(damage)
+	_takeDamageInternal(damage_data)
 
 #
 # GETTERS
@@ -131,6 +131,11 @@ func getDamageValue() -> float:
 	
 	return _damage_component.getDamageValue()
 
+## Check whether or not this hitbox component is damageable
+## @returns bool: True/False of damageable state
+func isDamageable() -> bool:
+	return _damageable
+
 #
 # SETTERS
 #
@@ -144,6 +149,11 @@ func setHitboxShape(value: Shape3D) -> void:
 ## @param value: New health component object
 func setHealthComponent(value: HealthComponent) -> void:
 	_health_component = value
+
+## Set a new damage component for this hitbox
+## @param value: New damage component object
+func setDamageComponent(value: DamageComponent) -> void:
+	_damage_component = value
 
 ## Set a new damageable boolean value for this hitbox
 ## @param value: New boolean value for '_damageable'

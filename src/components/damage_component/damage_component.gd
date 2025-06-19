@@ -77,7 +77,7 @@ class_name DamageComponent
 ## By what percentage is attack increased when a critical strike is triggered?
 ## Value must be above 100.0 since it is a percent increase, it obviously
 ## shouldn't lower the attack value
-@export var _critical_strike_attack: float = 100.0:
+@export var _critical_strike_damage: float = 100.0:
 	set(value):
 		# Value must be above 0
 		value = clamp(value, 100.0, INF)
@@ -118,7 +118,10 @@ func _ready() -> void:
 # ************************************************************ #
 
 ## Rolls the attack value with critical chances and dmg% bonuses applied
-func calculateDamage() -> float:
+func calculateDamage() -> DamageData:
+	# Create a damage data object
+	var damage_data := DamageData.new()
+	
 	# Start with attack as the base
 	var calculated_damage := _attack
 	
@@ -129,9 +132,17 @@ func calculateDamage() -> float:
 	# Apply critical strike attack first
 	if (Utils.RNG.randf_range(0.0, 100.0) <= _critical_strike_chance):
 		# Critical strike occurs
-		calculated_damage *= _critical_strike_attack
+		calculated_damage *= _critical_strike_damage
+		
+		# Set damage data critical boolean
+		damage_data.is_crit = true
 	
-	return calculated_damage
+	# Set damage data damage value
+	damage_data.damage = calculated_damage
+	
+	# TODO: Set element
+	
+	return damage_data
 
 #***********************#
 #******* GETTERS *******#

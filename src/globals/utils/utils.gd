@@ -144,6 +144,31 @@ func exponentialAcceleration(current_speed: float, target_speed: float, accelera
 	
 	return lerp(current_speed, target_speed, 1.0 - exp(-acceleration_strength * delta))
 
+func getWorldDataNode() -> WorldData:
+	if (GAME_ROOT == null):
+		return null
+		
+	#**********************************************#
+	# Find the world data node from the game root,
+	# to do this, start from the game root and find
+	# a node that has the proper metadata tag,
+	# (Metadata.WORLD_NODE). Once that happens
+	# Ensure the function for getting the worldData
+	# class exists before using it
+	#**********************************************#
+	for node in GAME_ROOT.get_children():
+		# Worlds must have a WORLD_NODE metadata tag attached to them to be valid
+		if (node.has_meta(Metadata.WORLD_NODE)):
+			# The getWorldData() function is the method for getting the WorldData class from a world
+			if (node.has_method("getWorldData")):
+				return node.getWorldData()
+			else:
+				# If the method does NOT exist, then its an invalid world node
+				return null
+	
+	# Nothing was found that contained the correct metadata, so just return null
+	return null
+
 # ************************************************************ #
 #                    * Unit Test Functions *                   #
 # ************************************************************ #

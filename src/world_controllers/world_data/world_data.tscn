@@ -16,6 +16,8 @@ environment = SubResource("Environment_5o31o")
 
 [node name="Dynamic" type="Node3D" parent="."]
 
+[node name="Projectiles" type="Node3D" parent="Dynamic"]
+
 [node name="Entities" type="Node3D" parent="."]
 
 [node name="Players" type="Node3D" parent="Entities"]

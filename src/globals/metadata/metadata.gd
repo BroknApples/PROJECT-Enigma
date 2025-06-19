@@ -39,6 +39,11 @@ const DAMAGE_COMPONENT: StringName = &"Damage_Component"
 const CHARACTER_TYPE: StringName = &"Character_Type"
 const PLAYER_TYPE: StringName = &"Player_Type"
 const ENEMY_TYPE: StringName = &"Enemy_Type"
+const PROJECTILE_TYPE: StringName = &"Projectile_Type"
+const WEAPON_TYPE: StringName = &"Weapon_Type"
+
+# MISC NODES
+const WORLD_NODE: StringName = &"World_Node"
 
 # ************************************************************ #
 #                     * Signal Functions *                     #

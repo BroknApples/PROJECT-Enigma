@@ -1,12 +1,13 @@
-extends Node3D
+extends Node
+class_name DamageData
 
 # ************************************************************ #
 #                       * File Purpose *                       #
 # ************************************************************ #
 ## 
-## TestWorld
+## DamageData
 ## 
-## World where I can test things, has many random features that exist on the map
+## Defines data that should be bundled together when dealing damage
 ## 
 
 # ************************************************************ #
@@ -17,7 +18,9 @@ extends Node3D
 #                        * Variables *                         #
 # ************************************************************ #
 
-@onready var _world_data := $WorldData ## Premade class that defines where all the objects exist in the world
+var damage: float ## Actual final damage of the attack
+var is_crit: bool ## Is this attack a critical strike?
+# TODO: var element: Element ## Element of the damage
 
 # ************************************************************ #
 #                     * Signal Functions *                     #
@@ -31,26 +34,9 @@ extends Node3D
 #                     * Godot Functions *                      #
 # ************************************************************ #
 
-func _ready() -> void:
-	# Set metadata
-	self.set_meta(Metadata.WORLD_NODE, true)
-	
-	call_deferred("setCamera")
-
-# TESTING
-func setCamera():
-	$WorldData/Entities/Players/PlayerCharacterType.getCameraPivot().setToCurrentCamera()
-	$WorldData/Entities/Players/PlayerCharacterType.getCameraPivot().setToFirstPerson()
-# TESTING
-
 # ************************************************************ #
 #                     * Public Functions *                     #
 # ************************************************************ #
-
-## Get the world data node for this world
-## @returns WorldData: World data class type
-func getWorldData() -> WorldData:
-	return _world_data
 
 # ************************************************************ #
 #                    * Unit Test Functions *                   #

@@ -1,12 +1,14 @@
 extends Node3D
+class_name WeaponType
 
 # ************************************************************ #
 #                       * File Purpose *                       #
 # ************************************************************ #
 ## 
-## TestWorld
+## WeaponType
 ## 
-## World where I can test things, has many random features that exist on the map
+## Base class of all weapons; implements basic ideas such as
+## element, damage stats, model, etc.
 ## 
 
 # ************************************************************ #
@@ -17,7 +19,10 @@ extends Node3D
 #                        * Variables *                         #
 # ************************************************************ #
 
-@onready var _world_data := $WorldData ## Premade class that defines where all the objects exist in the world
+@onready var _projectile_spawn_point := $ProjectileSpawnPoint ## Point in the world where the projectiles should spawn
+
+## Holds all the different projectiles that this weapon can use
+var _projectiles: Array[PackedScene] = []
 
 # ************************************************************ #
 #                     * Signal Functions *                     #
@@ -27,30 +32,45 @@ extends Node3D
 #                    * Private Functions *                     #
 # ************************************************************ #
 
+## The default input event responses
+## @param event: InputEvent to check
+func _defaultInputs(event: InputEvent) -> void:
+	# PRIMARY ATTACK
+	if (Input.is_action_just_pressed(Keybinds.ActionNames.PRIMARY_ATTACK)):
+		doPrimaryAttack()
+	# SECONDARY ATTACK
+	elif (Input.is_action_just_pressed(Keybinds.ActionNames.SECONDARY_ATTACK)):
+		doSecondaryAttack()
+
 # ************************************************************ #
 #                     * Godot Functions *                      #
 # ************************************************************ #
 
-func _ready() -> void:
-	# Set metadata
-	self.set_meta(Metadata.WORLD_NODE, true)
-	
-	call_deferred("setCamera")
+func _input(event: InputEvent) -> void:
+	_defaultInputs(event)
 
-# TESTING
-func setCamera():
-	$WorldData/Entities/Players/PlayerCharacterType.getCameraPivot().setToCurrentCamera()
-	$WorldData/Entities/Players/PlayerCharacterType.getCameraPivot().setToFirstPerson()
-# TESTING
+func _ready() -> void:
+	pass
+	# TODO: Implement necesary things
 
 # ************************************************************ #
 #                     * Public Functions *                     #
 # ************************************************************ #
 
-## Get the world data node for this world
-## @returns WorldData: World data class type
-func getWorldData() -> WorldData:
-	return _world_data
+## Do a primary attack
+func doPrimaryAttack() -> void:
+	# NOTE: Implement in each child weapon type
+	pass
+
+## Do a secondary attack
+func doSecondaryAttack() -> void:
+	# NOTE: Implement in each child weapon type
+	pass
+
+## Get the position for the projectiles to spawn
+## @return Transform3D: Place in the world to spawn the 
+func getProjectileSpawnPointTransform3D() -> Transform3D:
+	return _projectile_spawn_point.global_transform
 
 # ************************************************************ #
 #                    * Unit Test Functions *                   #

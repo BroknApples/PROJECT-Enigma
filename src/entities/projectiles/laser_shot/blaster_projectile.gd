@@ -1,12 +1,15 @@
-extends Node3D
+
+extends ProjectileType
+class_name BlasterProjectile
 
 # ************************************************************ #
 #                       * File Purpose *                       #
 # ************************************************************ #
 ## 
-## TestWorld
+## BlasterProjectile
 ## 
-## World where I can test things, has many random features that exist on the map
+## A simple laser shot, similar to "Star Wars" blaster shots
+## Can change the color through the color parameter
 ## 
 
 # ************************************************************ #
@@ -17,7 +20,14 @@ extends Node3D
 #                        * Variables *                         #
 # ************************************************************ #
 
-@onready var _world_data := $WorldData ## Premade class that defines where all the objects exist in the world
+@export var _color: Color = Color.BLUE: ## Color of the laser (Default is Color.BLUE)
+	set(value):
+		_color = value
+		
+		# TODO: Set the value in the editor, it was tweaking tho so i gave up on that for now
+		# Maybe all scripts involved have to be a tool script? idk, seems like a hassle
+		if (_initialized):
+			_assignMeshInstanceColor()
 
 # ************************************************************ #
 #                     * Signal Functions *                     #
@@ -27,30 +37,32 @@ extends Node3D
 #                    * Private Functions *                     #
 # ************************************************************ #
 
+## Assigns the mesh instance's mesh property's material's color
+func _assignMeshInstanceColor() -> void:
+	# If the node isn't ready, do not attempt an operation on a null instance
+	if (!self.is_node_ready()):
+		return
+	
+	_mesh_instance.mesh.material.albedo_color = _color
+
 # ************************************************************ #
 #                     * Godot Functions *                      #
 # ************************************************************ #
 
 func _ready() -> void:
-	# Set metadata
-	self.set_meta(Metadata.WORLD_NODE, true)
+	# Call the super class's ready function
+	super._ready()
 	
-	call_deferred("setCamera")
-
-# TESTING
-func setCamera():
-	$WorldData/Entities/Players/PlayerCharacterType.getCameraPivot().setToCurrentCamera()
-	$WorldData/Entities/Players/PlayerCharacterType.getCameraPivot().setToFirstPerson()
-# TESTING
+	# Set the color
+	self.call_deferred("_assignMeshInstanceColor")
 
 # ************************************************************ #
 #                     * Public Functions *                     #
 # ************************************************************ #
 
-## Get the world data node for this world
-## @returns WorldData: World data class type
-func getWorldData() -> WorldData:
-	return _world_data
+## Set the color
+func setColor(color: Color) -> void:
+	_color = color
 
 # ************************************************************ #
 #                    * Unit Test Functions *                   #

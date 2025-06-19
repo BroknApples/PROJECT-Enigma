@@ -1,7 +1,7 @@
-<0:00:00:675>  [RUNTIME]  Loading Assets...
-<0:00:00:693>  [RUNTIME]  Assets Fully Loaded.
-<0:00:01:214>  [NETWORK]  Setting up server session.
-<0:00:01:214>  [NETWORK]  Stopped listening for hosts.
-<0:00:01:215>  [NETWORK]  Opening server session to peers.
-<0:00:01:215>  [NETWORK]  Broadcasting peer discovery packet [0].
-<0:00:01:215>  [NETWORK]  Stopped broadcasting server to peers.
+<0:00:00:724>  [RUNTIME]  Loading Assets...
+<0:00:00:737>  [RUNTIME]  Assets Fully Loaded.
+<0:00:01:018>  [NETWORK]  Setting up server session.
+<0:00:01:018>  [NETWORK]  Stopped listening for hosts.
+<0:00:01:018>  [NETWORK]  Opening server session to peers.
+<0:00:01:018>  [NETWORK]  Broadcasting peer discovery packet [0].
+<0:00:01:019>  [NETWORK]  Stopped broadcasting server to peers.

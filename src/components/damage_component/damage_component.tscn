@@ -4,3 +4,5 @@
 
 [node name="DamageComponent" type="Node3D"]
 script = ExtResource("1_d48dq")
+_critical_strike_damage = null
+metadata/Damage_Component = true

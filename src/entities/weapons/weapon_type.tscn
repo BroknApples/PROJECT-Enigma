@@ -1,0 +1,32 @@
+[gd_scene load_steps=5 format=3 uid="uid://d367doxf2ili0"]
+
+[ext_resource type="Script" path="res://src/entities/weapons/weapon_type.gd" id="1_lmerf"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_8kx0e"]
+size = Vector3(0.5, 1, 0.5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_gsqnm"]
+size = Vector3(1.7, 0.5, 0.5)
+
+[sub_resource type="Skin" id="Skin_1ciew"]
+
+[node name="WeaponType" type="Node3D"]
+script = ExtResource("1_lmerf")
+
+[node name="Meshes" type="Node3D" parent="."]
+
+[node name="Placeholder Meshes" type="Node3D" parent="Meshes"]
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Meshes/Placeholder Meshes"]
+transform = Transform3D(0.990703, -0.136044, 0, 0.136044, 0.990703, 0, 0, 0, 1, 0.713763, -0.681748, 0)
+mesh = SubResource("BoxMesh_8kx0e")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Meshes/Placeholder Meshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.132926, 0, 0)
+mesh = SubResource("BoxMesh_gsqnm")
+skin = SubResource("Skin_1ciew")
+skeleton = NodePath("../../..")
+
+[node name="ProjectileSpawnPoint" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.465768, 0, 0)

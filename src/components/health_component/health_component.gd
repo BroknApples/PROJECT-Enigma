@@ -121,13 +121,13 @@ func _ready() -> void:
 
 ## Take damage on this health node
 ## @param damage: Damage to be taken
-func takeDamage(damage: float) -> void:
+func takeDamage(damage_data: DamageData) -> void:
 	if (self.hasDefenseComponent()):
 		# Apply defense since there is a component for it
-		_current_health -= _defense_component.applyDefenseToDamage(damage)
+		_current_health -= _defense_component.applyDefenseToDamage(damage_data.damage)
 	else:
 		# Do not apply defense since the component isn't initialized
-		_current_health -= damage
+		_current_health -= damage_data.damage
 	
 	# Check if health is at 0.0, if so, then emit the zero health signal
 	if (_current_health == 0.0):
