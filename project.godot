@@ -19,8 +19,9 @@ run/size/viewport_width=1920
 
 [autoload]
 
-Keybinds="*res://src/globals/keybinds/keybinds.tscn"
 Metadata="*res://src/globals/metadata/metadata.tscn"
+UUID="*res://src/globals/uuid/uuid.tscn"
+Keybinds="*res://src/globals/keybinds/keybinds.tscn"
 LaunchOptions="*res://src/globals/launch-options/launch_options.tscn"
 Clock="*res://src/globals/clock/clock.tscn"
 Utils="*res://src/globals/utils/utils.tscn"
@@ -135,5 +136,9 @@ Crouch={
 3d_physics/layer_1="All"
 3d_physics/layer_2="NonGhostTerrain"
 3d_physics/layer_3="AnyEntity"
-3d_physics/layer_4="Players"
-3d_physics/layer_5="Enemies"
+3d_physics/layer_4="PlayerEntity"
+3d_physics/layer_5="EnemyEntity"
+3d_physics/layer_6="TravelProjectileEntity"
+3d_physics/layer_24="TEAM_Player"
+3d_physics/layer_25="TEAM_Enemy"
+3d_physics/layer_26="TEAM_Neutral"

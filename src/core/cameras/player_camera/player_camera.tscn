@@ -1,0 +1,57 @@
+[gd_scene load_steps=6 format=3 uid="uid://dol0pvsp7nq7u"]
+
+[ext_resource type="Script" path="res://src/core/cameras/player_camera/player_camera.gd" id="1_xy4go"]
+[ext_resource type="PackedScene" uid="uid://rjeg12okvcae" path="res://src/core/cameras/player_camera/player_camera_input.tscn" id="2_g5wey"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_xnol0"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath(".:scale")
+properties/2/spawn = true
+properties/2/replication_mode = 0
+properties/3/path = NodePath("SpringArm3D/Camera3D:position")
+properties/3/spawn = true
+properties/3/replication_mode = 2
+properties/4/path = NodePath("SpringArm3D/Camera3D:rotation")
+properties/4/spawn = true
+properties/4/replication_mode = 2
+properties/5/path = NodePath("SpringArm3D:spring_length")
+properties/5/spawn = true
+properties/5/replication_mode = 2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6ofj7"]
+albedo_color = Color(1, 0.466667, 1, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_0vv2m"]
+material = SubResource("StandardMaterial3D_6ofj7")
+top_radius = 0.1
+bottom_radius = 0.1
+height = 500.0
+
+[node name="PlayerCamera" type="Node3D"]
+script = ExtResource("1_xy4go")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_interval = 0.5
+replication_config = SubResource("SceneReplicationConfig_xnol0")
+
+[node name="SpringArm3D" type="SpringArm3D" parent="."]
+collision_mask = 0
+
+[node name="Camera3D" type="Camera3D" parent="SpringArm3D"]
+
+[node name="RayCast3D" type="RayCast3D" parent="SpringArm3D/Camera3D"]
+target_position = Vector3(0, 0, -500)
+debug_shape_custom_color = Color(1, 0.513726, 1, 1)
+
+[node name="DebugMeshInstance3D" type="MeshInstance3D" parent="SpringArm3D/Camera3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -250)
+visible = false
+mesh = SubResource("CylinderMesh_0vv2m")
+skeleton = NodePath("../RayCast3D")
+
+[node name="PlayerCameraInput" parent="." instance=ExtResource("2_g5wey")]

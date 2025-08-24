@@ -1,0 +1,38 @@
+[gd_scene load_steps=7 format=3 uid="uid://d367doxf2ili0"]
+
+[ext_resource type="Script" path="res://src/core/entities/weapons/weapon_type.gd" id="1_lmerf"]
+[ext_resource type="PackedScene" uid="uid://cte5tnf31vce5" path="res://src/core/world_controllers/markers/transform_marker_3d/transform_marker_3d.tscn" id="2_p5onq"]
+[ext_resource type="PackedScene" uid="uid://dt2cthw01wdl2" path="res://src/core/entities/weapons/weapon_input.tscn" id="2_qwebl"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_8kx0e"]
+size = Vector3(0.5, 1, 0.5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_gsqnm"]
+size = Vector3(1.7, 0.5, 0.5)
+
+[sub_resource type="Skin" id="Skin_1ciew"]
+
+[node name="WeaponType" type="Node3D"]
+script = ExtResource("1_lmerf")
+
+[node name="WeaponInput" parent="." instance=ExtResource("2_qwebl")]
+
+[node name="Meshes" type="Node3D" parent="."]
+
+[node name="Placeholder Meshes" type="Node3D" parent="Meshes"]
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Meshes/Placeholder Meshes"]
+transform = Transform3D(-4.3307e-08, 5.93232e-09, -1, 0.135716, 0.990748, 0, 0.990748, -0.135716, -4.37114e-08, 0, -0.682, 0.533377)
+mesh = SubResource("BoxMesh_8kx0e")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Meshes/Placeholder Meshes"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("BoxMesh_gsqnm")
+skin = SubResource("Skin_1ciew")
+skeleton = NodePath("../../..")
+
+[node name="ProjectileSpawnPoint" parent="." instance=ExtResource("2_p5onq")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, -0.623328)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]

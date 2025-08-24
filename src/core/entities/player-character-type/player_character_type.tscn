@@ -1,0 +1,17 @@
+[gd_scene load_steps=5 format=3 uid="uid://x3uenbuwx0pv"]
+
+[ext_resource type="PackedScene" uid="uid://c3eqsrwplxe2h" path="res://src/core/entities/character-type/character_type.tscn" id="1_r088r"]
+[ext_resource type="Script" path="res://src/core/entities/player-character-type/player_character_type.gd" id="2_nj1df"]
+[ext_resource type="PackedScene" uid="uid://bu85kyv4vvjmh" path="res://src/ui/player/hud/hud.tscn" id="3_ss1sw"]
+[ext_resource type="PackedScene" uid="uid://bt83lvbiw3y40" path="res://src/core/entities/weapons/blaster_weapon/blaster_weapon.tscn" id="4_mas2x"]
+
+[node name="PlayerCharacterType" instance=ExtResource("1_r088r")]
+collision_layer = 13
+script = ExtResource("2_nj1df")
+
+[node name="Hud" parent="CanvasLayer" index="0" instance=ExtResource("3_ss1sw")]
+
+[node name="BlasterWeapon" parent="Head/Weapons" index="0" instance=ExtResource("4_mas2x")]
+transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0.438363, 0.270781, -0.684545)
+
+[editable path="Head"]

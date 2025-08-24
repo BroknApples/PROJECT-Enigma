@@ -1,0 +1,30 @@
+[gd_scene load_steps=6 format=3 uid="uid://bt83lvbiw3y40"]
+
+[ext_resource type="PackedScene" uid="uid://d367doxf2ili0" path="res://src/core/entities/weapons/weapon_type.tscn" id="1_mgr7v"]
+[ext_resource type="Script" path="res://src/core/entities/weapons/blaster_weapon/blaster_weapon.gd" id="2_1qixw"]
+[ext_resource type="PackedScene" uid="uid://cxpnenc42u84r" path="res://src/core/components/damage_component/damage_component.tscn" id="3_h2fai"]
+[ext_resource type="PackedScene" uid="uid://cwv8uu5ais0wd" path="res://src/core/entities/weapons/reticles/crosshair reticle/crosshair_reticle.tscn" id="4_s2sv0"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_tj61g"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath(".:scale")
+properties/2/spawn = true
+properties/2/replication_mode = 2
+
+[node name="BlasterWeapon" instance=ExtResource("1_mgr7v")]
+script = ExtResource("2_1qixw")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." index="0"]
+replication_config = SubResource("SceneReplicationConfig_tj61g")
+
+[node name="PrimaryAttackDamageComponent" parent="." index="3" instance=ExtResource("3_h2fai")]
+_attack = 15.0
+_base_attack = 15.0
+_critical_strike_chance = 100.0
+
+[node name="CrosshairReticle" parent="CanvasLayer" index="0" instance=ExtResource("4_s2sv0")]

@@ -1,0 +1,6 @@
+[gd_resource type="Resource" script_class="HitboxComponent" load_steps=2 format=3 uid="uid://bk0shcth0uuui"]
+
+[ext_resource type="Script" path="res://src/components/hitbox_component.gd" id="1_av1ev"]
+
+[resource]
+script = ExtResource("1_av1ev")

@@ -1,0 +1,51 @@
+[gd_scene load_steps=9 format=3 uid="uid://c6wkvlg1aps0k"]
+
+[ext_resource type="Script" path="res://src/core/entities/projectiles/travel_projectile_type.gd" id="1_k42gj"]
+[ext_resource type="PackedScene" uid="uid://b2jn3cl33sn6t" path="res://src/core/components/hitbox_component/hitbox_component.tscn" id="2_6edqo"]
+[ext_resource type="PackedScene" uid="uid://bjx8u6yus3ql1" path="res://src/core/components/health_component/health_component.tscn" id="3_1r30u"]
+[ext_resource type="PackedScene" uid="uid://t3000f2tsxew" path="res://src/core/components/defense_component/defense_component.tscn" id="5_0o1ux"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_8u8nj"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 2
+properties/2/path = NodePath(".:scale")
+properties/2/spawn = true
+properties/2/replication_mode = 2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vur52"]
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_neult"]
+material = SubResource("StandardMaterial3D_vur52")
+radius = 0.15
+height = 0.65
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_2ujec"]
+points = PackedVector3Array(0.144326, 0.202604, -0.0293243, -0.145606, -0.203285, -0.0197561, -0.145698, -0.203414, 0.0189463, -0.12708, 0.253404, 0.00930619, 0.0379276, -0.191692, 0.143439, 0.0474007, -0.220002, -0.134348, -0.0582082, 0.202352, -0.13529, -0.0293242, 0.202603, 0.144325, 0.126141, -0.253114, 0.0190441, 0.114144, 0.219476, 0.0854949, 0.0393037, 0.317869, -0.0202617, -0.0401141, -0.317769, 0.0194327, -0.0955733, -0.190282, 0.113815, 0.0659576, 0.189553, -0.133134, -0.0773175, -0.201929, -0.125379, 0.122571, -0.179708, -0.0855241, -0.133529, 0.180644, -0.0669487, -0.133135, 0.189555, 0.0659582, 0.142231, -0.171139, 0.0470993, -0.0200192, 0.294257, 0.0878897, 0.0389872, -0.295518, -0.0792227, 0.084964, 0.180201, 0.122908, -0.0397824, 0.295313, -0.079168, 0.0192044, -0.294373, 0.0879242, 0.113586, -0.199481, 0.0945886, -0.0197569, -0.203293, -0.145611, -0.0782563, -0.2822, -0.0685096, -0.0293243, -0.202604, 0.144326, 0.0579711, 0.272513, -0.0977244, -0.0977244, -0.272513, 0.0579711, -0.10496, 0.19966, 0.104167, 0.144325, -0.202603, -0.0293242)
+
+[node name="TravelProjectileType" type="RigidBody3D"]
+collision_layer = 37
+collision_mask = 2
+script = ExtResource("1_k42gj")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_8u8nj")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("CapsuleMesh_neult")
+
+[node name="HitboxComponent" parent="." node_paths=PackedStringArray("_health_component") instance=ExtResource("2_6edqo")]
+transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("ConvexPolygonShape3D_2ujec")
+_hitbox_shape = SubResource("ConvexPolygonShape3D_2ujec")
+_health_component = NodePath("../HealthComponent")
+
+[node name="HealthComponent" parent="." node_paths=PackedStringArray("_defense_component") instance=ExtResource("3_1r30u")]
+_defense_component = NodePath("../DefenseComponent")
+
+[node name="DefenseComponent" parent="." instance=ExtResource("5_0o1ux")]

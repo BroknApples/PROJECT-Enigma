@@ -1,0 +1,14 @@
+[gd_resource type="ParticleProcessMaterial" load_steps=3 format=3 uid="uid://cx0uwsu2encw1"]
+
+[sub_resource type="Curve" id="Curve_a6xpt"]
+max_value = 0.75
+_data = [Vector2(0, 0.75), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_j4hr8"]
+curve = SubResource("Curve_a6xpt")
+
+[resource]
+gravity = Vector3(0, 0, 0)
+color = Color(0.524708, 0.505316, 0.493786, 1)
+alpha_curve = SubResource("CurveTexture_j4hr8")

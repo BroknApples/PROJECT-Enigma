@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="HealthComponent" load_steps=2 format=3 uid="uid://csaqnfyrm35iv"]
+
+[ext_resource type="Script" path="res://src/components/health_component.gd" id="1_5n61q"]
+
+[resource]
+script = ExtResource("1_5n61q")
+_max_health = 0.0
+_current_health = 0.0

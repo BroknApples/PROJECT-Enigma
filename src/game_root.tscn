@@ -5,3 +5,6 @@
 [node name="GameRoot" type="Node"]
 script = ExtResource("1_an8d5")
 metadata/_edit_use_anchors_ = true
+
+[node name="TempNode3D" type="Node3D" parent="."]
+visible = false

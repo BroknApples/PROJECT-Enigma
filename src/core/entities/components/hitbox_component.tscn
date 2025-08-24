@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://bm84midor1pmc"]
+
+[ext_resource type="Script" path="res://src/entities/components/hitbox_component.gd" id="1_d3mq4"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_fuabc"]
+
+[node name="HitboxComponent" type="CollisionShape3D"]
+shape = SubResource("CapsuleShape3D_fuabc")
+script = ExtResource("1_d3mq4")
+hitbox_shape = SubResource("CapsuleShape3D_fuabc")
+metadata/Hitbox = true

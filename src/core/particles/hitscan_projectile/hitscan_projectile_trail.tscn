@@ -1,0 +1,12 @@
+[gd_scene load_steps=4 format=3 uid="uid://bkhekexldgk6s"]
+
+[ext_resource type="Script" path="res://src/core/particles/hitscan_projectile/hitscan_projectile_trail.gd" id="1_5eqr8"]
+[ext_resource type="Material" uid="uid://cx0uwsu2encw1" path="res://src/core/particles/hitscan_projectile/process_material.tres" id="1_g316n"]
+[ext_resource type="BoxMesh" uid="uid://bcs0q065ovpm3" path="res://src/core/particles/hitscan_projectile/mesh.tres" id="2_qx177"]
+
+[node name="HitscanProjectileTrail" type="GPUParticles3D"]
+amount = 1
+lifetime = 0.3
+process_material = ExtResource("1_g316n")
+draw_pass_1 = ExtResource("2_qx177")
+script = ExtResource("1_5eqr8")

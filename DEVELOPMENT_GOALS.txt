@@ -1,0 +1,20 @@
+RULES: {
+	1. Each day, choose AT LEAST ONE GOAL to complete and see it through.
+}
+
+GOALS: {
+	Do-able Right Now: {
+		G0. Search 'TODO:' and clean some of them up
+		G1. Synchronize Nodes using a MultiplayerSpawner
+		G2. Implement Abilities (Base Type and AT LEAST ONE Example)
+		G3. Implement Enemies (Base Type and AT LEAST ONE Example)
+		G4. Implement the UI to actually hold your player data
+		G5. Learn Blender
+		G6. Create a Multi-Hitbox System for adding different damage modifiers for hits (200% for heads, 80% for arms&legs, etc.)
+	}
+	
+	Goals with Prerequisites: {
+		P1. (Need G1) Reformat WorldData into ChunkData in which each chunk has a player controlling spawn logic
+		P2. (Need G5) Create new weapon/world/object models and textures
+	}
+}

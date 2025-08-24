@@ -45,6 +45,9 @@ const WEAPON_TYPE: StringName = &"Weapon_Type"
 # MISC NODES
 const WORLD_NODE: StringName = &"World_Node"
 
+# UUID
+const UUID: StringName = &"UUID"
+
 # ************************************************************ #
 #                     * Signal Functions *                     #
 # ************************************************************ #

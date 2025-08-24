@@ -1,0 +1,6 @@
+[gd_resource type="Resource" script_class="CharacterComponent_Ability" load_steps=2 format=3 uid="uid://g3ppny8fm1c0"]
+
+[ext_resource type="Script" path="res://src/components/ability_component.gd" id="1_7ltdi"]
+
+[resource]
+script = ExtResource("1_7ltdi")

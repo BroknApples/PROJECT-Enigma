@@ -1,0 +1,33 @@
+[gd_scene load_steps=3 format=3 uid="uid://by1jm20vdiuo8"]
+
+[ext_resource type="Script" path="res://src/core/world_controllers/chunk_data/chunk_data.gd" id="1_jkjjf"]
+
+[sub_resource type="Environment" id="Environment_5o31o"]
+
+[node name="ChunkData" type="Node3D"]
+script = ExtResource("1_jkjjf")
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_5o31o")
+
+[node name="Particles" type="Node3D" parent="."]
+
+[node name="Lighting" type="Node3D" parent="."]
+
+[node name="Terrain" type="NavigationRegion3D" parent="."]
+
+[node name="Dynamic" type="Node3D" parent="."]
+
+[node name="Projectiles" type="Node3D" parent="Dynamic"]
+
+[node name="Entities" type="Node3D" parent="."]
+
+[node name="Players" type="Node3D" parent="Entities"]
+
+[node name="Enemies" type="Node3D" parent="Entities"]
+
+[node name="Loot" type="Node3D" parent="Entities"]
+
+[node name="Other" type="Node3D" parent="Entities"]

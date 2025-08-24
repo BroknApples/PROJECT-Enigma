@@ -1,7 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://t3000f2tsxew"]
-
-[ext_resource type="Script" path="res://src/components/defense_component/defense_component.gd" id="1_ylmvh"]
-
-[node name="DefenseComponent" type="Node3D"]
-script = ExtResource("1_ylmvh")
-metadata/Defense_Component = true

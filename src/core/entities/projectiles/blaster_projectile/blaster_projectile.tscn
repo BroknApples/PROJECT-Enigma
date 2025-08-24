@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://i8ulv5dudl5g"]
+
+[ext_resource type="PackedScene" uid="uid://c6wkvlg1aps0k" path="res://src/core/entities/projectiles/travel_projectile_type.tscn" id="1_6ykj7"]
+[ext_resource type="Script" path="res://src/core/entities/projectiles/blaster_projectile/blaster_projectile.gd" id="2_rywb2"]
+
+[node name="BlasterProjectile" instance=ExtResource("1_6ykj7")]
+transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 0.00356042, 0.00703549, -0.0128845)
+script = ExtResource("2_rywb2")
+_projectile_speed = 100.0
+_color = Color(0, 0, 0.980392, 1)

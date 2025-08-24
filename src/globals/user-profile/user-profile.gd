@@ -4,7 +4,7 @@ extends Node
 #                       * File Purpose *                       #
 # ************************************************************ #
 ## 
-## UserData Singleton
+## UserProfile Singleton
 ## 
 ## Defines data specific to the logged-in user
 ## 

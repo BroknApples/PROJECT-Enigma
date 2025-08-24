@@ -103,8 +103,15 @@ func _process(delta: float) -> void:
 		# Time not yet arrived
 		if (_time_until_execution[time_key] > 0.0): continue
 		
+		var removed_callables: Array[Callable] = []
+		
+		# If the key doesn't exist, skip it
+		if (!_scheduler.has(time_key)):
+			continue
+		
 		# Process events
 		var remove_key := false
+		
 		for callable in _scheduler[time_key]:
 			# Invalid callable
 			if (callable == null || !callable.is_valid()):
@@ -115,6 +122,7 @@ func _process(delta: float) -> void:
 			# Remember metadata format: { CallableString : [TimeSlice, IsRecurringEvent] }
 			if (!self.get_meta(Metadata.createMetadataKeyFromCallable(callable))[1]):
 				remove_key = true
+				removed_callables.push_back(callable)
 			
 			# Call function next frame to ensure object safety
 			#
@@ -125,9 +133,11 @@ func _process(delta: float) -> void:
 			Utils.deferCallable(callable)
 		
 		if (remove_key):
-			# Remove Time slice for one-time events
-			_scheduler.erase(time_key)
-			_time_until_execution.erase(time_key)
+			for callable in removed_callables:
+				# Remove Time slice for one-time events
+				_scheduler[time_key].erase(callable)
+				# TODO: I should check if the time block is empty (and custom)
+				# and if so, I can remove the entire time block as well
 		else:
 			# Reset time until next processing
 			# NOTE: Uses ' = time_key' instead of ' += time_key'  to ensure 
@@ -158,11 +168,16 @@ func pushRecurringEvent(callable: Callable, time_slice: int) -> void:
 ## @param callable: Function to call
 ## @param time_slice: When to run event (in milliseconds) | NOTE: Time Slice can be ANY number of time
 func pushOneTimeEvent(callable: Callable, time_slice: int) -> void:
+	# If the time slice doesn't exist, we must add it
 	if (!_scheduler.has(time_slice)):
 		_scheduler[time_slice] = []
-	_scheduler[time_slice].push_back(callable)
 	if (!_time_until_execution.has(time_slice)):
 		_time_until_execution[time_slice] = time_slice
+	
+	# Add the event to the time slice
+	_scheduler[time_slice].push_back(callable)
+	
+	# Set metadata
 	_setEventMetadata(callable, time_slice, false)
 
 ## Remove item from event scheduler
@@ -173,17 +188,15 @@ func erase(callable: Callable) -> void:
 		Logger.logMsg("Callable [" + callable_str + "] does not exist in scheduler", Logger.Category.ERROR)
 		return
 	
-	var time_slice = self.get_meta(callable_str)
+	# Erase the callable from the scheduler
+	var time_slice: int = self.get_meta(callable_str)[0]
 	_scheduler[time_slice].erase(callable)
 
 ## Check if a callable exists in the event scheduler
 ## @param callable: Callable function to check
 func exists(callable: Callable) -> bool:
 	var callable_str := Metadata.createMetadataKeyFromCallable(callable)
-	if (self.has_meta(callable_str)):
-		return true
-	else:
-		return false
+	return self.has_meta(callable_str)
 
 # ************************************************************ #
 #                    * Unit Test Functions *                   #

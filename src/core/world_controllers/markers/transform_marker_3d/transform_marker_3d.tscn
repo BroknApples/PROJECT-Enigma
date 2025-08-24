@@ -1,0 +1,42 @@
+[gd_scene load_steps=8 format=3 uid="uid://cte5tnf31vce5"]
+
+[ext_resource type="Script" path="res://src/core/world_controllers/markers/transform_marker_3d/transform_marker_3d.gd" id="1_mtrb3"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3xi01"]
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_8iqb0"]
+material = SubResource("StandardMaterial3D_3xi01")
+top_radius = 0.01
+bottom_radius = 0.01
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mnjn7"]
+albedo_color = Color(0, 1, 0, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_laelw"]
+material = SubResource("StandardMaterial3D_mnjn7")
+top_radius = 0.01
+bottom_radius = 0.01
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gppxw"]
+albedo_color = Color(0, 0, 1, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_yoq4f"]
+material = SubResource("StandardMaterial3D_gppxw")
+top_radius = 0.01
+bottom_radius = 0.01
+
+[node name="TransformMarker3D" type="Node3D"]
+script = ExtResource("1_mtrb3")
+
+[node name="X_Axis_MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(-4.37114e-08, -0.5, 0, 1, -2.18557e-08, 0, 0, 0, 1, 0.5, 0, 0)
+mesh = SubResource("CylinderMesh_8iqb0")
+
+[node name="Y_Axis_MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.5, 0, 0, 0, 1, 0, 0.5, 0)
+mesh = SubResource("CylinderMesh_laelw")
+
+[node name="Z_Axis_MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -2.18557e-08, -1, 0, 0.5, -4.37114e-08, 0, 0, 0.5)
+mesh = SubResource("CylinderMesh_yoq4f")

@@ -1,0 +1,25 @@
+[gd_scene load_steps=7 format=3 uid="uid://bkhekexldgk6s"]
+
+[ext_resource type="Script" path="res://src/entities/projectiles/hitscan_projectile_effects/hitscan_projectile_trail.gd" id="1_5eqr8"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fbqou"]
+
+[sub_resource type="Gradient" id="Gradient_sjok4"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_7mngt"]
+gradient = SubResource("Gradient_sjok4")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2sy15"]
+transparency = 1
+albedo_texture = SubResource("GradientTexture1D_7mngt")
+
+[sub_resource type="BoxMesh" id="BoxMesh_2eig1"]
+material = SubResource("StandardMaterial3D_2sy15")
+
+[node name="HitscanProjectileTrail" type="GPUParticles3D"]
+amount = 1
+lifetime = 0.8
+process_material = SubResource("ShaderMaterial_fbqou")
+draw_pass_1 = SubResource("BoxMesh_2eig1")
+script = ExtResource("1_5eqr8")

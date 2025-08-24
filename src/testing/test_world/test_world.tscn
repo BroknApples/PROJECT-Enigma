@@ -1,15 +1,18 @@
-[gd_scene load_steps=35 format=3 uid="uid://dnfwgvxxe4rje"]
+[gd_scene load_steps=38 format=3 uid="uid://dnfwgvxxe4rje"]
 
 [ext_resource type="Script" path="res://src/testing/test_world/test_world.gd" id="1_rkljs"]
-[ext_resource type="PackedScene" uid="uid://by1jm20vdiuo8" path="res://src/world_controllers/world_data/world_data.tscn" id="2_idt1h"]
+[ext_resource type="PackedScene" uid="uid://by1jm20vdiuo8" path="res://src/core/world_controllers/chunk_data/chunk_data.tscn" id="2_idt1h"]
 [ext_resource type="Texture2D" uid="uid://j8k0lc4h8063" path="res://src/testing/test_world/resources/baseplate_texture.png" id="3_ef0dr"]
 [ext_resource type="Material" uid="uid://bgyt8qmciylql" path="res://src/testing/test_world/resources/test_object_material.tres" id="4_oqcoo"]
-[ext_resource type="PackedScene" uid="uid://x3uenbuwx0pv" path="res://src/entities/player-character-type/player_character_type.tscn" id="5_rmcb8"]
 [ext_resource type="Material" uid="uid://dbn7pscvei30b" path="res://src/testing/test_world/resources/white_plastic.tres" id="5_va3n4"]
 [ext_resource type="Material" uid="uid://do7qaemyf0evu" path="res://src/testing/test_world/resources/red_plastic.tres" id="6_g3e3r"]
 [ext_resource type="Material" uid="uid://chnqxu3dvte1i" path="res://src/testing/test_world/resources/green_plastic.tres" id="7_3ewuj"]
 [ext_resource type="Material" uid="uid://bwxbfboor5pjr" path="res://src/testing/test_world/resources/blue_plastic.tres" id="8_cei86"]
 [ext_resource type="Material" uid="uid://pbm1426cy0gc" path="res://src/testing/test_world/resources/yellow_plastic.tres" id="9_880dj"]
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_7pflo"]
+vertices = PackedVector3Array(-249.575, 0.834047, -52.1098, -58.3248, 0.834047, -51.8598, -58.0748, 0.834047, -54.1098, -55.8248, 0.834047, -54.3598, -55.8248, 0.834047, -249.36, -249.575, 0.834047, -249.36, 40.9252, 0.834047, -54.3598, 40.9252, 0.834047, -249.36, 43.1752, 0.834047, -54.1098, 43.4252, 0.834047, -51.3598, 249.425, 0.834047, -51.3598, 249.425, 0.834047, -249.36, -57.0748, 15.834, -53.3598, -57.0748, 15.834, -52.8598, 42.1752, 15.834, -52.8598, 42.1752, 15.834, -53.3598, -249.575, 0.834047, 46.3902, -58.3248, 0.834047, 46.1402, -56.0748, 0.834047, -28.8598, -35.8248, 0.834047, -28.8598, -35.8248, 0.834047, -52.1098, -56.0748, 0.834047, -52.1098, -30.3248, 0.834047, -28.6098, -30.0748, 0.834047, -25.3598, -29.8248, 0.834047, -25.3598, -29.5748, 0.834047, -28.6098, -24.0748, 0.834047, -28.6098, -24.0748, 0.834047, -52.1098, -35.8248, 0.834047, -28.6098, -23.5748, 0.834047, -28.3598, -23.5748, 0.834047, -24.6098, -21.0748, 0.834047, -24.6098, -21.0748, 0.834047, -28.3598, -18.8248, 0.834047, -28.6098, -18.8248, 0.834047, -52.1098, -17.0748, 0.834047, -28.6098, -17.0748, 0.834047, -52.1098, -30.0748, 0.834047, -22.6098, -32.0748, 0.834047, -22.3598, -32.0748, 0.834047, -21.1098, -30.0748, 0.834047, -20.8598, -29.5748, 0.834047, -22.3598, -15.0748, 0.834047, -22.3598, -56.0748, 0.834047, 46.3902, 41.1752, 0.834047, 46.3902, 41.1752, 0.834047, -52.1098, -14.8248, 0.834047, -28.3598, -20.8248, 0.834047, -22.3598, -23.8248, 0.834047, -22.3598, -35.8248, 0.834047, -14.8598, -56.0748, 0.834047, -14.6098, -30.0748, 0.834047, -15.1098, 43.4252, 0.834047, 45.3902, 249.425, 0.834047, 45.3902, 32.4252, 8.83405, -30.6098, 32.4252, 8.83405, -16.3598, 41.1752, 8.83405, -16.3598, 41.1752, 8.83405, -30.6098, -36.3248, 0.834047, -28.3598, -36.3248, 0.834047, -20.8598, -36.3248, 0.834047, -22.6098, -36.3248, 0.834047, -15.1098, 0.175201, 5.83405, -27.8598, -1.0748, 5.83405, -27.8598, -1.0748, 5.83405, -22.8598, 0.175201, 5.83405, -22.8598, 0.425201, 5.83405, -22.1098, 6.1752, 5.83405, -22.1098, 6.1752, 5.83405, -28.8598, 0.425201, 5.83405, -28.8598, -35.3248, 3.33405, -27.6098, -35.3248, 3.33405, -23.3598, -31.0748, 3.33405, -23.3598, -31.0748, 3.33405, -27.6098, -28.8248, 4.58405, -27.6098, -28.8248, 4.58405, -23.3598, -24.5748, 4.58405, -23.3598, -24.5748, 4.58405, -27.6098, -20.0748, 5.83405, -27.6098, -20.0748, 5.83405, -23.3598, -15.8248, 5.83405, -23.3598, -15.8248, 5.83405, -27.6098, -35.0748, 0.834047, -27.3598, -35.0748, 0.834047, -23.6098, -31.3248, 0.834047, -23.6098, -31.3248, 0.834047, -27.3598, -28.5748, 0.834047, -27.3598, -28.5748, 0.834047, -23.6098, -24.8248, 0.834047, -23.6098, -24.8248, 0.834047, -27.3598, -19.8248, 0.834047, -27.3598, -19.8248, 0.834047, -23.6098, -16.0748, 0.834047, -23.6098, -16.0748, 0.834047, -27.3598, 0.175201, 5.83405, -21.1098, -1.0748, 5.83405, -14.6098, 6.1752, 5.83405, -14.6098, -1.0748, 5.83405, -21.1098, -35.3248, 2.08405, -20.1098, -35.3248, 2.08405, -15.8598, -31.0748, 2.08405, -15.8598, -31.0748, 2.08405, -20.1098, 43.1752, 0.834047, 48.3902, 40.9252, 0.834047, 48.6402, 40.9252, 0.834047, 249.64, 249.425, 0.834047, 249.64, -58.0748, 0.834047, 48.3902, -55.8248, 0.834047, 48.6402, -249.575, 0.834047, 249.64, -55.8248, 0.834047, 249.64, -57.0748, 15.834, 47.1402, -57.0748, 15.584, 47.6402, 42.1752, 15.584, 47.6402, 42.1752, 15.834, 47.1402)
+polygons = [PackedInt32Array(2, 1, 0), PackedInt32Array(2, 0, 3), PackedInt32Array(3, 0, 4), PackedInt32Array(4, 0, 5), PackedInt32Array(4, 7, 3), PackedInt32Array(3, 7, 6), PackedInt32Array(8, 6, 7), PackedInt32Array(8, 7, 9), PackedInt32Array(9, 7, 10), PackedInt32Array(10, 7, 11), PackedInt32Array(15, 14, 12), PackedInt32Array(12, 14, 13), PackedInt32Array(17, 16, 1), PackedInt32Array(1, 16, 0), PackedInt32Array(21, 20, 18), PackedInt32Array(18, 20, 19), PackedInt32Array(23, 22, 24), PackedInt32Array(24, 22, 25), PackedInt32Array(25, 19, 26), PackedInt32Array(26, 19, 20), PackedInt32Array(26, 20, 27), PackedInt32Array(22, 28, 19), PackedInt32Array(25, 22, 19), PackedInt32Array(32, 31, 29), PackedInt32Array(29, 31, 30), PackedInt32Array(29, 26, 32), PackedInt32Array(32, 26, 33), PackedInt32Array(33, 26, 27), PackedInt32Array(33, 27, 34), PackedInt32Array(34, 36, 33), PackedInt32Array(33, 36, 35), PackedInt32Array(41, 40, 37), PackedInt32Array(37, 40, 39), PackedInt32Array(37, 39, 38), PackedInt32Array(45, 44, 42), PackedInt32Array(42, 44, 43), PackedInt32Array(23, 24, 37), PackedInt32Array(37, 24, 41), PackedInt32Array(42, 46, 45), PackedInt32Array(35, 36, 46), PackedInt32Array(46, 36, 45), PackedInt32Array(31, 47, 30), PackedInt32Array(30, 47, 48), PackedInt32Array(43, 50, 49), PackedInt32Array(40, 41, 48), PackedInt32Array(48, 47, 40), PackedInt32Array(40, 47, 51), PackedInt32Array(43, 49, 51), PackedInt32Array(47, 42, 51), PackedInt32Array(51, 42, 43), PackedInt32Array(9, 10, 52), PackedInt32Array(52, 10, 53), PackedInt32Array(57, 56, 54), PackedInt32Array(54, 56, 55), PackedInt32Array(28, 58, 19), PackedInt32Array(19, 58, 18), PackedInt32Array(39, 59, 38), PackedInt32Array(38, 59, 60), PackedInt32Array(59, 50, 60), PackedInt32Array(60, 50, 18), PackedInt32Array(61, 49, 50), PackedInt32Array(18, 58, 60), PackedInt32Array(59, 61, 50), PackedInt32Array(65, 64, 62), PackedInt32Array(62, 64, 63), PackedInt32Array(65, 62, 66), PackedInt32Array(66, 62, 69), PackedInt32Array(66, 69, 68), PackedInt32Array(66, 68, 67), PackedInt32Array(73, 72, 70), PackedInt32Array(70, 72, 71), PackedInt32Array(77, 76, 74), PackedInt32Array(74, 76, 75), PackedInt32Array(81, 80, 78), PackedInt32Array(78, 80, 79), PackedInt32Array(85, 84, 82), PackedInt32Array(82, 84, 83), PackedInt32Array(89, 88, 86), PackedInt32Array(86, 88, 87), PackedInt32Array(93, 92, 90), PackedInt32Array(90, 92, 91), PackedInt32Array(66, 67, 94), PackedInt32Array(94, 67, 96), PackedInt32Array(94, 96, 95), PackedInt32Array(95, 97, 94), PackedInt32Array(101, 100, 98), PackedInt32Array(98, 100, 99), PackedInt32Array(104, 103, 102), PackedInt32Array(102, 52, 104), PackedInt32Array(104, 52, 53), PackedInt32Array(104, 53, 105), PackedInt32Array(106, 16, 17), PackedInt32Array(106, 107, 16), PackedInt32Array(16, 107, 109), PackedInt32Array(16, 109, 108), PackedInt32Array(113, 112, 110), PackedInt32Array(110, 112, 111), PackedInt32Array(107, 103, 109), PackedInt32Array(109, 103, 104)]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_4uom0"]
 friction = 0.5
@@ -35,11 +38,14 @@ size = Vector3(1, 15, 100)
 [sub_resource type="BoxMesh" id="BoxMesh_86q7b"]
 material = ExtResource("4_oqcoo")
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_svtx7"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_x7idx"]
 size = Vector3(5, 5, 5)
 
-[sub_resource type="BoxMesh" id="BoxMesh_fa7ln"]
-material = ExtResource("5_va3n4")
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h20if"]
+roughness = 0.5
+
+[sub_resource type="BoxMesh" id="BoxMesh_gu8ah"]
+material = SubResource("StandardMaterial3D_h20if")
 size = Vector3(15, 5, 0.5)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_04hva"]
@@ -66,6 +72,10 @@ material = ExtResource("6_g3e3r")
 [sub_resource type="BoxShape3D" id="BoxShape3D_e2h2i"]
 size = Vector3(15, 5, 0.5)
 
+[sub_resource type="BoxMesh" id="BoxMesh_fa7ln"]
+material = ExtResource("5_va3n4")
+size = Vector3(15, 5, 0.5)
+
 [sub_resource type="BoxShape3D" id="BoxShape3D_3o0j1"]
 size = Vector3(15, 5, 0.5)
 
@@ -75,6 +85,9 @@ size = Vector3(8, 2, 15)
 [sub_resource type="BoxMesh" id="BoxMesh_jvtje"]
 material = ExtResource("6_g3e3r")
 size = Vector3(8, 2, 15)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_svtx7"]
+size = Vector3(5, 5, 5)
 
 [sub_resource type="BoxMesh" id="BoxMesh_0t51l"]
 material = ExtResource("6_g3e3r")
@@ -96,223 +109,221 @@ size = Vector3(5, 5, 5)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.022598, -0.0278184, 0.0796919)
 script = ExtResource("1_rkljs")
 
-[node name="WorldData" parent="." instance=ExtResource("2_idt1h")]
+[node name="ChunkData" parent="." instance=ExtResource("2_idt1h")]
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldData/Lighting" index="0"]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="ChunkData/Lighting" index="0"]
 transform = Transform3D(0.229436, 0.737784, -0.634849, -0.250763, 0.675037, 0.693861, 0.940466, 2.45774e-08, 0.339887, -108.791, 101.398, -11.744)
 directional_shadow_mode = 1
 
-[node name="Arena" type="Node3D" parent="WorldData/Terrain" index="0"]
+[node name="Terrain" parent="ChunkData" index="4"]
+navigation_mesh = SubResource("NavigationMesh_7pflo")
 
-[node name="Baseplate" type="StaticBody3D" parent="WorldData/Terrain/Arena"]
+[node name="Arena" type="Node3D" parent="ChunkData/Terrain" index="0"]
+
+[node name="Baseplate" type="StaticBody3D" parent="ChunkData/Terrain/Arena"]
 collision_layer = 3
 physics_material_override = SubResource("PhysicsMaterial_4uom0")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="WorldData/Terrain/Arena/Baseplate"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ChunkData/Terrain/Arena/Baseplate"]
 transform = Transform3D(1, -2.84758e-07, 3.60989e-09, 2.84758e-07, 1, -2.38419e-06, -3.60921e-09, 2.38419e-06, 1, 0, 0, 0)
 shape = SubResource("BoxShape3D_v2lb3")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="WorldData/Terrain/Arena/Baseplate"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ChunkData/Terrain/Arena/Baseplate"]
 transform = Transform3D(500, 0, 0, 0, 1, 0, 0, 0, 500, -0.0747986, 1.90735e-06, 0.140181)
 mesh = SubResource("BoxMesh_ckjlf")
 
-[node name="Wall1" type="StaticBody3D" parent="WorldData/Terrain/Arena"]
+[node name="Wall1" type="StaticBody3D" parent="ChunkData/Terrain/Arena"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 42.4076, 7.83913, -2.89956)
 collision_layer = 3
 physics_material_override = SubResource("PhysicsMaterial_d4arr")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="WorldData/Terrain/Arena/Wall1"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ChunkData/Terrain/Arena/Wall1"]
 transform = Transform3D(1, -2.84758e-07, 3.60989e-09, 2.84758e-07, 1, -2.38419e-06, -3.60921e-09, 2.38419e-06, 1, 0, 0, 0)
 shape = SubResource("BoxShape3D_ui6f8")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="WorldData/Terrain/Arena/Wall1"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ChunkData/Terrain/Arena/Wall1"]
 transform = Transform3D(1, 0, 0, 0, 15, 0, 0, 0, 100, 0, 0, 0)
 mesh = SubResource("BoxMesh_86q7b")
 
-[node name="Wall2" type="StaticBody3D" parent="WorldData/Terrain/Arena"]
+[node name="Wall2" type="StaticBody3D" parent="ChunkData/Terrain/Arena"]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -7.53635, 7.83913, -53.2874)
 collision_layer = 3
 physics_material_override = SubResource("PhysicsMaterial_d4arr")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="WorldData/Terrain/Arena/Wall2"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ChunkData/Terrain/Arena/Wall2"]
 transform = Transform3D(1, -2.84758e-07, 3.60989e-09, 2.84758e-07, 1, -2.38419e-06, -3.60921e-09, 2.38419e-06, 1, 0, 0, 0)
 shape = SubResource("BoxShape3D_ui6f8")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="WorldData/Terrain/Arena/Wall2"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ChunkData/Terrain/Arena/Wall2"]
 transform = Transform3D(1, 0, 0, 0, 15, 0, 0, 0, 100, 0, 0, 0)
 mesh = SubResource("BoxMesh_86q7b")
 
-[node name="Wall3" type="StaticBody3D" parent="WorldData/Terrain/Arena"]
+[node name="Wall3" type="StaticBody3D" parent="ChunkData/Terrain/Arena"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -57.1689, 7.83913, -2.89956)
 collision_layer = 3
 physics_material_override = SubResource("PhysicsMaterial_d4arr")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="WorldData/Terrain/Arena/Wall3"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ChunkData/Terrain/Arena/Wall3"]
 transform = Transform3D(1, -2.84758e-07, 3.60989e-09, 2.84758e-07, 1, -2.38419e-06, -3.60921e-09, 2.38419e-06, 1, 0, 0, 0)
 shape = SubResource("BoxShape3D_ui6f8")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="WorldData/Terrain/Arena/Wall3"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ChunkData/Terrain/Arena/Wall3"]
 transform = Transform3D(1, 0, 0, 0, 15, 0, 0, 0, 100, 0, 0, 0)
 mesh = SubResource("BoxMesh_86q7b")
 
-[node name="Wall4" type="StaticBody3D" parent="WorldData/Terrain/Arena"]
+[node name="Wall4" type="StaticBody3D" parent="ChunkData/Terrain/Arena"]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -7.5129, 7.65067, 47.4317)
 collision_layer = 3
 physics_material_override = SubResource("PhysicsMaterial_d4arr")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="WorldData/Terrain/Arena/Wall4"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ChunkData/Terrain/Arena/Wall4"]
 transform = Transform3D(1, -2.84758e-07, 3.60989e-09, 2.84758e-07, 1, -2.38419e-06, -3.60921e-09, 2.38419e-06, 1, 0, 0, 0)
 shape = SubResource("BoxShape3D_ui6f8")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="WorldData/Terrain/Arena/Wall4"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ChunkData/Terrain/Arena/Wall4"]
 transform = Transform3D(1, 0, 0, 0, 15, 0, 0, 0, 100, 0, 0, 0)
 mesh = SubResource("BoxMesh_86q7b")
 
-[node name="Obstacle Course" type="Node3D" parent="WorldData/Terrain" index="1"]
+[node name="Obstacle Course" type="Node3D" parent="ChunkData/Terrain" index="1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.193596, 0.173347, -0.361435)
 
-[node name="Obstacle Base Type" type="StaticBody3D" parent="WorldData/Terrain/Obstacle Course"]
+[node name="Obstacle Base Type" type="StaticBody3D" parent="ChunkData/Terrain/Obstacle Course"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.19014, -4.3393, 0.23747)
+visible = false
 collision_layer = 3
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="WorldData/Terrain/Obstacle Course/Obstacle Base Type"]
-shape = SubResource("BoxShape3D_svtx7")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ChunkData/Terrain/Obstacle Course/Obstacle Base Type"]
+shape = SubResource("BoxShape3D_x7idx")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="WorldData/Terrain/Obstacle Course/Obstacle Base Type"]
-mesh = SubResource("BoxMesh_fa7ln")
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ChunkData/Terrain/Obstacle Course/Obstacle Base Type"]
+mesh = SubResource("BoxMesh_gu8ah")
 
-[node name="GrappleSection" type="Node3D" parent="WorldData/Terrain/Obstacle Course"]
+[node name="GrappleSection" type="Node3D" parent="ChunkData/Terrain/Obstacle Course"]
 
-[node name="Floating Block3" type="StaticBody3D" parent="WorldData/Terrain/Obstacle Course/GrappleSection"]
+[node name="Floating Block3" type="StaticBody3D" parent="ChunkData/Terrain/Obstacle Course/GrappleSection"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.4451, 13.0826, -19.026)
 collision_layer = 3
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="WorldData/Terrain/Obstacle Course/GrappleSection/Floating Block3"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ChunkData/Terrain/Obstacle Course/GrappleSection/Floating Block3"]
 shape = SubResource("BoxShape3D_04hva")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="WorldData/Terrain/Obstacle Course/GrappleSection/Floating Block3"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ChunkData/Terrain/Obstacle Course/GrappleSection/Floating Block3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0062561, -0.0096941, -0.00775719)
 mesh = SubResource("BoxMesh_t0ged")
 
-[node name="Floating Block2" type="StaticBody3D" parent="WorldData/Terrain/Obstacle Course/GrappleSection"]
+[node name="Floating Block2" type="StaticBody3D" parent="ChunkData/Terrain/Obstacle Course/GrappleSection"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.7257, 14.0463, -27.3815)
 collision_layer = 3
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="WorldData/Terrain/Obstacle Course/GrappleSection/Floating Block2"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ChunkData/Terrain/Obstacle Course/GrappleSection/Floating Block2"]
 shape = SubResource("BoxShape3D_04hva")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="WorldData/Terrain/Obstacle Course/GrappleSection/Floating Block2"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ChunkData/Terrain/Obstacle Course/GrappleSection/Floating Block2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0062561, -0.0096941, -0.00775719)
 mesh = SubResource("BoxMesh_bskd4")
 
-[node name="Floating Block" type="StaticBody3D" parent="WorldData/Terrain/Obstacle Course/GrappleSection"]
+[node name="Floating Block" type="StaticBody3D" parent="ChunkData/Terrain/Obstacle Course/GrappleSection"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.6905, 12.5489, -23.9971)
 collision_layer = 3
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="WorldData/Terrain/Obstacle Course/GrappleSection/Floating Block"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ChunkData/Terrain/Obstacle Course/GrappleSection/Floating Block"]
 shape = SubResource("BoxShape3D_04hva")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="WorldData/Terrain/Obstacle Course/GrappleSection/Floating Block"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ChunkData/Terrain/Obstacle Course/GrappleSection/Floating Block"]
 mesh = SubResource("BoxMesh_52xqj")
 
-[node name="Random Block6" type="StaticBody3D" parent="WorldData/Terrain/Obstacle Course/GrappleSection"]
+[node name="Random Block6" type="StaticBody3D" parent="ChunkData/Terrain/Obstacle Course/GrappleSection"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 37.1545, 7.35733, -23.1963)
 collision_layer = 3
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="WorldData/Terrain/Obstacle Course/GrappleSection/Random Block6"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ChunkData/Terrain/Obstacle Course/GrappleSection/Random Block6"]
 shape = SubResource("BoxShape3D_nbi55")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="WorldData/Terrain/Obstacle Course/GrappleSection/Random Block6"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ChunkData/Terrain/Obstacle Course/GrappleSection/Random Block6"]
 mesh = SubResource("BoxMesh_eggtp")
 
-[node name="Floating Block4" type="StaticBody3D" parent="WorldData/Terrain/Obstacle Course/GrappleSection"]
+[node name="Floating Block4" type="StaticBody3D" parent="ChunkData/Terrain/Obstacle Course/GrappleSection"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 29.7844, 15.5669, -27.2938)
 collision_layer = 3
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="WorldData/Terrain/Obstacle Course/GrappleSection/Floating Block4"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ChunkData/Terrain/Obstacle Course/GrappleSection/Floating Block4"]
 shape = SubResource("BoxShape3D_04hva")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="WorldData/Terrain/Obstacle Course/GrappleSection/Floating Block4"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ChunkData/Terrain/Obstacle Course/GrappleSection/Floating Block4"]
 mesh = SubResource("BoxMesh_n76yp")
 
-[node name="WallRunSection" type="Node3D" parent="WorldData/Terrain/Obstacle Course"]
+[node name="WallRunSection" type="Node3D" parent="ChunkData/Terrain/Obstacle Course"]
 
-[node name="WallRunWall" type="StaticBody3D" parent="WorldData/Terrain/Obstacle Course/WallRunSection"]
+[node name="WallRunWall" type="StaticBody3D" parent="ChunkData/Terrain/Obstacle Course/WallRunSection"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.41386, 7.68569, -21.5355)
 collision_layer = 3
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="WorldData/Terrain/Obstacle Course/WallRunSection/WallRunWall"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ChunkData/Terrain/Obstacle Course/WallRunSection/WallRunWall"]
 shape = SubResource("BoxShape3D_e2h2i")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="WorldData/Terrain/Obstacle Course/WallRunSection/WallRunWall"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ChunkData/Terrain/Obstacle Course/WallRunSection/WallRunWall"]
 mesh = SubResource("BoxMesh_fa7ln")
 
-[node name="WallRunWall2" type="StaticBody3D" parent="WorldData/Terrain/Obstacle Course/WallRunSection"]
+[node name="WallRunWall2" type="StaticBody3D" parent="ChunkData/Terrain/Obstacle Course/WallRunSection"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.41386, 7.68569, -28.4595)
 collision_layer = 3
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="WorldData/Terrain/Obstacle Course/WallRunSection/WallRunWall2"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ChunkData/Terrain/Obstacle Course/WallRunSection/WallRunWall2"]
 shape = SubResource("BoxShape3D_3o0j1")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="WorldData/Terrain/Obstacle Course/WallRunSection/WallRunWall2"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ChunkData/Terrain/Obstacle Course/WallRunSection/WallRunWall2"]
 mesh = SubResource("BoxMesh_fa7ln")
 
-[node name="Random Block5" type="StaticBody3D" parent="WorldData/Terrain/Obstacle Course/WallRunSection"]
+[node name="Random Block5" type="StaticBody3D" parent="ChunkData/Terrain/Obstacle Course/WallRunSection"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.85476, 4.16687, -21.3628)
 collision_layer = 3
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="WorldData/Terrain/Obstacle Course/WallRunSection/Random Block5"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ChunkData/Terrain/Obstacle Course/WallRunSection/Random Block5"]
 shape = SubResource("BoxShape3D_tckad")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="WorldData/Terrain/Obstacle Course/WallRunSection/Random Block5"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ChunkData/Terrain/Obstacle Course/WallRunSection/Random Block5"]
 mesh = SubResource("BoxMesh_jvtje")
 
-[node name="MainBlockJumpStaircase" type="Node3D" parent="WorldData/Terrain/Obstacle Course"]
+[node name="MainBlockJumpStaircase" type="Node3D" parent="ChunkData/Terrain/Obstacle Course"]
 
-[node name="Random Block" type="StaticBody3D" parent="WorldData/Terrain/Obstacle Course/MainBlockJumpStaircase"]
+[node name="Random Block" type="StaticBody3D" parent="ChunkData/Terrain/Obstacle Course/MainBlockJumpStaircase"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33.0444, -1.0203, -17.5909)
 collision_layer = 3
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="WorldData/Terrain/Obstacle Course/MainBlockJumpStaircase/Random Block"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ChunkData/Terrain/Obstacle Course/MainBlockJumpStaircase/Random Block"]
 shape = SubResource("BoxShape3D_svtx7")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="WorldData/Terrain/Obstacle Course/MainBlockJumpStaircase/Random Block"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ChunkData/Terrain/Obstacle Course/MainBlockJumpStaircase/Random Block"]
 mesh = SubResource("BoxMesh_0t51l")
 
-[node name="Random Block2" type="StaticBody3D" parent="WorldData/Terrain/Obstacle Course/MainBlockJumpStaircase"]
+[node name="Random Block2" type="StaticBody3D" parent="ChunkData/Terrain/Obstacle Course/MainBlockJumpStaircase"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33.0444, 0.198635, -25.1265)
 collision_layer = 3
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="WorldData/Terrain/Obstacle Course/MainBlockJumpStaircase/Random Block2"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ChunkData/Terrain/Obstacle Course/MainBlockJumpStaircase/Random Block2"]
 shape = SubResource("BoxShape3D_svtx7")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="WorldData/Terrain/Obstacle Course/MainBlockJumpStaircase/Random Block2"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ChunkData/Terrain/Obstacle Course/MainBlockJumpStaircase/Random Block2"]
 mesh = SubResource("BoxMesh_jwdv5")
 
-[node name="Random Block3" type="StaticBody3D" parent="WorldData/Terrain/Obstacle Course/MainBlockJumpStaircase"]
+[node name="Random Block3" type="StaticBody3D" parent="ChunkData/Terrain/Obstacle Course/MainBlockJumpStaircase"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.3869, 1.43591, -25.1265)
 collision_layer = 3
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="WorldData/Terrain/Obstacle Course/MainBlockJumpStaircase/Random Block3"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ChunkData/Terrain/Obstacle Course/MainBlockJumpStaircase/Random Block3"]
 shape = SubResource("BoxShape3D_svtx7")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="WorldData/Terrain/Obstacle Course/MainBlockJumpStaircase/Random Block3"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ChunkData/Terrain/Obstacle Course/MainBlockJumpStaircase/Random Block3"]
 mesh = SubResource("BoxMesh_5gcxv")
 
-[node name="Random Block4" type="StaticBody3D" parent="WorldData/Terrain/Obstacle Course/MainBlockJumpStaircase"]
+[node name="Random Block4" type="StaticBody3D" parent="ChunkData/Terrain/Obstacle Course/MainBlockJumpStaircase"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.7484, 2.71915, -25.1265)
 collision_layer = 3
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="WorldData/Terrain/Obstacle Course/MainBlockJumpStaircase/Random Block4"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ChunkData/Terrain/Obstacle Course/MainBlockJumpStaircase/Random Block4"]
 shape = SubResource("BoxShape3D_svtx7")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="WorldData/Terrain/Obstacle Course/MainBlockJumpStaircase/Random Block4"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ChunkData/Terrain/Obstacle Course/MainBlockJumpStaircase/Random Block4"]
 mesh = SubResource("BoxMesh_glk7l")
 
-[node name="PlayerCharacterType" parent="WorldData/Entities/Players" index="0" instance=ExtResource("5_rmcb8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
-
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0, 27.2284, 0)
-
-[editable path="WorldData"]
+[editable path="ChunkData"]

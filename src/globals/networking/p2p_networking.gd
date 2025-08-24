@@ -25,10 +25,18 @@ enum ServerAccessiblity {
 #                        * Variables *                         #
 # ************************************************************ #
 
-## Emitted when validating a client's connection to a host
-signal SIG_server_handshake(valid: bool)
+# Signals
+signal SIG_host_peer_detected(host_ip: String) ## Emitted when a host is detected when searching for peers
+signal SIG_server_handshake(valid: bool) ## Emitted when validating a client's connection to a host
+signal SIG_peer_connected(id: int)
+signal SIG_peer_disconnected(id: int)
+signal SIG_connected_to_server()
+signal SIG_connection_failed()
+signal SIG_server_disconnected()
+
 
 # General Networking
+var _local_peer_id: int = 0 ## Multiplayer peer_id
 var _known_host_peers: Array[String] = [] ## Known clients acting as hosts
 var _host := false ## Is the current client the host
 var _listening_for_lan_host_peers := false ## Is the current client listening for peers over LAN
@@ -46,7 +54,7 @@ const _HOST_PEER_BROADCAST_MESSAGE: StringName = &"P2P_HOST_SERVER_OPEN" ## Stri
 var _udp_socket: PacketPeerUDP = null ## UDP connection listener
 
 # ENet Networking
-const _SERVER_RPC_ID: int = 1 ## RPC ID of the server
+const HOST_PEER_ID: int = 1 ## The peer id of the host is ALWAYS 1
 const _MULTIPLAYER_ENET_PORT_NUMBER: int = 35759 ## Port number to pass data through
 const _MULTIPLAYER_ENET_MAX_CLIENTS: int = 4 ## Maximum number of clients that can connect to a single server
 var _multiplayer_enet: ENetMultiplayerPeer = null ## Multiplayer ENet
@@ -55,9 +63,59 @@ var _multiplayer_enet: ENetMultiplayerPeer = null ## Multiplayer ENet
 #                     * Signal Functions *                     #
 # ************************************************************ #
 
+## Emitted when searching for hosts and one is detected
+func _on_host_peer_detected(host_ip: String) -> void:
+	# Append to known hosts list if its not already in it
+	if (host_ip not in _known_host_peers):
+		_known_host_peers.append(host_ip)
+
+## Emitted when a peer is connected
+func _on_internal_peer_connected(id: int) -> void:
+	Logger.logMsg("Peer connected %d" % id, Logger.Category.NETWORK)
+	self.SIG_peer_connected.emit(id)
+
+## Emitted when a peer disconnects
+func _on_internal_peer_disconnected(id: int) -> void:
+	Logger.logMsg("Peer disconnected %d." % id, Logger.Category.NETWORK)
+	self.SIG_peer_disconnected.emit(id)
+
+## Emitted when you connect to the server
+func _on_internal_connected_to_server() -> void:
+	Logger.logMsg("Connected to host.", Logger.Category.NETWORK)
+	self.SIG_connection_failed
+
+## Emitted when you fail to connect to the server
+func _on_connection_failed() -> void:
+	Logger.logMsg("Wrapper: Connection to host failed.", Logger.Category.NETWORK)
+	self.SIG_connection_failed.emit()
+
+## Emitted when the server disconnects
+func _on_internal_server_disconnected() -> void:
+	Logger.logMsg("Server disconnected.", Logger.Category.NETWORK)
+	self.SIG_server_disconnected.emit()
+
 # ************************************************************ #
 #                    * Private Functions *                     #
 # ************************************************************ #
+
+## Setup essential multiplayer enet processes, including signals
+func _setupMultiplayerEnet() -> void:
+	# Create instance
+	if (_multiplayer_enet == null):
+		_multiplayer_enet = ENetMultiplayerPeer.new()
+	
+	# Set signals
+	multiplayer.peer_connected.connect(_on_internal_peer_connected)
+	multiplayer.peer_disconnected.connect(_on_internal_peer_disconnected)
+	multiplayer.connection_failed.connect(_on_connection_failed)
+	multiplayer.server_disconnected.connect(_on_internal_server_disconnected)
+	multiplayer.connected_to_server.connect(_on_internal_connected_to_server)
+
+
+## Resets the multiplayer enet to null
+func _resetMultiplayerEnet() -> void:
+	multiplayer.multiplayer_peer = null
+	_multiplayer_enet = null
 
 ## Broadcast a packet that tells clients they wish to accept connections
 func _broadcastServerConnection() -> void:
@@ -83,8 +141,8 @@ func _broadcastServerConnection() -> void:
 @rpc ("any_peer", "call_remote", "reliable")
 func _clientToServerHandshake(user_profile: UserProfile) -> void:
 	# TODO: List some actual profile data in this log message
-	Logger.logMsg("Server recieved new connection: <>", Logger.Category.NETWORK)
-	Callable(_serverToClientHandshake).rpc(user_profile)
+	Logger.logMsg("Server recieved new connection: <" + "some_profile_id" + ">", Logger.Category.NETWORK)
+	_serverToClientHandshake.rpc(user_profile)
 
 ## Used to validate peer connections to the host server.
 ## Called by the server host
@@ -106,6 +164,10 @@ func _serverToClientHandshake(user_profile: UserProfile) -> void:
 #                     * Godot Functions *                      #
 # ************************************************************ #
 
+func _ready() -> void:
+	# Connect signals
+	SIG_host_peer_detected.connect(_on_host_peer_detected)
+
 ## Only used when detecting other peers over LAN/NAT
 func _process(_delta: float) -> void:
 	# TODO: Implement 'server_accessibility'
@@ -122,10 +184,13 @@ func _process(_delta: float) -> void:
 		if (packet_message == _HOST_PEER_BROADCAST_MESSAGE && !_host):
 			Logger.logMsg("Discovered host at IP: " + sender_ip, Logger.Category.NETWORK)
 			if (!_known_host_peers.has(sender_ip)):
-				_known_host_peers.append(sender_ip)
+				# Emit signal that a host was detected
+				self.SIG_host_peer_detected.emit(sender_ip)
+	
 	# Client is listening for peers over NAT
 	elif (_listening_for_lan_host_peers && !_host):
 		pass
+	
 	# Servers is broadcasting a discovery signal to peers
 	elif (_broadcasting_server_to_peers && _host):
 		pass
@@ -133,6 +198,21 @@ func _process(_delta: float) -> void:
 # ************************************************************ #
 #                     * Public Functions *                     #
 # ************************************************************ #
+
+## Close down networking
+func closeNetworking() -> void:
+	# Stop broadcasting to peers
+	if (P2PNetworking.isBroadcastingToPeers()):
+		P2PNetworking.stopBroadcastingToPeers()
+	
+	# Stop listening for hosts
+	if (P2PNetworking.isListeningForHosts()):
+		P2PNetworking.stopListeningForHosts()
+	
+	# Close down udp and enet
+	_resetMultiplayerEnet()
+	# TODO: Make func for udp socket
+	_udp_socket = null
 
 ## Get known hosts actively looking for clients
 func getKnownHosts() -> Array[String]:
@@ -153,12 +233,15 @@ func connectToHost(host_ip_addr: String) -> void:
 	stopListeningForHosts()
 	
 	# If enet is not setup, setup enet
-	if (_multiplayer_enet == null): _multiplayer_enet = ENetMultiplayerPeer.new()
+	_setupMultiplayerEnet()
 	
-	# Create server
+	# Connect as a client
 	_multiplayer_enet.create_client(host_ip_addr, _MULTIPLAYER_ENET_PORT_NUMBER)
 	multiplayer.multiplayer_peer = _multiplayer_enet
 	Logger.logMsg("Connected to host (%s)!" % host_ip_addr, Logger.Category.NETWORK)
+	
+	# Set local peer id
+	setLocalPeerID()
 
 ## Disconnect from the host (or simply close the server if you are the host)
 func disconnectFromHost() -> void:
@@ -169,8 +252,11 @@ func disconnectFromHost() -> void:
 		# send data to a missing server and stuff
 		pass
 	
-	multiplayer.multiplayer_peer = null
-	_multiplayer_enet = null
+	# Reset multiplayer peer state
+	_resetMultiplayerEnet()
+	
+	# Check local peer id
+	setLocalPeerID()
 	
 	# TODO: Should probably go to the lobby scene too
 
@@ -181,11 +267,16 @@ func becomeHost() -> void:
 	# Ensure client is no longer listening for peers
 	stopListeningForHosts()
 	
-	# # Create server | If enet is not setup, setup enet
-	if (_multiplayer_enet == null): _multiplayer_enet = ENetMultiplayerPeer.new()
+	# Setup enet
+	_setupMultiplayerEnet()
+	
+	# Create server
 	_multiplayer_enet.create_server(_MULTIPLAYER_ENET_PORT_NUMBER, _MULTIPLAYER_ENET_MAX_CLIENTS)
 	multiplayer.multiplayer_peer = _multiplayer_enet
 	setHostState(true)
+	
+	# Set local peer id
+	setLocalPeerID()
 
 ## Open your host server to other peers
 func openServerToPeers() -> void:
@@ -262,12 +353,45 @@ func isBroadcastingToPeers() -> bool:
 
 ## Used to validate the connection between the host ansd peer
 func validateConnection() -> bool:
+	# If there is no multiplayer peer, immediately return false
+	if (!multiplayer.has_multiplayer_peer()):
+		return false
+	
+	# Return true if the client is the server itself
+	if (P2PNetworking.isServer()):
+		return true
+		
+	# If the multiplayer peer is not yet connected, but is trying to connect, wait
+	if (multiplayer.get_multiplayer_peer().get_connection_status() != MultiplayerPeer.CONNECTION_CONNECTED):
+		await multiplayer.multiplayer_peer.peer_connected
+	
+	# Attemp to handshake the server
 	Logger.logMsg("Attempting to validate connection with host...", Logger.Category.NETWORK)
-	Callable(_clientToServerHandshake).rpc(UserProfile)
+	_clientToServerHandshake.rpc(UserProfile)
 	
 	# Wait for result of handshake
 	var result = await self.SIG_server_handshake
 	return result
+
+## Sets the local peer id of this client for the server
+## Does NOT need a value to be passed to set.
+func setLocalPeerID() -> void:
+	_local_peer_id = multiplayer.get_unique_id()
+
+## Gets the local peer id of the client when connected to the server
+func getLocalPeerID() -> int:
+	return _local_peer_id
+
+## Checks if the game is currently in networking mode
+## (If the MultiplayerENet is set up, then it is networking)
+## @returns bool: True/False of networking status
+func isNetworking() -> bool:
+	return _multiplayer_enet != null
+
+## Checks if the current game client is the server when in multiplayer mode
+## @returns bool: True/False of authority status
+func isServer() -> bool:
+	return !P2PNetworking.isNetworking() || multiplayer.is_server()
 
 # ************************************************************ #
 #                    * Unit Test Functions *                   #

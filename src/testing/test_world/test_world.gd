@@ -17,7 +17,9 @@ extends Node3D
 #                        * Variables *                         #
 # ************************************************************ #
 
-@onready var _world_data := $WorldData ## Premade class that defines where all the objects exist in the world
+# TODO: Reformat world data to being the super class of all worlds
+# Makes it easier to add objects to the world / use functions
+@onready var _chunk_data: ChunkData = $ChunkData ## Premade class that defines where all the objects exist in the world
 
 # ************************************************************ #
 #                     * Signal Functions *                     #
@@ -34,23 +36,26 @@ extends Node3D
 func _ready() -> void:
 	# Set metadata
 	self.set_meta(Metadata.WORLD_NODE, true)
-	
-	call_deferred("setCamera")
 
-# TESTING
-func setCamera():
-	$WorldData/Entities/Players/PlayerCharacterType.getCameraPivot().setToCurrentCamera()
-	$WorldData/Entities/Players/PlayerCharacterType.getCameraPivot().setToFirstPerson()
-# TESTING
+# TODO: Set camera to 'player_id' pov
 
 # ************************************************************ #
 #                     * Public Functions *                     #
 # ************************************************************ #
 
 ## Get the world data node for this world
-## @returns WorldData: World data class type
-func getWorldData() -> WorldData:
-	return _world_data
+## @returns ChunkData: ChunkData class type
+func getChunkData() -> ChunkData:
+	return _chunk_data
+
+## Add a player to the player list in this world
+func addPlayer(peer_id: int) -> void:
+	# Add the player
+	await _chunk_data.addPlayerEntityFromFilePath(AssetManager.getAssetPath(AssetManager.Assets.PLAYER_CHARACTER_TYPE_SCENE), [peer_id])
+	
+	# TODO: Setup a player spawner position node, these will allow players to spawn at a position
+	# if and only if there is no object present in some area3d node or something
+	# TODO: Fix the 2nd player spawning in the ground(idk why it even happens tbh)
 
 # ************************************************************ #
 #                    * Unit Test Functions *                   #

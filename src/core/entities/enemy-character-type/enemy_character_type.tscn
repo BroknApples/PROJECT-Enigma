@@ -1,0 +1,31 @@
+[gd_scene load_steps=4 format=3 uid="uid://p4wlmt2mrl7d"]
+
+[ext_resource type="PackedScene" uid="uid://c3eqsrwplxe2h" path="res://src/core/entities/character-type/character_type.tscn" id="1_y0i4j"]
+[ext_resource type="Script" path="res://src/core/entities/enemy-character-type/enemy_character_type.gd" id="2_6ybm8"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_26jiv"]
+radius = 20.0
+
+[node name="EnemyCharacterType" instance=ExtResource("1_y0i4j")]
+collision_layer = 21
+script = ExtResource("2_6ybm8")
+_crouch_minimum_movement_speed = null
+_crouch_max_movement_speed = null
+_crouch_initial_acceleration_speed = null
+_walk_minimum_movement_speed = null
+_walk_max_movement_speed = null
+_walk_initial_acceleration_speed = null
+_run_minimum_movement_speed = null
+_run_max_movement_speed = null
+_run_initial_acceleration_speed = null
+_jump_velocity = null
+_air_deceleration_speed = null
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="." index="8"]
+
+[node name="EnemyNodeDetectionArea3D" type="Area3D" parent="." index="9"]
+collision_mask = 8388608
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="EnemyNodeDetectionArea3D" index="0"]
+shape = SubResource("CylinderShape3D_26jiv")
