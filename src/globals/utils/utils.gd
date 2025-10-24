@@ -219,7 +219,7 @@ func getNodePath(node: Node) -> NodePath:
 		# Check if the node has a UUID, if so set its new path
 		if (node.has_meta(Metadata.UUID)):
 			var uuid: int = node.get_meta(Metadata.UUID)
-			UUID.setUuidToNewNodePath.rpc(uuid, node_path)
+			UUID.setUuidToNewNodePath(uuid, node_path)
 	
 	# Return the new path
 	return node_path
@@ -227,8 +227,7 @@ func getNodePath(node: Node) -> NodePath:
 ## Disable the process functions of a node until it is initialized
 ## NOTE: The node must have the signal SIG_initialized and the private variable _initialized
 ## @param node: Node to set
-## @param server_only_process: Should the node only be processed on the server (default is true)
-func disableProcessingUntilInitialized(node: Node, server_only_process: bool = true) -> void:
+func disableProcessingUntilInitialized(node: Node) -> void:
 	# Wait until the node is initialized
 	if (!node._initialized):
 		# Until the node is initialized, do not run process functions
@@ -237,9 +236,7 @@ func disableProcessingUntilInitialized(node: Node, server_only_process: bool = t
 		# TODO: Make it time out if it takes more than like 250ms or something and force quit
 		await node.SIG_initialized
 	
-	# Only the server should run process functions
-	if (!server_only_process || P2PNetworking.isServer()):
-		node.set_process_mode(Node.PROCESS_MODE_ALWAYS)
+	node.set_process_mode(Node.PROCESS_MODE_ALWAYS)
 
 ## Waits until a node is ready before continuing
 ## @param node: Node to wait for

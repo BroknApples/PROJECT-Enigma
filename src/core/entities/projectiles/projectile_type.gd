@@ -60,7 +60,6 @@ func _applyColorToMesh() -> void:
 ## Initialize projectile
 ## @param initialize_arr: Initializer array with data as such:
 ## damage_component_path: DamageComponent, transform_data: Transform3D, projectile_scale: Vector3
-@rpc("any_peer", "call_local", "reliable")
 func initialize(initialize_arr: Array) -> void:
 	# Set UUID
 	UUID.setMetadata(self, initialize_arr[UUID.INITIALIZER_ARRAY_UUID_INDEX])

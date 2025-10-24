@@ -14,26 +14,6 @@ class_name ChunkData
 # When a player changes their region, in the world scene, just simply reparent the player node;
 # same with any other object
 
-#TODO: On the case of syncing spawned nodes:
-#Player enters the chunk’s area (e.g., an Area3D node).
-#Client sends an RPC to the server:
-#“Hey server, I’m entering this chunk area, can I control spawning here?”
-#Server checks if the chunk is free:
-#If yes, assigns the player’s PEER_ID as the controlled_by owner of that chunk and lets them spawn enemies.
-#If no (someone else owns it), denies or ignores the request.
-#While the player owns the chunk
-#They can trigger spawn events or the chunk can operate autonomously, tied to that owner.
-#When the player leaves the area:
-#The client sends another RPC: “I’m leaving the chunk area.”
-#Server clears the controlled_by so others can take control.
-#
-# NOTE: The client that owns the chunk should do all the processing for figuring out WHAT to spawn, but
-# the host/server is still responsile for actually spawning the node through the multiplayerSpawner
-#
-# NOTE: A REALLY GOOD IDEA IS PREDICTING THE SPAWNS FOR THE ENITE BATCH OF ENEMIES and sending
-# the entire predicted data across the server. Reduces the amount of rpc calls and the size of
-# the rpc calls.
-
 # ************************************************************ #
 #                     * Enums & Classes *                      #
 # ************************************************************ #
@@ -93,16 +73,12 @@ var _default_spawn_list := [
 #                    * Private Functions *                     #
 # ************************************************************ #
 
-# TODO: Change from any_peer to authority, though this requires another helper function that sends
-# the request to the authority along with data needed for the request to work.
 
 ## Reparent an existing node to the world_data scene tree
-## NOTE: Utilizes an rpc call to replicate over the network
 ## NOTE: Assumes that the node has already called "initialize"
 ## @param node_uuid: UUID of the to the node to reparent
 ## @param category_path: Path to the category to add the node to (Entities, Dynamic, Lighting, etc.)
 ## @param initialize_arr: Array full of data used to initialize the object. NOTE: THIS CANNOT CONTAIN NODES; MUST BE PURELY DATA
-@rpc("any_peer", "call_local", "unreliable")
 func _reparentNode(node_uuid: int, category_path: NodePath) -> void:
 	var node = UUID.getNodeFromUuid(node_uuid)
 	
@@ -119,19 +95,17 @@ func _reparentNode(node_uuid: int, category_path: NodePath) -> void:
 		node.call_deferred(&"reparent", get_node(category_path))
 
 ## Add a packed scene to the scene tree
-## NOTE: Utilizes an rpc call to replicate over the network
 ## @param packed_scene: Packed scene to instantiate and add
 ## @param category_path: Path to the category to add the node to (Entities, Dynamic, Lighting, etc.)
 ## @param initialize_arr: Array full of data used to initialize the object. NOTE: THIS CANNOT CONTAIN NODES; MUST BE PURELY DATA
-@rpc("any_peer", "call_local", "unreliable")
 func _addPackedScene(packed_scene: PackedScene, category_path: NodePath, initialize_arr: Array) -> void:
-	# Use RPC to spawn PackedScenes
+	# Spawn PackedScenes
 	var instance := packed_scene.instantiate()
 	get_node(category_path).call_deferred(&"add_child", instance)
 	
 	# If an initialize function exist, call it with the correct data
 	if (instance.has_method("initialize")):
-		instance.initialize.rpc(initialize_arr)
+		instance.initialize(initialize_arr)
 
 ## Add a packed scene to the scene tree
 ## NOTE: Utilizes a MultiplayerSpawner to replicate over the network	
@@ -139,45 +113,16 @@ func _addPackedScene(packed_scene: PackedScene, category_path: NodePath, initial
 ## @param category_path: Path to the category to add the node to (Entities, Dynamic, Lighting, etc.)
 ## @param initialize_arr: Array full of data used to initialize the object. NOTE: THIS CANNOT CONTAIN NODES; MUST BE PURELY DATA
 func _addSceneFromFilePath(scene_path: StringName, category_path: NodePath, initialize_arr: Array) -> void:
-	# Run THIS code when playing in multiplayer sessions
-	if (P2PNetworking.isNetworking()):
-		# Use MultiplayerSpawner to spawn using the file path
-		# (It must be registered already or it won't work as expected).
-		_syncSpawnPath.rpc(category_path)
-		
-		var scene: PackedScene = load(String(scene_path))
-		var instance: Node = scene.instantiate()
-		
-		# Add node to tree -> This initiates the replication on peers
-		var category := get_node_or_null(category_path)
-		category.add_child(instance, true)
-		
-		# If an initialize function exist, call it
-		# with the correct data on all peers
-		if (instance.has_method("initialize")):
-			instance.initialize.rpc(initialize_arr)
-		
-		# TODO: Check if the current client is the authority before doing
-		# anything in the '...FromFilePath' functions
+	var category := get_node_or_null(category_path)
 	
-	# Run THIS code when in singleplayer settings
-	else:
-		var category := get_node_or_null(category_path)
-		
-		var instance = load(String(scene_path)).instantiate()
-		
-		# If an initialize function exist, call it with the correct data
-		if (instance.has_method("initialize")):
-			instance.initialize.rpc(initialize_arr)
-		
-		# Add node to the tree
-		category.add_child(instance)
-
-## Sync the spawn path for a multiplayer spawner over rpc
-## @param category_path: New spawn path
-@rpc("any_peer", "call_local", "reliable")
-func _syncSpawnPath(path: NodePath) -> void:
-	multiplayer_spawner.spawn_path = path
+	var instance = load(String(scene_path)).instantiate()
+	
+	# If an initialize function exist, call it with the correct data
+	if (instance.has_method("initialize")):
+		instance.initialize(initialize_arr)
+	
+	# Add node to the tree
+	category.add_child(instance)
 
 # ************************************************************ #
 #                     * Godot Functions *                      #
@@ -192,17 +137,8 @@ func _ready() -> void:
 #                     * Public Functions *                     #
 # ************************************************************ #
 
-## Regiseter a list of spawnable scenes to the multiplayer spawner on each client
-## @param spawn_list: List of scene paths to register
-@rpc("authority", "call_local", "reliable")
-func registerSpawnableScenes(spawn_list: Array[StringName]) -> void:
-	for item in spawn_list:
-		multiplayer_spawner.add_spawnable_scene(item)
-
-
 
 # TODO: Stuff like 'findAllPlayerPositions' or 'findAllEnemyPositions' or 'findAllLootPositions', etc.
-
 
 
 ## WORLD_SETTINGS
@@ -237,10 +173,10 @@ func reparentLighting(node: Node3D, initialize_arr: Array = []) -> void:
 	await Utils.waitUntilNodeReady(self)
 	
 	# Array[0] should always be the UUID
-	initialize_arr.push_front(await UUID.generateNewUuid())
+	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
-	_reparentNode.rpc(node.get_meta(Metadata.UUID), lighting_node_path)
+	_reparentNode(node.get_meta(Metadata.UUID), lighting_node_path)
 
 ## Add a PackedScene as a lighting node
 ## @param scene: New lighting PackedScene to add
@@ -249,10 +185,10 @@ func addLightingFromPackedScene(scene: PackedScene, initialize_arr: Array = []) 
 	await Utils.waitUntilNodeReady(self)
 	
 	# Array[0] should always be the UUID
-	initialize_arr.push_front(await UUID.generateNewUuid())
+	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
-	_addPackedScene.rpc(scene, lighting_node_path, initialize_arr)
+	_addPackedScene(scene, lighting_node_path, initialize_arr)
 
 ## Add a scene file path's instance as lighting
 ## @param path: Lighting to add
@@ -262,7 +198,7 @@ func addLightingFromFilePath(path: StringName, initialize_arr: Array = []) -> vo
 	await Utils.waitUntilNodeReady(self)
 	
 	# Array[0] should always be the UUID
-	initialize_arr.push_front(await UUID.generateNewUuid())
+	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
 	_addSceneFromFilePath(path, lighting_node_path, initialize_arr)
@@ -275,10 +211,10 @@ func reparentTerrain(node: Node3D, initialize_arr: Array = []) -> void:
 	await Utils.waitUntilNodeReady(self)
 	
 	# Array[0] should always be the UUID
-	initialize_arr.push_front(await UUID.generateNewUuid())
+	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
-	_reparentNode.rpc(node.get_meta(Metadata.UUID), terrain_node_path)
+	_reparentNode(node.get_meta(Metadata.UUID), terrain_node_path)
 
 ## Add a PackedScene as terrain node
 ## @param scene: Terrain PackedScene to add
@@ -288,10 +224,10 @@ func addTerrainFromPackedScene(scene: PackedScene, initialize_arr: Array = []) -
 	await Utils.waitUntilNodeReady(self)
 
 	# Array[0] should always be the UUID
-	initialize_arr.push_front(await UUID.generateNewUuid())
+	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
-	_addPackedScene.rpc(scene, terrain_node_path, initialize_arr)
+	_addPackedScene(scene, terrain_node_path, initialize_arr)
 
 ## Add a scene file path's instance as terrain
 ## @param path: Terrain to add
@@ -301,7 +237,7 @@ func addTerrainFromFilePath(path: StringName, initialize_arr: Array = []) -> voi
 	await Utils.waitUntilNodeReady(self)
 	
 	# Array[0] should always be the UUID
-	initialize_arr.push_front(await UUID.generateNewUuid())
+	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
 	_addSceneFromFilePath(path, terrain_node_path, initialize_arr)
@@ -314,10 +250,10 @@ func reparentDynamicObject(node: Node3D, initialize_arr: Array = []) -> void:
 	await Utils.waitUntilNodeReady(self)
 	
 	# Array[0] should always be the UUID
-	initialize_arr.push_front(await UUID.generateNewUuid())
+	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
-	_reparentNode.rpc(node.get_meta(Metadata.UUID), dynamic_node_path)
+	_reparentNode(node.get_meta(Metadata.UUID), dynamic_node_path)
 
 ## Add a PackedScene as a dynamic object
 ## @param scene: Dynamic object to add
@@ -327,10 +263,10 @@ func addDynamicObjectFromPackedScene(scene: PackedScene, initialize_arr: Array =
 	await Utils.waitUntilNodeReady(self)
 	
 	# Array[0] should always be the UUID
-	initialize_arr.push_front(await UUID.generateNewUuid())
+	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
-	_addPackedScene.rpc(scene, dynamic_node_path, initialize_arr)
+	_addPackedScene(scene, dynamic_node_path, initialize_arr)
 
 ## Add a scene file path's instance as a dynamic object
 ## @param path: Dynamic object to add
@@ -340,7 +276,7 @@ func addDynamicObjectFromFilePath(path: StringName, initialize_arr: Array = []) 
 	await Utils.waitUntilNodeReady(self)
 	
 	# Array[0] should always be the UUID
-	initialize_arr.push_front(await UUID.generateNewUuid())
+	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
 	_addSceneFromFilePath(path, dynamic_node_path, initialize_arr)
@@ -353,10 +289,10 @@ func reparentDynamicProjectileObject(node: Node3D, initialize_arr: Array = []) -
 	await Utils.waitUntilNodeReady(self)
 	
 	# Array[0] should always be the UUID
-	initialize_arr.push_front(await UUID.generateNewUuid())
+	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
-	_reparentNode.rpc(node.get_meta(Metadata.UUID), projectiles_node_path)
+	_reparentNode(node.get_meta(Metadata.UUID), projectiles_node_path)
 
 ## Add a PackedScene as a dynamic projectile object
 ## @param scene: Entity to add
@@ -366,10 +302,10 @@ func addDynamicProjectileObjectFromPackedScene(scene: PackedScene, initialize_ar
 	await Utils.waitUntilNodeReady(self)
 	
 	# Array[0] should always be the UUID
-	initialize_arr.push_front(await UUID.generateNewUuid())
+	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
-	_addPackedScene.rpc(scene, projectiles_node_path, initialize_arr)
+	_addPackedScene(scene, projectiles_node_path, initialize_arr)
 
 ## Add a scene file path's instance as a dynamic projectile object
 ## @param path: Dynamic object to add
@@ -379,7 +315,7 @@ func addDynamicProjectileObjectFromFilePath(path: StringName, initialize_arr: Ar
 	await Utils.waitUntilNodeReady(self)
 	
 	# Array[0] should always be the UUID
-	initialize_arr.push_front(await UUID.generateNewUuid())
+	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
 	_addSceneFromFilePath(path, projectiles_node_path, initialize_arr)
@@ -392,10 +328,10 @@ func reparentEntity(node: Node3D, initialize_arr: Array = []) -> void:
 	await Utils.waitUntilNodeReady(self)
 	
 	# Array[0] should always be the UUID
-	initialize_arr.push_front(await UUID.generateNewUuid())
+	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
-	_reparentNode.rpc(node.get_meta(Metadata.UUID), entities_node_path)
+	_reparentNode(node.get_meta(Metadata.UUID), entities_node_path)
 
 ## Add a PackedScene as an entity
 ## @param scene: Entity to add
@@ -405,10 +341,10 @@ func addEntityFromPackedScene(scene: PackedScene, initialize_arr: Array = []) ->
 	await Utils.waitUntilNodeReady(self)
 	
 	# Array[0] should always be the UUID
-	initialize_arr.push_front(await UUID.generateNewUuid())
+	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
-	_addPackedScene.rpc(scene, entities_node_path, initialize_arr)
+	_addPackedScene(scene, entities_node_path, initialize_arr)
 
 ## Add a PackedScene as an entity
 ## @param path: Entity to add
@@ -418,7 +354,7 @@ func addEntityFromFilePath(path: StringName, initialize_arr: Array = []) -> void
 	await Utils.waitUntilNodeReady(self)
 	
 	# Array[0] should always be the UUID
-	initialize_arr.push_front(await UUID.generateNewUuid())
+	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
 	_addSceneFromFilePath(path, entities_node_path, initialize_arr)
@@ -431,10 +367,10 @@ func reparentPlayerEntity(node: PlayerCharacterType, initialize_arr: Array = [])
 	await Utils.waitUntilNodeReady(self)
 	
 	# Array[0] should always be the UUID
-	initialize_arr.push_front(await UUID.generateNewUuid())
+	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
-	_reparentNode.rpc(node.get_meta(Metadata.UUID), players_node_path)
+	_reparentNode(node.get_meta(Metadata.UUID), players_node_path)
 
 ## Add a PackedScene as a player entity
 ## @param scene: Player to add
@@ -444,10 +380,10 @@ func addPlayerEntityFromPackedScene(scene: PackedScene, initialize_arr: Array = 
 	await Utils.waitUntilNodeReady(self)
 	
 	# Array[0] should always be the UUID
-	initialize_arr.push_front(await UUID.generateNewUuid())
+	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
-	_addPackedScene.rpc(scene, players_node_path, initialize_arr)
+	_addPackedScene(scene, players_node_path, initialize_arr)
 
 ## Add a PackedScene as a player entity
 ## @param path: Player to add
@@ -457,7 +393,7 @@ func addPlayerEntityFromFilePath(path: StringName, initialize_arr: Array = []) -
 	await Utils.waitUntilNodeReady(self)
 	
 	# Array[0] should always be the UUID
-	initialize_arr.push_front(await UUID.generateNewUuid())
+	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
 	_addSceneFromFilePath(path, players_node_path, initialize_arr)
@@ -470,10 +406,10 @@ func reparentEnemyEntity(node: Node3D, initialize_arr: Array = []) -> void:
 	await Utils.waitUntilNodeReady(self)
 	
 	# Array[0] should always be the UUID
-	initialize_arr.push_front(await UUID.generateNewUuid())
+	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
-	_reparentNode.rpc(node.get_meta(Metadata.UUID), enemies_node_path)
+	_reparentNode(node.get_meta(Metadata.UUID), enemies_node_path)
 
 ## Add a PackedScene as an enemy entity
 ## @param scene: Enemy to add
@@ -483,10 +419,10 @@ func addEnemyEntityFromPackedScene(scene: PackedScene, initialize_arr: Array = [
 	await Utils.waitUntilNodeReady(self)
 	
 	# Array[0] should always be the UUID
-	initialize_arr.push_front(await UUID.generateNewUuid())
+	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
-	_addPackedScene.rpc(scene, enemies_node_path, initialize_arr)
+	_addPackedScene(scene, enemies_node_path, initialize_arr)
 
 ## Add a PackedScene as a enemy entity
 ## @param path: Enemy to add
@@ -496,7 +432,7 @@ func addEnemyEntityFromFilePath(path: StringName, initialize_arr: Array = []) ->
 	await Utils.waitUntilNodeReady(self)
 	
 	# Array[0] should always be the UUID
-	initialize_arr.push_front(await UUID.generateNewUuid())
+	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
 	_addSceneFromFilePath(path, enemies_node_path, initialize_arr)
@@ -509,10 +445,10 @@ func reparentLootEntity(node: Node3D, initialize_arr: Array = []) -> void:
 	await Utils.waitUntilNodeReady(self)
 	
 	# Array[0] should always be the UUID
-	initialize_arr.push_front(await UUID.generateNewUuid())
+	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
-	_reparentNode.rpc(node.get_meta(Metadata.UUID), loot_node_path)
+	_reparentNode(node.get_meta(Metadata.UUID), loot_node_path)
 
 ## Add a PackedScene as a loot entity
 ## @param scene: Loot to add
@@ -522,10 +458,10 @@ func addLootEntityFromPackedScene(scene: PackedScene, initialize_arr: Array = []
 	await Utils.waitUntilNodeReady(self)
 	
 	# Array[0] should always be the UUID
-	initialize_arr.push_front(await UUID.generateNewUuid())
+	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
-	_addPackedScene.rpc(scene, loot_node_path, initialize_arr)
+	_addPackedScene(scene, loot_node_path, initialize_arr)
 
 ## Add a PackedScene as a loot entity
 ## @param path: Player to add
@@ -535,7 +471,7 @@ func addLootEntityFromFilePath(path: StringName, initialize_arr: Array = []) -> 
 	await Utils.waitUntilNodeReady(self)
 	
 	# Array[0] should always be the UUID
-	initialize_arr.push_front(await UUID.generateNewUuid())
+	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
 	_addSceneFromFilePath(path, loot_node_path, initialize_arr)
@@ -548,10 +484,10 @@ func reparentMiscEntity(node: Node3D, initialize_arr: Array = []) -> void:
 	await Utils.waitUntilNodeReady(self)
 	
 	# Array[0] should always be the UUID
-	initialize_arr.push_front(await UUID.generateNewUuid())
+	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
-	_reparentNode.rpc(node.get_meta(Metadata.UUID), other_entities_node_path)
+	_reparentNode(node.get_meta(Metadata.UUID), other_entities_node_path)
 
 ## Add a PackedScene as an 'other' entity
 ## @param scene: Misc. entity to add
@@ -561,10 +497,10 @@ func addMiscEntityFromPackedScene(scene: PackedScene, initialize_arr: Array = []
 	await Utils.waitUntilNodeReady(self)
 	
 	# Array[0] should always be the UUID
-	initialize_arr.push_front(await UUID.generateNewUuid())
+	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
-	_addPackedScene.rpc(scene, other_entities_node_path, initialize_arr)
+	_addPackedScene(scene, other_entities_node_path, initialize_arr)
 
 ## Add a PackedScene as an 'other' entity
 ## @param path: Misc. entity to add
@@ -574,7 +510,7 @@ func addMiscEntityFromFilePath(path: StringName, initialize_arr: Array = []) -> 
 	await Utils.waitUntilNodeReady(self)
 	
 	# Array[0] should always be the UUID
-	initialize_arr.push_front(await UUID.generateNewUuid())
+	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
 	_addSceneFromFilePath(path, other_entities_node_path, initialize_arr)

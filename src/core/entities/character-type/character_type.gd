@@ -100,35 +100,14 @@ func _on_movement_key_pressed() -> void:
 ## to override the function in child types
 func _on_jump_key_pressed():
 	_handleJumpKeyPressed()
-	
-	## Server can handle immediately
-	#if (P2PNetworking.isServer()):
-		#_handleJumpKeyPressed()
-	## Clients must make a request to the server
-	#else:
-		#_requestJumpKeyPressed.rpc_id(P2PNetworking.HOST_PEER_ID)
 
 ## Player pressed the sprint keybind
 func _on_sprint_key_pressed() -> void:
 	_handleSprintKeyPressed()
-	
-	## Server can handle immediately
-	#if (P2PNetworking.isServer()):
-		#_handleSprintKeyPressed()
-	## Clients must make a request to the server
-	#else:
-		#_requestSprintKeyPressed.rpc_id(P2PNetworking.HOST_PEER_ID)
 
 ## Player pressed the crouch keybind
 func _on_crouch_key_pressed() -> void:
 	_handleCrouchKeyPressed()
-	
-	## Server can handle immediately
-	#if (P2PNetworking.isServer()):
-		#_handleCrouchKeyPressed()
-	## Clients must make a request to the server
-	#else:
-		#_requestCrouchKeyPressed.rpc_id(P2PNetworking.HOST_PEER_ID)
 
 # ************************************************************ #
 #                    * Private Functions *                     #
@@ -137,12 +116,7 @@ func _on_crouch_key_pressed() -> void:
 # SIGNAL HANDLERS
 
 ## Actually implements the handling of jumping 
-## NOTE: Only the server should run this code
 func _handleJumpKeyPressed() -> void:
-	## Only the server should run this code
-	#if (!P2PNetworking.isServer()):
-		#return
-	
 	# ON FLOOR
 	if (_position_state == PositionState.ON_FLOOR):
 		applyJump()
@@ -156,11 +130,8 @@ func _handleJumpKeyPressed() -> void:
 	# Now set position state to "ON_FLOOR"
 	_position_state = PositionState.ON_FLOOR
 
+## Actually implements the sprint key
 func _handleSprintKeyPressed() -> void:
-	## Only the server should run this code
-	#if (!P2PNetworking.isServer()):
-		#return
-	
 	# TODO: Check if player is on the floor, if not, then call some signal that will
 	# wait until the character is on the floor then set the character to sprint
 	if (_movement_state != MovementState.RUN):
@@ -168,11 +139,8 @@ func _handleSprintKeyPressed() -> void:
 	else:
 		_movement_state = MovementState.WALK
 
+## Actually implements the crouch key
 func _handleCrouchKeyPressed() -> void:
-	## Only the server should run this code
-	#if (!P2PNetworking.isServer()):
-		#return
-	
 	# NOTE: Only allow crouch when on the floor, and do not queue a crouch when in the air, unlike sprint
 	if (_movement_state != MovementState.CROUCH && _character_body.is_on_floor()):
 		_movement_state = MovementState.CROUCH
@@ -200,9 +168,8 @@ func _runGravityPhysics(delta: float) -> void:
 			_character_body.velocity.y -= grav_vel
 		else:
 			Logger.logMsg("CharacterType assigned an invalid gravitational_authority", Logger.Category.RUNTIME)
-			UUID.freeUuid.rpc(self.get_meta(Metadata.UUID))
-			if (P2PNetworking.isServer()):
-				_character_body.queue_free() # Handle by deleting node, TODO: Check if other things are necessary
+			UUID.freeUuid(self.get_meta(Metadata.UUID))
+			_character_body.queue_free() # Handle by deleting node, TODO: Check if other things are necessary
 
 ## Apply all movement modifiers to a given movement speed
 ## @param movement_speed: Current movement speed, pre-modified
@@ -233,32 +200,6 @@ func _applyMovementModifiersToMovementSpeed(movement_speed: float) -> float:
 	
 	return modified_movement_speed
 
-# Helper RPC Functions to match signals
-
-## @OVERRIDE
-## Emit the jump signal on every client
-@rpc("authority", "call_local", "unreliable")
-func rpcMovementRequest(character_body: CharacterType) -> void:
-	character_body.SIG_movement.emit()
-
-## @OVERRIDE
-## Emit the jump signal on every client
-@rpc("authority", "call_local", "unreliable")
-func rpcJumpRequest(character_body: CharacterType) -> void:
-	character_body.SIG_jump.emit()
-
-## @OVERRIDE
-## Emit the jump signal on every client
-@rpc("authority", "call_local", "unreliable")
-func rpcSprintRequest(character_body: CharacterType) -> void:
-	character_body.SIG_sprint.emit()
-
-## @OVERRIDE
-## Emit the jump signal on every client
-@rpc("authority", "call_local", "unreliable")
-func rpcCrouchRequest(character_body: CharacterType) -> void:
-	character_body.SIG_crouch.emit()
-
 # ************************************************************ #
 #                     * Godot Functions *                      #
 # ************************************************************ #
@@ -288,9 +229,8 @@ func _ready() -> void:
 	# The node was not assigned a valid gravitational authority, so handle.
 	if (_gravitational_authority == null):
 		Logger.logMsg("CharacterType assigned a 'null' gravitational_authority", Logger.Category.RUNTIME)
-		UUID.freeUuid.rpc(self.get_meta(Metadata.UUID))
-		if (P2PNetworking.isServer()):
-			_character_body.queue_free() # Handle by deleting node, TODO: Check if other things are necessary
+		UUID.freeUuid(self.get_meta(Metadata.UUID))
+		_character_body.queue_free() # Handle by deleting node, TODO: Check if other things are necessary
 
 ## Default physics interpretation for a CharacterType.
 ## Implements gravity
@@ -309,7 +249,6 @@ func _physics_process(delta: float) -> void:
 ## NOTE: You MUST ONLY run this when the character boy is located in
 ## one of the top level child nodes of the Entities node in a
 ## 'chunk_data' object
-@rpc("any_peer", "call_local", "reliable")
 func initialize(initialize_arr: Array) -> void:
 	UUID.setMetadata(self, initialize_arr[UUID.INITIALIZER_ARRAY_UUID_INDEX])
 	

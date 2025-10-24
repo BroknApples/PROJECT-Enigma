@@ -109,12 +109,8 @@ func _on_body_shape_entered(body_rid: RID, body: Node, body_shape_index: int, lo
 
 ## Wrapper function to queue free this projectile
 func _despawnProjectile() -> void:
-	# Only the server can delete projectiles
-	if (!P2PNetworking.isServer()):
-		return
-	
 	# Free the UUID up
-	UUID.freeUuid.rpc(self.get_meta(Metadata.UUID))
+	UUID.freeUuid(self.get_meta(Metadata.UUID))
 	
 	# Delete the node
 	self.queue_free()
@@ -153,22 +149,19 @@ func _ready() -> void:
 	# Apply the node_path to the UUID dictionary
 	UUID.assignNodeToDictionary(Utils.getNodePath(self), self.get_meta(Metadata.UUID))
 	
-	# Only the server should handle anything that controls movement / despawning
-	if (P2PNetworking.isServer()):
-		# Add the despawning function to the event scheduler to
-		# despawn the projectile if its lifetime exceeds it limit
-		EventScheduler.pushOneTimeEvent(Callable(_despawnProjectile), Clock.secondsToMilliseconds(_maximum_lifetime))
-		
-		
-		# Setup the collision callback
-		self.body_shape_entered.connect(_on_body_shape_entered)
-		
-		# Setup contact monitoring
-		self.contact_monitor = true
-		self.max_contacts_reported = _maximum_contacts_reported
-		
-		# Set gravity scale
-		self.gravity_scale = _gravity_scale
+	# Add the despawning function to the event scheduler to
+	# despawn the projectile if its lifetime exceeds it limit
+	EventScheduler.pushOneTimeEvent(Callable(_despawnProjectile), Clock.secondsToMilliseconds(_maximum_lifetime))
+	
+	# Setup the collision callback
+	self.body_shape_entered.connect(_on_body_shape_entered)
+	
+	# Setup contact monitoring
+	self.contact_monitor = true
+	self.max_contacts_reported = _maximum_contacts_reported
+	
+	# Set gravity scale
+	self.gravity_scale = _gravity_scale
 	
 	# Set data assigned in variables in "initialize()" to the newly created nodes
 	_hitbox_component.setDamageComponent(_damage_component)

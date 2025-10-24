@@ -144,7 +144,6 @@ func _physics_process(delta: float) -> void:
 ## NOTE: You MUST ONLY run this when the character boy is located in
 ## one of the top level child nodes of the Entities node in a
 ## 'chunk_data' object
-@rpc("any_peer", "call_local", "reliable")
 func initialize(initialize_arr: Array) -> void:
 	UUID.setMetadata(self, initialize_arr[UUID.INITIALIZER_ARRAY_UUID_INDEX])
 	

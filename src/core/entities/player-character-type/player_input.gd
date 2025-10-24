@@ -36,11 +36,6 @@ extends Node3D
 
 ## Handle inputs
 func _input(event: InputEvent) -> void:
-	# If the authority peer id IS NOT the same as the local peer id, then this is some
-	# other character
-	if (_PLAYER.getOwnerPeerID() != P2PNetworking.getLocalPeerID()):
-		return
-	
 	if (event is InputEventKey):
 		# WASD Movement
 		if (Input.is_action_just_pressed(Keybinds.ActionNames.MOVE_FORWARD) ||

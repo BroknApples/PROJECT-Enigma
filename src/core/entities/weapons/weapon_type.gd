@@ -71,7 +71,6 @@ func _ready() -> void:
 
 ## Initialize data
 ## @param initialize_arr: Array that holds data to initialize the node, NOTE: arr[0] is always the UUID
-@rpc("any_peer", "call_local", "reliable")
 func initialize(initialize_arr: Array) -> void:
 	# NOTE: Insert here if needed
 	
@@ -110,16 +109,12 @@ func getOwningCharacter() -> Node:
 	return p3
 
 ## Spawn the projectile in the world
-## NOTE: Should call this with .rpc_id(1, args.)
 ## @param scene_path: Path the scene that will instantiated
 ## @param node_transform: The Transform3D of the node
 ## @param node_scale: The scale of the node
 ## @param damage_component_path: Path to the damage component the projectile will be attached to
-@rpc("any_peer", "call_remote", "unreliable")
 func spawnProjectile(scene_path: StringName, node_transform: Transform3D, node_scale: Vector3, damage_component_path: NodePath, team: int) -> void:
-	# Only the server should spawn the projectile, extra check just in case the user doesn't call rpc_id(1, ...)
-	if (P2PNetworking.isServer()):
-		_spawnProjectileInternal(scene_path, node_transform, node_scale, damage_component_path, team)
+	_spawnProjectileInternal(scene_path, node_transform, node_scale, damage_component_path, team)
 
 ## Do a primary attack
 func doPrimaryAttack() -> void:

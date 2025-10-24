@@ -47,7 +47,6 @@ class_name HitscanProjectileType
 ## @param from: Vector3 of the origin of the shot
 ## @param to: Vector3 of the end-point of the shot
 ## @param hit_objcet: Did the projectile hit something?
-@rpc("any_peer", "call_local", "unreliable")
 func _spawnParticles(from: Vector3, to: Vector3, hit_object: bool) -> void:
 	# TODO: Look into fixing the particle spawning issue, as right now, I have
 	# to create an instance, change the values on that one, then make a new instance
@@ -71,7 +70,6 @@ func _spawnParticles(from: Vector3, to: Vector3, hit_object: bool) -> void:
 ## Default method for detecting collision.
 ## Simply checks if the node can be damaged and collideable,
 ## if yes, it damages the node and disappears.
-@rpc("authority", "call_remote", "unreliable")
 func _checkForCollision() -> void:
 	var space_state := self.get_world_3d().direct_space_state
 	var from := self.global_position
@@ -99,7 +97,7 @@ func _checkForCollision() -> void:
 		var hit_object: bool = true
 		if (!result):
 			hit_object = false
-			_spawnParticles.rpc(from, max_check_position, hit_object)
+			_spawnParticles(from, max_check_position, hit_object)
 			break
 		
 		# NOTE: You can also spawn effects
@@ -112,7 +110,7 @@ func _checkForCollision() -> void:
 		
 		# Not a hitbox component, so stop the projectile completely
 		if (!collider.has_meta(Metadata.HITBOX_COMPONENT)):
-			_spawnParticles.rpc(from, to, hit_object)
+			_spawnParticles(from, to, hit_object)
 			break
 		
 		# Rename the variable to avoid confusion
@@ -120,7 +118,7 @@ func _checkForCollision() -> void:
 		
 		# The hitbox component is not damageable, so go to the next loop-through
 		if (!hitbox_component.isDamageable()):
-			_spawnParticles.rpc(from, to, hit_object)
+			_spawnParticles(from, to, hit_object)
 			break
 			
 		var damage_data := _damage_component.calculateDamage()
@@ -134,7 +132,7 @@ func _checkForCollision() -> void:
 		
 		# Draw the particle ray if this is the last loop
 		if (remaining_distance <= 0) || (hit_count >= _maximum_contacts_reported):
-			_spawnParticles.rpc(from, to, hit_object)
+			_spawnParticles(from, to, hit_object)
 	
 	# Despawn after processing all potential collisions
 	_despawnProjectile()
@@ -145,16 +143,12 @@ func _checkForCollision() -> void:
 
 ## Wrapper function to queue free this projectile
 func _despawnProjectile() -> void:
-	# Only the server can delete projectiles
-	if (!P2PNetworking.isServer()):
-		return
-	
 	# Despawn over time
 	# TODO: Implement a fading projectile look or something
 	Utils.sleep(0.8)
 	
 	# Free the UUID
-	UUID.freeUuid.rpc(self.get_meta(Metadata.UUID))
+	UUID.freeUuid(self.get_meta(Metadata.UUID))
 	
 	# Delete the node
 	self.queue_free()
@@ -189,11 +183,7 @@ func _ready() -> void:
 	self._setScale(_initial_scale)
 	
 	# Now that everything is set up and the object is in the world, check for collision
-	# NOTE: Only the server should do this though
-	if (P2PNetworking.isServer()):
-		_checkForCollision()
-	else:
-		_checkForCollision.rpc_id(1)
+	_checkForCollision()
 
 # ************************************************************ #
 #                     * Public Functions *                     #

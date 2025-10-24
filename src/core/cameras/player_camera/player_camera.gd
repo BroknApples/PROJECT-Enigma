@@ -82,9 +82,6 @@ func _ready() -> void:
 		await _player_body.SIG_initialized
 	set_process_mode(Node.PROCESS_MODE_ALWAYS)
 	
-	# Set the character body's owner's client to control to camera's replication
-	set_multiplayer_authority(_player_body.getOwnerPeerID())
-	
 	# TESTING
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	# TESTING

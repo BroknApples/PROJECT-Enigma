@@ -48,7 +48,7 @@ func _ready() -> void:
 	await super._ready()
 	
 	_projectiles = [
-		#AssetManager.getAssetPath(AssetManager.Assets.BLASTER_PROJECTILE_SCENE)
+		AssetManager.getAssetPath(AssetManager.Assets.BLASTER_PROJECTILE_SCENE),
 		&"res://src/core/entities/projectiles/hitscan_projectile_type.tscn"
 	]
 
@@ -71,21 +71,12 @@ func doPrimaryAttack() -> void:
 	# NOTE: Would probably require another global script that holds every single node instanced in the game
 	# and assigns a unique id to it or whatever, add this id variable to EVERY node in metadata
 	
-	if (P2PNetworking.isServer()):
-		# If the current client is the server, do NOT rpc
-		spawnProjectile(_projectiles[ProjectileIndexes.BLASTER_PROJECTILE],
-						blaster_projectile_spawn_transform,
-						_primary_projectile_scale,
-						_primary_attack_damage_component.get_path(),
-						Utils.CollisionLayers.TEAM_PLAYER)
-	else:
-		# If the current client is not the server, rpc call
-		spawnProjectile.rpc_id(P2PNetworking.HOST_PEER_ID,
-								_projectiles[ProjectileIndexes.BLASTER_PROJECTILE],
-								blaster_projectile_spawn_transform,
-								_primary_projectile_scale,
-								_primary_attack_damage_component.get_path(),
-								Utils.CollisionLayers.TEAM_PLAYER)
+	# Spawn projectile
+	spawnProjectile(_projectiles[ProjectileIndexes.BLASTER_PROJECTILE],
+					blaster_projectile_spawn_transform,
+					_primary_projectile_scale,
+					_primary_attack_damage_component.get_path(),
+					Utils.CollisionLayers.TEAM_PLAYER)
 
 ## Do a secondary attack
 func doSecondaryAttack() -> void:

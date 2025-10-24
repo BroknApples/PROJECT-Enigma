@@ -38,10 +38,6 @@ func _ready() -> void:
 		set_process_mode(Node.PROCESS_MODE_DISABLED)
 		await _character_body.SIG_initialized
 	set_process_mode(Node.PROCESS_MODE_ALWAYS)
-	
-	# If the parent is a player, set the multiplayer authority
-	if (_character_body.has_meta(Metadata.PLAYER_TYPE)):
-		self.set_multiplayer_authority(_character_body.getOwnerPeerID())
 
 # ************************************************************ #
 #                     * Public Functions *                     #

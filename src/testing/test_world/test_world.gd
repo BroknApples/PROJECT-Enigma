@@ -49,9 +49,9 @@ func getChunkData() -> ChunkData:
 	return _chunk_data
 
 ## Add a player to the player list in this world
-func addPlayer(peer_id: int) -> void:
+func addPlayer() -> void:
 	# Add the player
-	await _chunk_data.addPlayerEntityFromFilePath(AssetManager.getAssetPath(AssetManager.Assets.PLAYER_CHARACTER_TYPE_SCENE), [peer_id])
+	await _chunk_data.addPlayerEntityFromFilePath(AssetManager.getAssetPath(AssetManager.Assets.PLAYER_CHARACTER_TYPE_SCENE))
 	
 	# TODO: Setup a player spawner position node, these will allow players to spawn at a position
 	# if and only if there is no object present in some area3d node or something

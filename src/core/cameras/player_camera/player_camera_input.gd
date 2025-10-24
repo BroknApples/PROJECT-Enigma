@@ -50,11 +50,6 @@ func _ready() -> void:
 
 ## Allow player to control camera
 func _input(event: InputEvent) -> void:
-	# Only the local client should be able to use inputs
-	if (_player_body.has_meta(Metadata.CHARACTER_TYPE) &&
-		_player_body.getOwnerPeerID() != P2PNetworking.getLocalPeerID()):
-		return
-	
 	# Only update if the camera is the current camera
 	if (_camera.is_current() && event is InputEventMouseMotion && Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED):
 		# Get old transform basis

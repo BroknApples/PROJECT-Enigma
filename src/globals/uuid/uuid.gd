@@ -40,39 +40,6 @@ var _uuids: Dictionary = { ## Unique ids for every node, and the path to that no
 #                    * Private Functions *                     #
 # ************************************************************ #
 
-## Called from clients to request the up-to-date info on the 'uuid counter'
-## NOTE: This shouldn't be necessary outside of 'generateNewUuid()'
-@rpc("any_peer", "call_remote", "reliable")
-func _requestSyncUuidCounter() -> void:
-	# Call on all clients("Except itself since it is already set)
-	_syncUuidCounterOnClients.rpc(_uuid_counter)
-
-## Called from the authority and sent to all peers. This updates the value for
-## the 'uuid counter' to match the authority
-## @param value: _uuid_counter's value on the authority client
-## NOTE: Helper function to '_requestSyncUuidCounter()'
-@rpc("authority", "call_remote", "reliable")
-func _syncUuidCounterOnClients(value: int) -> void:
-	# Set value recieved from the server
-	_uuid_counter = value
-	SIG_uuid_counter_synced.emit()
-
-## Called from clients to request the up-to-date info on the 'freed uuids' array
-## NOTE: This shouldn't be necessary outside of 'generateNewUuid()'
-@rpc("any_peer", "call_remote", "reliable")
-func _requestSyncFreeUuidsArray() -> void:
-	# Call on all clients("Except itself since it is already set)
-	_syncFreeUuidsArrayOnClients.rpc(_freed_uuids)
-
-## Called from the authority and sent to all peers. This updates the value for
-## the 'freed uuids' array to match the authority
-## @param value: _freed_uuids's value on the authority client
-## NOTE: Helper function to '_requestSyncFreeUuidsArray()'
-@rpc("authority", "call_remote", "reliable")
-func _syncFreeUuidsArrayOnClients(value: Array[int]) -> void:
-	# Set value recieved from the server
-	_freed_uuids = value
-	SIG_freed_uuids_synced.emit()
 
 # ************************************************************ #
 #                     * Godot Functions *                      #
@@ -100,12 +67,6 @@ func assignNodeToDictionary(node_path: NodePath, uuid: int) -> void:
 ## NOTE: UUID is ALWAYS index '0' of the paramater array | Can use Utils.INITIALIZER_ARRAY_UUID_INDEX as a substitute
 ## @returns int: New Universally-Unique ID
 func generateNewUuid() -> int:
-	# If the current client is NOT the server, then we need to request the
-	# up-to-date data for the freed uuids array
-	if (!P2PNetworking.isServer()):
-		_requestSyncFreeUuidsArray.rpc_id(P2PNetworking.HOST_PEER_ID)
-		await SIG_freed_uuids_synced
-	
 	# Get the lowest number from the free_uuids array
 	if (!_freed_uuids.is_empty()):
 		# Since this array is always sorted, we can just choose the front
@@ -130,7 +91,6 @@ func setUuidToNewNodePath(uuid: int, node_path: NodePath) -> void:
 
 ## Free a uuid from the dictionary
 ## @param uuid: UUID to free
-@rpc("any_peer", "call_local", "reliable")
 func freeUuid(uuid: int) -> void:
 	# Return if the UUID doesnt exist
 	if (!_uuids.has(uuid)):

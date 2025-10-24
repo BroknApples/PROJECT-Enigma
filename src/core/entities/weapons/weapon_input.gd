@@ -33,7 +33,6 @@ extends Node3D
 ## @param node_transform: The Transform3D of the node
 ## @param node_scale: The scale of the node
 ## @param damage_component_path: Path to the damage component the projectile will be attached to
-@rpc("authority", "call_local", "unreliable")
 func _spawnProjectileInternal(scene_path: StringName, node_transform: Transform3D, node_scale: Vector3, damage_component_path: NodePath) -> void:
 	# Create an initializer array
 	var damage_component = get_node_or_null(damage_component_path)
@@ -59,12 +58,11 @@ func _defaultInputs() -> void:
 		_WEAPON.doSecondaryAttack()
 
 ## Checks if the owning character body is the local player's character
-func checkOwnerIsLocalClient() -> bool:
+func checkOwnerIsActivePlayer() -> bool:
 	var weapon_owner: Node = _WEAPON.getOwningCharacter()
 	
 	# Checks if the owner is a player, and if so, are they the local player
-	return (weapon_owner.has_meta(Metadata.PLAYER_TYPE) &&
-			(weapon_owner.getOwnerPeerID() == P2PNetworking.getLocalPeerID()))
+	return weapon_owner.has_meta(Metadata.PLAYER_TYPE)
 
 # ************************************************************ #
 #                     * Godot Functions *                      #
@@ -73,7 +71,7 @@ func checkOwnerIsLocalClient() -> bool:
 func _process(delta: float) -> void:
 	atk_timer -= delta
 	
-	if (checkOwnerIsLocalClient()):
+	if (checkOwnerIsActivePlayer()):
 		_defaultInputs()
 
 # ************************************************************ #

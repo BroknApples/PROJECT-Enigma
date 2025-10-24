@@ -33,64 +33,13 @@ text = "Lobby Scene
 "
 horizontal_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer"]
-custom_minimum_size = Vector2(0, 200)
-layout_mode = 2
-
-[node name="HostButton" type="Button" parent="PanelContainer/HBoxContainer"]
-custom_minimum_size = Vector2(0, 100)
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 60
-text = "Host Game"
-
-[node name="JoinButton" type="Button" parent="PanelContainer/HBoxContainer"]
-custom_minimum_size = Vector2(0, 100)
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 60
-text = "Join Game"
-
-[node name="HostGamePanelContainer" type="PanelContainer" parent="."]
-visible = false
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -485.0
-offset_top = -219.0
-offset_right = 485.0
-offset_bottom = 219.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="HostGamePanelContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 30
-theme_override_constants/margin_right = 30
-
-[node name="HBoxContainer" type="HBoxContainer" parent="HostGamePanelContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 20
-
-[node name="StartGame Button" type="Button" parent="HostGamePanelContainer/MarginContainer/HBoxContainer"]
+[node name="StartGame Button" type="Button" parent="PanelContainer"]
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
 theme_override_font_sizes/font_size = 60
 text = "Start Game"
-
-[node name="StopHostingGame Button" type="Button" parent="HostGamePanelContainer/MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(0, 200)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
-theme_override_font_sizes/font_size = 60
-text = "Stop Hosting Game"
-autowrap_mode = 3
 
 [node name="ConnectToHost Panel" type="Panel" parent="."]
 visible = false
@@ -121,7 +70,4 @@ theme_override_font_sizes/font_size = 90
 text = "Connected to Host"
 autowrap_mode = 3
 
-[connection signal="pressed" from="PanelContainer/HBoxContainer/HostButton" to="." method="_on_host_button_pressed"]
-[connection signal="pressed" from="PanelContainer/HBoxContainer/JoinButton" to="." method="_on_join_button_pressed"]
-[connection signal="pressed" from="HostGamePanelContainer/MarginContainer/HBoxContainer/StartGame Button" to="." method="_on_start_game_button_pressed"]
-[connection signal="pressed" from="HostGamePanelContainer/MarginContainer/HBoxContainer/StopHostingGame Button" to="." method="_on_stop_hosting_game_button_pressed"]
+[connection signal="pressed" from="PanelContainer/StartGame Button" to="." method="_on_start_game_button_pressed"]
