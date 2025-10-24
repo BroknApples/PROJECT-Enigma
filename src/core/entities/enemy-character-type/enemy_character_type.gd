@@ -91,7 +91,7 @@ func _navigateToPosition(position: Vector3) -> void:
 	# Apply movement
 	var next_point = self._navigation_agent_3d.get_next_path_position()
 	var direction = (next_point - global_transform.origin).normalized()
-	var movement = direction * speed * delta
+	var movement = direction * 100 * 0.167 #speed * delta
 	self.global_translate(movement)
 
 # TODO: AI Difficulty level (1-10) should change how well

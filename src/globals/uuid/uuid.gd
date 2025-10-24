@@ -111,12 +111,6 @@ func generateNewUuid() -> int:
 		# Since this array is always sorted, we can just choose the front
 		return _freed_uuids.pop_front()
 	
-	# If the current client is NOT the server, then we need to request the
-	# up-to-date data for the uuid counter
-	if (!P2PNetworking.isServer()):
-		_requestSyncUuidCounter.rpc_id(P2PNetworking.HOST_PEER_ID)
-		await SIG_uuid_counter_synced
-	
 	# If the array is empty, just increment the counter and return the pre-incremented value
 	var temp := _uuid_counter
 	_uuid_counter += 1

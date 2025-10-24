@@ -71,6 +71,7 @@ func _spawnParticles(from: Vector3, to: Vector3, hit_object: bool) -> void:
 ## Default method for detecting collision.
 ## Simply checks if the node can be damaged and collideable,
 ## if yes, it damages the node and disappears.
+@rpc("authority", "call_remote", "unreliable")
 func _checkForCollision() -> void:
 	var space_state := self.get_world_3d().direct_space_state
 	var from := self.global_position
@@ -191,6 +192,8 @@ func _ready() -> void:
 	# NOTE: Only the server should do this though
 	if (P2PNetworking.isServer()):
 		_checkForCollision()
+	else:
+		_checkForCollision.rpc_id(1)
 
 # ************************************************************ #
 #                     * Public Functions *                     #

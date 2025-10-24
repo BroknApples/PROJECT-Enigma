@@ -9,17 +9,6 @@ radius = 20.0
 [node name="EnemyCharacterType" instance=ExtResource("1_y0i4j")]
 collision_layer = 21
 script = ExtResource("2_6ybm8")
-_crouch_minimum_movement_speed = null
-_crouch_max_movement_speed = null
-_crouch_initial_acceleration_speed = null
-_walk_minimum_movement_speed = null
-_walk_max_movement_speed = null
-_walk_initial_acceleration_speed = null
-_run_minimum_movement_speed = null
-_run_max_movement_speed = null
-_run_initial_acceleration_speed = null
-_jump_velocity = null
-_air_deceleration_speed = null
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="." index="8"]
 

@@ -80,12 +80,12 @@ func doPrimaryAttack() -> void:
 						Utils.CollisionLayers.TEAM_PLAYER)
 	else:
 		# If the current client is not the server, rpc call
-		self.spawnProjectile.rpc_id(P2PNetworking.HOST_PEER_ID,
-									_projectiles[ProjectileIndexes.BLASTER_PROJECTILE],
-									blaster_projectile_spawn_transform,
-									_primary_projectile_scale,
-									_primary_attack_damage_component.get_path(),
-									Utils.CollisionLayers.TEAM_PLAYER)
+		spawnProjectile.rpc_id(P2PNetworking.HOST_PEER_ID,
+								_projectiles[ProjectileIndexes.BLASTER_PROJECTILE],
+								blaster_projectile_spawn_transform,
+								_primary_projectile_scale,
+								_primary_attack_damage_component.get_path(),
+								Utils.CollisionLayers.TEAM_PLAYER)
 
 ## Do a secondary attack
 func doSecondaryAttack() -> void:
