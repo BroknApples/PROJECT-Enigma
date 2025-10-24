@@ -36,21 +36,6 @@ var _initialized: bool = false ## Is this node initialized
 #                    * Private Functions *                     #
 # ************************************************************ #
 
-## Internal function that does the actual work of spawning a projectile
-## @param scene_path: Path the scene that will instantiated
-## @param node_transform: The Transform3D of the node
-## @param node_scale: The scale of the node
-## @param damage_component_path: Path to the damage component the projectile will be attached to
-func _spawnProjectileInternal(scene_path: StringName, node_transform: Transform3D, node_scale: Vector3, damage_component_path: NodePath, team: int) -> void:
-	# Create an initializer array
-	var damage_component = get_node_or_null(damage_component_path)
-	var initialize_arr := [damage_component.get_path(), node_transform, node_scale, team]
-
-	# Add to the proper location in the scene tree
-	# GAME_ROOT.${WorldName}.ChunkData.Dynamic.Projectiles.${ProjectileNode}
-	var chunk_data: ChunkData = Utils.getChunkDataNode()
-	chunk_data.addDynamicProjectileObjectFromFilePath(scene_path, initialize_arr)
-
 # ************************************************************ #
 #                     * Godot Functions *                      #
 # ************************************************************ #
@@ -114,7 +99,14 @@ func getOwningCharacter() -> Node:
 ## @param node_scale: The scale of the node
 ## @param damage_component_path: Path to the damage component the projectile will be attached to
 func spawnProjectile(scene_path: StringName, node_transform: Transform3D, node_scale: Vector3, damage_component_path: NodePath, team: int) -> void:
-	_spawnProjectileInternal(scene_path, node_transform, node_scale, damage_component_path, team)
+	# Create an initializer array
+	var damage_component = get_node_or_null(damage_component_path)
+	var initialize_arr := [damage_component.get_path(), node_transform, node_scale, team]
+
+	# Add to the proper location in the scene tree
+	# GAME_ROOT.${WorldName}.ChunkData.Dynamic.Projectiles.${ProjectileNode}
+	var chunk_data: ChunkData = Utils.getChunkDataNode()
+	chunk_data.addDynamicProjectileObjectFromFilePath(scene_path, initialize_arr)
 
 ## Do a primary attack
 func doPrimaryAttack() -> void:
