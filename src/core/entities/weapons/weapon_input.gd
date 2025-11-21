@@ -35,12 +35,12 @@ var atk_timer := 0.0
 ## @param event: InputEvent to check
 func _defaultInputs() -> void:
 	# PRIMARY ATTACK
-	if (Input.is_action_pressed(Keybinds.ActionNames.PRIMARY_ATTACK)):
+	if (Input.is_action_pressed(InputBinder.Actions.PRIMARY_ATTACK)):
 		if (atk_timer <= 0):
 			_WEAPON.doPrimaryAttack()
 			atk_timer = 0.5
 	# SECONDARY ATTACK
-	elif (Input.is_action_just_pressed(Keybinds.ActionNames.SECONDARY_ATTACK)):
+	elif (Input.is_action_just_pressed(InputBinder.Actions.SECONDARY_ATTACK)):
 		_WEAPON.doSecondaryAttack()
 
 ## Checks if the owning character body is the local player's character

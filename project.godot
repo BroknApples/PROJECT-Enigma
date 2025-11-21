@@ -21,7 +21,7 @@ run/size/viewport_width=1920
 
 Metadata="*res://src/globals/metadata/metadata.tscn"
 UUID="*res://src/globals/uuid/uuid.tscn"
-Keybinds="*res://src/globals/keybinds/keybinds.tscn"
+InputBinder="*res://src/globals/input-binder/input-binder.tscn"
 LaunchOptions="*res://src/globals/launch-options/launch_options.tscn"
 Clock="*res://src/globals/clock/clock.tscn"
 Utils="*res://src/globals/utils/utils.tscn"

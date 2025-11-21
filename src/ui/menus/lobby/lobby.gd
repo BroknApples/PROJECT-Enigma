@@ -55,9 +55,6 @@ func startGame(world_file_path: String) -> void:
 	
 	# Remove the lobby scene from the tree
 	self.queue_free()
-	
-	# Add the players:
-	world_instance.addPlayer()
 
 # ************************************************************ #
 #                    * Unit Test Functions *                   #

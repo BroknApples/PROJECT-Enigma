@@ -195,7 +195,7 @@ func getChunkDataNode() -> ChunkData:
 		if (node.has_meta(Metadata.WORLD_NODE)):
 			# The getChunkData() function is the method for getting the ChunkData class from a world
 			if (node.has_method("getChunkData")):
-				return node.getChunkData()
+				return node.getChunkData()[0]
 			else:
 				# If the method does NOT exist, then its an invalid world node
 				return null

@@ -19,7 +19,7 @@ extends Node3D
 
 # TODO: Reformat world data to being the super class of all worlds
 # Makes it easier to add objects to the world / use functions
-@onready var _chunk_data: ChunkData = $ChunkData ## Premade class that defines where all the objects exist in the world
+@onready var _chunk_data: Array[ChunkData] = [] ## Defines where all the objects exist in the world for each chunk
 
 # ************************************************************ #
 #                     * Signal Functions *                     #
@@ -36,6 +36,11 @@ extends Node3D
 func _ready() -> void:
 	# Set metadata
 	self.set_meta(Metadata.WORLD_NODE, true)
+	self.call_deferred("spawnEntities")
+	
+	# Add all chunks to the chunk_data array
+	for child in self.get_children():
+		_chunk_data.append(child)
 
 # TODO: Set camera to 'player_id' pov
 
@@ -45,13 +50,15 @@ func _ready() -> void:
 
 ## Get the world data node for this world
 ## @returns ChunkData: ChunkData class type
-func getChunkData() -> ChunkData:
+func getChunkData() -> Array[ChunkData]:
 	return _chunk_data
 
-## Add a player to the player list in this world
-func addPlayer() -> void:
+## Adds some random entities to the world
+func spawnEntities() -> void:
 	# Add the player
-	await _chunk_data.addPlayerEntityFromFilePath(AssetManager.getAssetPath(AssetManager.Assets.PLAYER_CHARACTER_TYPE_SCENE))
+	var player = await _chunk_data[0].addPlayerEntityFromFilePath(AssetManager.getAssetPath(AssetManager.Assets.PLAYER_CHARACTER_TYPE_SCENE))
+	var enemy = await _chunk_data[0].addEnemyEntityFromFilePath(AssetManager.getAssetPath(AssetManager.Assets.ENEMY_CHARACTER_TYPE_SCENE), [1])
+	enemy.position.x += 10
 	
 	# TODO: Setup a player spawner position node, these will allow players to spawn at a position
 	# if and only if there is no object present in some area3d node or something

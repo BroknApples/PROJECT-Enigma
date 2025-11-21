@@ -21,7 +21,7 @@ extends Node3D
 @onready var _camera_pivot: PlayerCamera = $".".get_parent()
 @onready var _camera: Camera3D = _camera_pivot.getCamera()
 @onready var _head: Node3D = _camera_pivot.getHead()
-@onready var _player_body: PlayerCharacterType = _camera_pivot.getPlayerBody()
+@onready var _character_body: CharacterBody3D = _camera_pivot.getCharacterBody()
 
 # ************************************************************ #
 #                     * Signal Functions *                     #
@@ -44,7 +44,7 @@ func _ready() -> void:
 		# Reassign variables
 		_camera = _camera_pivot.getCamera()
 		_head = _camera_pivot.getHead()
-		_player_body = _camera_pivot.getPlayerBody()
+		_character_body = _camera_pivot.getCharacterBody()
 		
 		set_process_mode(Node.PROCESS_MODE_ALWAYS)
 
@@ -53,15 +53,15 @@ func _input(event: InputEvent) -> void:
 	# Only update if the camera is the current camera
 	if (_camera.is_current() && event is InputEventMouseMotion && Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED):
 		# Get old transform basis
-		var old_basis := _player_body.global_transform.basis
+		var old_basis := _character_body.global_transform.basis
 		
 		# Left and right
-		_player_body.rotate_y(-event.relative.x * Settings.camera_sensitivity_horizontal * 0.01)
+		_character_body.rotate_y(-event.relative.x * Settings.camera_sensitivity_horizontal * 0.01)
 		
 		# Match horizontal velocity to old, but in the new direction
-		var new_basis := _player_body.global_transform.basis
+		var new_basis := _character_body.global_transform.basis
 		var delta_basis := new_basis * old_basis.inverse()
-		_player_body.velocity = delta_basis * _player_body.velocity
+		_character_body.velocity = delta_basis * _character_body.velocity
 		
 		# Up and down
 		_head.rotate_x(-event.relative.y * Settings.camera_sensitivity_vertical * 0.01)
@@ -70,13 +70,13 @@ func _input(event: InputEvent) -> void:
 		_head.rotation.x = clamp(_head.rotation.x, deg_to_rad(_camera_pivot.max_camera_down_angle), deg_to_rad(_camera_pivot.max_camera_up_angle))
 	elif (event is InputEventKey):
 		# Change Game Focus
-		if (Input.is_action_just_pressed(Keybinds.ActionNames.ESCAPE)):
+		if (Input.is_action_just_pressed(InputBinder.Actions.ESCAPE)):
 			if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 				Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 			else:
 				Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 		# Change Camera POV
-		if (Input.is_action_just_pressed(Keybinds.ActionNames.CHANGE_CAMERA_POV)):
+		if (Input.is_action_just_pressed(InputBinder.Actions.CHANGE_CAMERA_POV)):
 			if (_camera_pivot.is_first_person):
 				_camera_pivot.setToThirdPerson()
 			else:

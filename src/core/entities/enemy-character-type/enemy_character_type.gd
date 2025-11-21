@@ -83,6 +83,9 @@ func _runAi(delta: float) -> void:
 			_runMeleeSupportEnemyAi(delta)
 		EnemyType.MELEE_DEALER:
 			_runMeleeDealerEnemyAi(delta)
+		_:
+			# Just use melee ai for default
+			_runMeleeDealerEnemyAi(delta)
 
 func _navigateToPosition(position: Vector3) -> void:
 	# Set target position

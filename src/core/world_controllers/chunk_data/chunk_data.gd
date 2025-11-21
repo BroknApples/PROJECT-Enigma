@@ -98,23 +98,24 @@ func _reparentNode(node_uuid: int, category_path: NodePath) -> void:
 ## @param packed_scene: Packed scene to instantiate and add
 ## @param category_path: Path to the category to add the node to (Entities, Dynamic, Lighting, etc.)
 ## @param initialize_arr: Array full of data used to initialize the object. NOTE: THIS CANNOT CONTAIN NODES; MUST BE PURELY DATA
-func _addPackedScene(packed_scene: PackedScene, category_path: NodePath, initialize_arr: Array) -> void:
-	# Spawn PackedScenes
+func _addPackedScene(packed_scene: PackedScene, category_path: NodePath, initialize_arr: Array) -> Node:
+	var category := get_node_or_null(category_path)
 	var instance := packed_scene.instantiate()
-	get_node(category_path).call_deferred(&"add_child", instance)
 	
 	# If an initialize function exist, call it with the correct data
 	if (instance.has_method("initialize")):
 		instance.initialize(initialize_arr)
+	
+	category.add_child(instance)
+	return instance
 
 ## Add a packed scene to the scene tree
 ## NOTE: Utilizes a MultiplayerSpawner to replicate over the network	
 ## @param scene_path: Path to the scene to add (This must already be in the spawn list of the multiplayer spawner)
 ## @param category_path: Path to the category to add the node to (Entities, Dynamic, Lighting, etc.)
 ## @param initialize_arr: Array full of data used to initialize the object. NOTE: THIS CANNOT CONTAIN NODES; MUST BE PURELY DATA
-func _addSceneFromFilePath(scene_path: StringName, category_path: NodePath, initialize_arr: Array) -> void:
+func _addSceneFromFilePath(scene_path: StringName, category_path: NodePath, initialize_arr: Array) -> Node:
 	var category := get_node_or_null(category_path)
-	
 	var instance = load(String(scene_path)).instantiate()
 	
 	# If an initialize function exist, call it with the correct data
@@ -123,19 +124,36 @@ func _addSceneFromFilePath(scene_path: StringName, category_path: NodePath, init
 	
 	# Add node to the tree
 	category.add_child(instance)
+	return instance
 
 # ************************************************************ #
 #                     * Godot Functions *                      #
 # ************************************************************ #
 
-func _ready() -> void:
-	# Add default spawn list items
-	for item in _default_spawn_list:
-		multiplayer_spawner.add_spawnable_scene(item)
-
 # ************************************************************ #
 #                     * Public Functions *                     #
 # ************************************************************ #
+
+## Get the location of all players in this chunk
+func findAllPlayerPositions() -> Array[Vector3]:
+	var positions = []
+	for player in players.get_children():
+		positions.append(player.position)
+	return positions
+
+## Get the location of all enemies in this chunk
+func findAllEnemyPositions() -> Array[Vector3]:
+	var positions = []
+	for enemy in enemies.get_children():
+		positions.append(enemy.position)
+	return positions
+
+## Get the location of all loot items in this chunk
+func findAllLootPositions() -> Array[Vector3]:
+	var positions = []
+	for item in loot.get_children():
+		positions.append(item.position)
+	return positions
 
 
 # TODO: Stuff like 'findAllPlayerPositions' or 'findAllEnemyPositions' or 'findAllLootPositions', etc.
@@ -180,7 +198,7 @@ func reparentLighting(node: Node3D, initialize_arr: Array = []) -> void:
 
 ## Add a PackedScene as a lighting node
 ## @param scene: New lighting PackedScene to add
-func addLightingFromPackedScene(scene: PackedScene, initialize_arr: Array = []) -> void:
+func addLightingFromPackedScene(scene: PackedScene, initialize_arr: Array = []) -> Node:
 	# Don't add child until scene is ready
 	await Utils.waitUntilNodeReady(self)
 	
@@ -188,12 +206,12 @@ func addLightingFromPackedScene(scene: PackedScene, initialize_arr: Array = []) 
 	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
-	_addPackedScene(scene, lighting_node_path, initialize_arr)
+	return _addPackedScene(scene, lighting_node_path, initialize_arr)
 
 ## Add a scene file path's instance as lighting
 ## @param path: Lighting to add
 ## @param initialize_arr: Array full of data used to initialize the object. NOTE: THIS CANNOT CONTAIN NODES; MUST BE PURELY DATA
-func addLightingFromFilePath(path: StringName, initialize_arr: Array = []) -> void:
+func addLightingFromFilePath(path: StringName, initialize_arr: Array = []) -> Node:
 	# Don't add child until scene is ready
 	await Utils.waitUntilNodeReady(self)
 	
@@ -201,7 +219,7 @@ func addLightingFromFilePath(path: StringName, initialize_arr: Array = []) -> vo
 	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
-	_addSceneFromFilePath(path, lighting_node_path, initialize_arr)
+	return _addSceneFromFilePath(path, lighting_node_path, initialize_arr)
 
 ## Add a Node3D as terrain
 ## @param node: Terrain PackedScene to add
@@ -219,7 +237,7 @@ func reparentTerrain(node: Node3D, initialize_arr: Array = []) -> void:
 ## Add a PackedScene as terrain node
 ## @param scene: Terrain PackedScene to add
 ## @param initialize_arr: Array full of data used to initialize the object. NOTE: THIS CANNOT CONTAIN NODES; MUST BE PURELY DATA
-func addTerrainFromPackedScene(scene: PackedScene, initialize_arr: Array = []) -> void:
+func addTerrainFromPackedScene(scene: PackedScene, initialize_arr: Array = []) -> Node:
 	# Don't add child until scene is ready
 	await Utils.waitUntilNodeReady(self)
 
@@ -227,12 +245,12 @@ func addTerrainFromPackedScene(scene: PackedScene, initialize_arr: Array = []) -
 	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
-	_addPackedScene(scene, terrain_node_path, initialize_arr)
+	return _addPackedScene(scene, terrain_node_path, initialize_arr)
 
 ## Add a scene file path's instance as terrain
 ## @param path: Terrain to add
 ## @param initialize_arr: Array full of data used to initialize the object. NOTE: THIS CANNOT CONTAIN NODES; MUST BE PURELY DATA
-func addTerrainFromFilePath(path: StringName, initialize_arr: Array = []) -> void:
+func addTerrainFromFilePath(path: StringName, initialize_arr: Array = []) -> Node:
 	# Don't add child until scene is ready
 	await Utils.waitUntilNodeReady(self)
 	
@@ -240,7 +258,7 @@ func addTerrainFromFilePath(path: StringName, initialize_arr: Array = []) -> voi
 	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
-	_addSceneFromFilePath(path, terrain_node_path, initialize_arr)
+	return _addSceneFromFilePath(path, terrain_node_path, initialize_arr)
 
 ## Add a Node3D as a dynamic object
 ## @param node: Dynamic object to add
@@ -258,7 +276,7 @@ func reparentDynamicObject(node: Node3D, initialize_arr: Array = []) -> void:
 ## Add a PackedScene as a dynamic object
 ## @param scene: Dynamic object to add
 ## @param initialize_arr: Array full of data used to initialize the object. NOTE: THIS CANNOT CONTAIN NODES; MUST BE PURELY DATA
-func addDynamicObjectFromPackedScene(scene: PackedScene, initialize_arr: Array = []) -> void:
+func addDynamicObjectFromPackedScene(scene: PackedScene, initialize_arr: Array = []) -> Node:
 	# Don't add child until scene is ready
 	await Utils.waitUntilNodeReady(self)
 	
@@ -266,12 +284,12 @@ func addDynamicObjectFromPackedScene(scene: PackedScene, initialize_arr: Array =
 	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
-	_addPackedScene(scene, dynamic_node_path, initialize_arr)
+	return _addPackedScene(scene, dynamic_node_path, initialize_arr)
 
 ## Add a scene file path's instance as a dynamic object
 ## @param path: Dynamic object to add
 ## @param initialize_arr: Array full of data used to initialize the object. NOTE: THIS CANNOT CONTAIN NODES; MUST BE PURELY DATA
-func addDynamicObjectFromFilePath(path: StringName, initialize_arr: Array = []) -> void:
+func addDynamicObjectFromFilePath(path: StringName, initialize_arr: Array = []) -> Node:
 	# Don't add child until scene is ready
 	await Utils.waitUntilNodeReady(self)
 	
@@ -279,7 +297,7 @@ func addDynamicObjectFromFilePath(path: StringName, initialize_arr: Array = []) 
 	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
-	_addSceneFromFilePath(path, dynamic_node_path, initialize_arr)
+	return _addSceneFromFilePath(path, dynamic_node_path, initialize_arr)
 
 ## Add a PackedScene as a dynamic projectile object
 ## @param node: Dynamic object to add
@@ -297,7 +315,7 @@ func reparentDynamicProjectileObject(node: Node3D, initialize_arr: Array = []) -
 ## Add a PackedScene as a dynamic projectile object
 ## @param scene: Entity to add
 ## @param initialize_arr: Array full of data used to initialize the object. NOTE: THIS CANNOT CONTAIN NODES; MUST BE PURELY DATA
-func addDynamicProjectileObjectFromPackedScene(scene: PackedScene, initialize_arr: Array = []) -> void:
+func addDynamicProjectileObjectFromPackedScene(scene: PackedScene, initialize_arr: Array = []) -> Node:
 	# Don't add child until scene is ready
 	await Utils.waitUntilNodeReady(self)
 	
@@ -305,12 +323,12 @@ func addDynamicProjectileObjectFromPackedScene(scene: PackedScene, initialize_ar
 	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
-	_addPackedScene(scene, projectiles_node_path, initialize_arr)
+	return _addPackedScene(scene, projectiles_node_path, initialize_arr)
 
 ## Add a scene file path's instance as a dynamic projectile object
 ## @param path: Dynamic object to add
 ## @param initialize_arr: Array full of data used to initialize the object. NOTE: THIS CANNOT CONTAIN NODES; MUST BE PURELY DATA
-func addDynamicProjectileObjectFromFilePath(path: StringName, initialize_arr: Array = []) -> void:
+func addDynamicProjectileObjectFromFilePath(path: StringName, initialize_arr: Array = []) -> Node:
 	# Don't add child until scene is ready
 	await Utils.waitUntilNodeReady(self)
 	
@@ -318,7 +336,7 @@ func addDynamicProjectileObjectFromFilePath(path: StringName, initialize_arr: Ar
 	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
-	_addSceneFromFilePath(path, projectiles_node_path, initialize_arr)
+	return _addSceneFromFilePath(path, projectiles_node_path, initialize_arr)
 
 ## Add a Node3D as an entity
 ## @param node: Entity to add
@@ -336,7 +354,7 @@ func reparentEntity(node: Node3D, initialize_arr: Array = []) -> void:
 ## Add a PackedScene as an entity
 ## @param scene: Entity to add
 ## @param initialize_arr: Array full of data used to initialize the object. NOTE: THIS CANNOT CONTAIN NODES; MUST BE PURELY DATA
-func addEntityFromPackedScene(scene: PackedScene, initialize_arr: Array = []) -> void:
+func addEntityFromPackedScene(scene: PackedScene, initialize_arr: Array = []) -> Node:
 	# Don't add child until scene is ready
 	await Utils.waitUntilNodeReady(self)
 	
@@ -344,12 +362,12 @@ func addEntityFromPackedScene(scene: PackedScene, initialize_arr: Array = []) ->
 	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
-	_addPackedScene(scene, entities_node_path, initialize_arr)
+	return _addPackedScene(scene, entities_node_path, initialize_arr)
 
 ## Add a PackedScene as an entity
 ## @param path: Entity to add
 ## @param initialize_arr: Array full of data used to initialize the object. NOTE: THIS CANNOT CONTAIN NODES; MUST BE PURELY DATA
-func addEntityFromFilePath(path: StringName, initialize_arr: Array = []) -> void:
+func addEntityFromFilePath(path: StringName, initialize_arr: Array = []) -> Node:
 	# Don't add child until scene is ready
 	await Utils.waitUntilNodeReady(self)
 	
@@ -357,7 +375,7 @@ func addEntityFromFilePath(path: StringName, initialize_arr: Array = []) -> void
 	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
-	_addSceneFromFilePath(path, entities_node_path, initialize_arr)
+	return _addSceneFromFilePath(path, entities_node_path, initialize_arr)
 
 ## Add a Node3D as a player entity
 ## @param node: Player to add
@@ -375,7 +393,7 @@ func reparentPlayerEntity(node: PlayerCharacterType, initialize_arr: Array = [])
 ## Add a PackedScene as a player entity
 ## @param scene: Player to add
 ## @param initialize_arr: Array full of data used to initialize the object. NOTE: THIS CANNOT CONTAIN NODES; MUST BE PURELY DATA
-func addPlayerEntityFromPackedScene(scene: PackedScene, initialize_arr: Array = []) -> void:
+func addPlayerEntityFromPackedScene(scene: PackedScene, initialize_arr: Array = []) -> Node:
 	# Don't add child until scene is ready
 	await Utils.waitUntilNodeReady(self)
 	
@@ -383,12 +401,12 @@ func addPlayerEntityFromPackedScene(scene: PackedScene, initialize_arr: Array = 
 	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
-	_addPackedScene(scene, players_node_path, initialize_arr)
+	return _addPackedScene(scene, players_node_path, initialize_arr)
 
 ## Add a PackedScene as a player entity
 ## @param path: Player to add
 ## @param initialize_arr: Array full of data used to initialize the object. NOTE: THIS CANNOT CONTAIN NODES; MUST BE PURELY DATA
-func addPlayerEntityFromFilePath(path: StringName, initialize_arr: Array = []) -> void:
+func addPlayerEntityFromFilePath(path: StringName, initialize_arr: Array = []) -> Node:
 	# Don't add child until scene is ready
 	await Utils.waitUntilNodeReady(self)
 	
@@ -396,7 +414,7 @@ func addPlayerEntityFromFilePath(path: StringName, initialize_arr: Array = []) -
 	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
-	_addSceneFromFilePath(path, players_node_path, initialize_arr)
+	return _addSceneFromFilePath(path, players_node_path, initialize_arr)
 
 ## Add a Node3D as an enemy entity
 ## @param node: Enemy to add
@@ -414,7 +432,7 @@ func reparentEnemyEntity(node: Node3D, initialize_arr: Array = []) -> void:
 ## Add a PackedScene as an enemy entity
 ## @param scene: Enemy to add
 ## @param initialize_arr: Array full of data used to initialize the object. NOTE: THIS CANNOT CONTAIN NODES; MUST BE PURELY DATA
-func addEnemyEntityFromPackedScene(scene: PackedScene, initialize_arr: Array = []) -> void:
+func addEnemyEntityFromPackedScene(scene: PackedScene, initialize_arr: Array = []) -> Node:
 	# Don't add child until scene is ready
 	await Utils.waitUntilNodeReady(self)
 	
@@ -422,12 +440,12 @@ func addEnemyEntityFromPackedScene(scene: PackedScene, initialize_arr: Array = [
 	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
-	_addPackedScene(scene, enemies_node_path, initialize_arr)
+	return _addPackedScene(scene, enemies_node_path, initialize_arr)
 
 ## Add a PackedScene as a enemy entity
 ## @param path: Enemy to add
 ## @param initialize_arr: Array full of data used to initialize the object. NOTE: THIS CANNOT CONTAIN NODES; MUST BE PURELY DATA
-func addEnemyEntityFromFilePath(path: StringName, initialize_arr: Array = []) -> void:
+func addEnemyEntityFromFilePath(path: StringName, initialize_arr: Array = []) -> Node:
 	# Don't add child until scene is ready
 	await Utils.waitUntilNodeReady(self)
 	
@@ -435,7 +453,7 @@ func addEnemyEntityFromFilePath(path: StringName, initialize_arr: Array = []) ->
 	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
-	_addSceneFromFilePath(path, enemies_node_path, initialize_arr)
+	return _addSceneFromFilePath(path, enemies_node_path, initialize_arr)
 
 ## Add a Node3D as a loot entity
 ## @param node: Loot to add
@@ -453,7 +471,7 @@ func reparentLootEntity(node: Node3D, initialize_arr: Array = []) -> void:
 ## Add a PackedScene as a loot entity
 ## @param scene: Loot to add
 ## @param initialize_arr: Array full of data used to initialize the object. NOTE: THIS CANNOT CONTAIN NODES; MUST BE PURELY DATA
-func addLootEntityFromPackedScene(scene: PackedScene, initialize_arr: Array = []) -> void:
+func addLootEntityFromPackedScene(scene: PackedScene, initialize_arr: Array = []) -> Node:
 	# Don't add child until scene is ready
 	await Utils.waitUntilNodeReady(self)
 	
@@ -461,12 +479,12 @@ func addLootEntityFromPackedScene(scene: PackedScene, initialize_arr: Array = []
 	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
-	_addPackedScene(scene, loot_node_path, initialize_arr)
+	return _addPackedScene(scene, loot_node_path, initialize_arr)
 
 ## Add a PackedScene as a loot entity
 ## @param path: Player to add
 ## @param initialize_arr: Array full of data used to initialize the object. NOTE: THIS CANNOT CONTAIN NODES; MUST BE PURELY DATA
-func addLootEntityFromFilePath(path: StringName, initialize_arr: Array = []) -> void:
+func addLootEntityFromFilePath(path: StringName, initialize_arr: Array = []) -> Node:
 	# Don't add child until scene is ready
 	await Utils.waitUntilNodeReady(self)
 	
@@ -474,7 +492,7 @@ func addLootEntityFromFilePath(path: StringName, initialize_arr: Array = []) -> 
 	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
-	_addSceneFromFilePath(path, loot_node_path, initialize_arr)
+	return _addSceneFromFilePath(path, loot_node_path, initialize_arr)
 
 ## Add a Node3D as an 'other' entity
 ## @param node: Misc. entity to add
@@ -492,7 +510,7 @@ func reparentMiscEntity(node: Node3D, initialize_arr: Array = []) -> void:
 ## Add a PackedScene as an 'other' entity
 ## @param scene: Misc. entity to add
 ## @param initialize_arr: Array full of data used to initialize the object. NOTE: THIS CANNOT CONTAIN NODES; MUST BE PURELY DATA
-func addMiscEntityFromPackedScene(scene: PackedScene, initialize_arr: Array = []) -> void:
+func addMiscEntityFromPackedScene(scene: PackedScene, initialize_arr: Array = []) -> Node:
 	# Don't add child until scene is ready
 	await Utils.waitUntilNodeReady(self)
 	
@@ -500,12 +518,12 @@ func addMiscEntityFromPackedScene(scene: PackedScene, initialize_arr: Array = []
 	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
-	_addPackedScene(scene, other_entities_node_path, initialize_arr)
+	return _addPackedScene(scene, other_entities_node_path, initialize_arr)
 
 ## Add a PackedScene as an 'other' entity
 ## @param path: Misc. entity to add
 ## @param initialize_arr: Array full of data used to initialize the object. NOTE: THIS CANNOT CONTAIN NODES; MUST BE PURELY DATA
-func addMiscEntityFromFilePath(path: StringName, initialize_arr: Array = []) -> void:
+func addMiscEntityFromFilePath(path: StringName, initialize_arr: Array = []) -> Node:
 	# Don't add child until scene is ready
 	await Utils.waitUntilNodeReady(self)
 	
@@ -513,7 +531,7 @@ func addMiscEntityFromFilePath(path: StringName, initialize_arr: Array = []) -> 
 	initialize_arr.push_front(UUID.generateNewUuid())
 	
 	# NOTE: Save some bandwidth with default params when possible
-	_addSceneFromFilePath(path, other_entities_node_path, initialize_arr)
+	return _addSceneFromFilePath(path, other_entities_node_path, initialize_arr)
 
 # ************************************************************ #
 #                    * Unit Test Functions *                   #

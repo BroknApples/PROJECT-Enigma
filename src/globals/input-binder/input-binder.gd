@@ -4,18 +4,18 @@ extends Node
 #                       * File Purpose *                       #
 # ************************************************************ #
 ## 
-## Keybinds Singleton
+## InputBinder Singleton
 ## 
-## Defines all inputs used in the game
+## Defines all actions & binding of said actions used in the game
 ## 
 
 # ************************************************************ #
 #                     * Enums & Classes *                      #
 # ************************************************************ #
 
-## ActionNames Class
+## Actions Class
 ## All input action names
-class ActionNames:
+class Actions:
 	# MISC
 	const ESCAPE				: StringName = &"Escape"
 	const CHANGE_CAMERA_POV		: StringName = &"Change Camera POV"
@@ -39,14 +39,17 @@ class ActionNames:
 	const NEXT_WEAPON			: StringName = &"Next Weapon"
 	const PREVIOUS_WEAPON		: StringName = &"Previous Weapon"
 
-## Which actions are not allowed to be modified in the settings
-const immodifiable: Array[StringName] = [
-	ActionNames.ESCAPE
-]
-
 # ************************************************************ #
 #                        * Variables *                         #
 # ************************************************************ #
+
+## Which actions are not allowed to be modified in the settings
+const IMMODIFIABLE: Array[StringName] = [
+	Actions.ESCAPE
+]
+
+var hooks: Dictionary = {} # { StringName : Array[Callable] }
+var binds: Dictionary = {} # { KeyCode : StringName }
 
 # ************************************************************ #
 #                     * Signal Functions *                     #
@@ -60,9 +63,28 @@ const immodifiable: Array[StringName] = [
 #                     * Godot Functions *                      #
 # ************************************************************ #
 
+func _ready() -> void:
+	# Load saved data if it exists
+	loadKeybinds()
+
 # ************************************************************ #
 #                     * Public Functions *                     #
 # ************************************************************ #
+
+func registerActionCallback(action_name: StringName, callback: Callable) -> void:
+	pass
+
+func deregisterActionCallback(action_name: StringName, callback: Callable) -> void:
+	pass
+
+func setKeysToAction(action_name: StringName, keys: Array[int]) -> void:
+	pass
+
+func loadKeybinds() -> void:
+	const BINDS_SAVE_PATH = "user://saved_keybinds.json"
+
+func saveKeybinds() -> void:
+	const BINDS_SAVE_PATH = "user://saved_keybinds.json"
 
 # ************************************************************ #
 #                    * Unit Test Functions *                   #

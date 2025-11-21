@@ -31,6 +31,7 @@ class Assets:
 	const PLAYER_INPUT_SCENE: StringName = &"PlayerInputScene"
 	
 	# Enemy
+	const ENEMY_CHARACTER_TYPE_SCENE: StringName = &"EnemyCharacterTypeScene"
 	
 	# Weapons
 	
@@ -67,6 +68,7 @@ var asset_data := {
 	Assets.PLAYER_INPUT_SCENE: [&"res://src/core/entities/player-character-type/player_input.tscn", [], null],
 	
 	# Enemy
+	Assets.ENEMY_CHARACTER_TYPE_SCENE: [&"res://src/core/entities/enemy-character-type/enemy_character_type.tscn", [], null],
 	
 	# Weapons
 	

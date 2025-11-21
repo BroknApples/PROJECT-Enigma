@@ -18,7 +18,7 @@ class_name PlayerCamera
 #                        * Variables *                         #
 # ************************************************************ #
 
-@onready var _player_body: PlayerCharacterType = $".".get_parent().get_parent() ## The player_character_type that owns this player camera
+@onready var _character_body: CharacterBody3D = $".".get_parent().get_parent() ## The player_character_type that owns this player camera
 @onready var _head := $".".get_parent()
 @onready var _pivot := $"."
 @onready var _spring_arm := $SpringArm3D
@@ -63,7 +63,7 @@ func _queryRaycast() -> void:
 	
 	# Create the query
 	var query := PhysicsRayQueryParameters3D.create(from, to)
-	query.exclude = [_player_body] # Exclude the player node that owns this camera
+	query.exclude = [_character_body] # Exclude the player node that owns this camera
 	
 	# Do and assign query data
 	_current_frame_raycast_data = space_state.intersect_ray(query)
@@ -77,9 +77,9 @@ func _process(_delta: float) -> void:
 	_queryRaycast()
 
 func _ready() -> void:
-	if (!_player_body._initialized):
+	if (!_character_body._initialized):
 		set_process_mode(Node.PROCESS_MODE_DISABLED)
-		await _player_body.SIG_initialized
+		await _character_body.SIG_initialized
 	set_process_mode(Node.PROCESS_MODE_ALWAYS)
 	
 	# TESTING
@@ -105,9 +105,9 @@ func getHead() -> Node3D:
 	return _head
 
 ## Get the character body that owns this camera
-## @returns PlayerCharacterType: Player that is using this camera
-func getPlayerBody() -> PlayerCharacterType:
-	return _player_body
+## @returns CharacterBody3D: Character that is using this camera
+func getCharacterBody() -> CharacterBody3D:
+	return _character_body
 
 ## Get the actual camera node, typically used to set the current camera of the client
 ## @returns Camera3D: Actual camera node, not the spring arm 3d
@@ -120,8 +120,8 @@ func getRaycastData() -> Dictionary:
 
 ## Set the body node of the character this camera is attached to
 ## @param character_body: Body node of the character
-func setPlayerBody(player_body: PlayerCharacterType) -> void:
-	_player_body = player_body
+func setCharacterBody(character_body: CharacterBody3D) -> void:
+	_character_body = character_body
 
 ## Set the current camera of the client to this camera
 func setToCurrentCamera() -> void:

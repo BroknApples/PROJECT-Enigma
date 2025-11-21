@@ -221,7 +221,7 @@ func _ready() -> void:
 	SIG_sprint.connect(_on_sprint_key_pressed)
 	SIG_crouch.connect(_on_crouch_key_pressed)
 	
-	_camera_pivot.setPlayerBody(_character_body)
+	_camera_pivot.setCharacterBody(_character_body)
 	
 	# Set default gravitational authority
 	_gravitational_authority = getDefaultGravitationalAuthorityNode()
